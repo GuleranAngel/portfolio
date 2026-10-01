@@ -407,5 +407,7 @@ const thirdLast = '(min-width: 1440px) 416px, (min-width: 768px) 30vw, 92vw';
     .grid-3 { grid-template-columns: 1fr 1fr; gap: 32px 12px; }
     /* the odd one out takes the full row instead of sitting alone at half width */
     .grid-3 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+    /* full width at 4:3 so it isn't taller than the screen */
+    .grid-3 > :last-child:nth-child(odd) .media { aspect-ratio: 4 / 3 !important; }
   }
 </style>

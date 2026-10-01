@@ -1,12 +1,16 @@
 ---
-// Muted looping MP4 that only loads and plays while on screen.
+// Muted looping MP4 that only loads and plays while on screen (muted + playsinline + autoplay + loop, so it plays inline on iPhone).
 // Picks the 720p file on small screens, 1080p otherwise. Never autoplays with reduced motion.
+// The poster is a frame from the middle of the loop; playback starts from that same moment so there is no jump.
+import starts from '../data/video-starts.json';
 interface Props { name: string; label: string; class?: string; eager?: boolean; position?: string }
 const { name, label, class: cls, eager = false, position } = Astro.props;
+const start = (starts as Record<string, number>)[name];
 ---
 <video
   class:list={['loop-video', cls]}
   muted
+  autoplay
   loop
   playsinline
   disablepictureinpicture
@@ -16,6 +20,7 @@ const { name, label, class: cls, eager = false, position } = Astro.props;
   data-src-hd={`/video/${name}-1080.mp4`}
   data-src-sd={`/video/${name}-720.mp4`}
   data-eager={eager ? '' : undefined}
+  data-start={start}
   aria-label={label}
   style={position ? `object-position:${position}` : undefined}
 ></video>

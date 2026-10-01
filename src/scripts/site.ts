@@ -25,20 +25,28 @@ const pickSrc = (v: HTMLVideoElement) => {
   const px = v.getBoundingClientRect().width * Math.min(window.devicePixelRatio || 1, 2);
   return conn?.saveData || px <= 1100 ? v.dataset.srcSd! : v.dataset.srcHd!;
 };
-const ensureSrc = (v: HTMLVideoElement) => { if (!v.getAttribute('src')) v.src = pickSrc(v); };
+const ensureSrc = (v: HTMLVideoElement) => {
+  if (v.getAttribute('src')) return;
+  const start = Number(v.dataset.start || 0);
+  if (start) v.addEventListener('loadedmetadata', () => { if (v.currentTime < 0.05) v.currentTime = Math.min(start, v.duration - 0.05); }, { once: true });
+  v.src = pickSrc(v);
+};
 const toggleFor = (v: HTMLVideoElement) => v.parentElement?.querySelector<HTMLButtonElement>('[data-vid-toggle]') ?? null;
-const syncToggle = (v: HTMLVideoElement) => {
+const showPaused = (v: HTMLVideoElement, paused: boolean) => {
   const t = toggleFor(v);
   if (!t) return;
-  const paused = v.dataset.userPaused === '1' || (reduce.matches && v.dataset.userPlay !== '1');
   t.dataset.paused = paused ? '1' : '0';
   t.setAttribute('aria-label', paused ? 'Play video' : 'Pause video');
 };
+const syncToggle = (v: HTMLVideoElement) =>
+  showPaused(v, v.dataset.userPaused === '1' || (reduce.matches && v.dataset.userPlay !== '1'));
+// If the browser refuses to autoplay (iPhone Low Power Mode, data saver), show the play button instead of a dead pause button
+const play = (v: HTMLVideoElement) => v.play().then(() => showPaused(v, false)).catch((e: DOMException) => { if (e?.name !== 'AbortError') showPaused(v, true); });
 const tryPlay = (v: HTMLVideoElement) => {
   if (v.dataset.userPaused === '1') return;
   if (reduce.matches && v.dataset.userPlay !== '1') return;
   ensureSrc(v);
-  v.play().catch(() => {});
+  play(v);
 };
 
 const io = new IntersectionObserver((entries) => {
@@ -50,6 +58,11 @@ const io = new IntersectionObserver((entries) => {
 }, { rootMargin: '250px 0px' });
 
 for (const v of videos) {
+  // iOS needs the muted property set, not just the attribute, before it allows inline autoplay
+  v.muted = true;
+  v.defaultMuted = true;
+  // No src is set until the video is near the screen, so autoplay only kicks in then. With reduced motion it stays off.
+  if (reduce.matches) v.autoplay = false;
   syncToggle(v);
   io.observe(v);
   toggleFor(v)?.addEventListener('click', () => {
@@ -58,15 +71,17 @@ for (const v of videos) {
       v.dataset.userPaused = '0';
       v.dataset.userPlay = '1';
       ensureSrc(v);
-      v.play().catch(() => {});
+      syncToggle(v);
+      play(v);
     } else {
       v.dataset.userPaused = '1';
       v.pause();
+      syncToggle(v);
     }
-    syncToggle(v);
   });
 }
 reduce.addEventListener('change', () => videos.forEach((v) => {
+  v.autoplay = !reduce.matches;
   syncToggle(v);
   if (reduce.matches && v.dataset.userPlay !== '1') v.pause(); else if (v.dataset.visible === '1') tryPlay(v);
 }));

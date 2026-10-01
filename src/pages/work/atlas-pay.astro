@@ -30,6 +30,11 @@ const steps = [
   { label: 'Rays from a corner', svg: marks.stepQuarter },
   { label: 'One origin, every direction', svg: marks.stepFinal, accent: true },
 ];
+const appScreens = [
+  { name: 'atlas-phone-welcome', label: '01 / Welcome', desc: 'The 3D film sets the tone before <span class="nowrap">sign-up</span>.', alt: 'Welcome screen: One account. Every direction. Over the 3D film, with Open an account and Log in buttons' },
+  { name: 'atlas-phone-home', label: '02 / Home', desc: 'Balance first, four actions, today’s activity.', alt: 'Home screen: a total balance of 248,590.40 euro, four actions and today’s transactions' },
+  { name: 'atlas-phone-cards', label: '03 / Cards', desc: 'Freeze, details, limits and PIN one tap away.', alt: 'Cards screen: the physical metal card with freeze, details, limits and PIN controls and the monthly limit' },
+];
 const full = '(min-width: 1440px) 1312px, (min-width: 1200px) calc(100vw - 128px), (min-width: 768px) calc(100vw - 80px), calc(100vw - 40px)';
 const half = '(min-width: 1440px) 640px, (min-width: 768px) 46vw, 100vw';
 ---
@@ -219,8 +224,16 @@ const half = '(min-width: 1440px) 640px, (min-width: 768px) 46vw, 100vw';
       statement="In the app, the numbers come first."
       body="The card’s contrast carries into everyday use: a black balance panel, amounts in Aeonik Light with the cents stepped back, flat buttons and one floating bar. No glass and no gradients on controls.<br />The material lives on the card."
     />
-    <figure class="fig">
-      <div class="media" style="aspect-ratio:1312/931; background:#141416"><Picture name="atlas-app" alt="Three Atlas Pay app screens: welcome with the 3D film, home with a balance of 248,590.40 euro and today's transactions, and the cards screen with freeze, details, limits and PIN" sizes={full} /></div>
+    <figure class="fig app-fig">
+      <div class="app-strip" role="region" aria-label="Three app screens. On phones, swipe sideways to see the next one." tabindex="0">
+        {appScreens.map((a) => (
+          <div class="app-slide">
+            <Picture name={a.name} alt={a.alt} sizes="(min-width: 1440px) 368px, (min-width: 768px) 26vw, 72vw" class="app-phone" />
+            <p class="app-label">{a.label}</p>
+            <p class="app-desc" set:html={a.desc} />
+          </div>
+        ))}
+      </div>
       <Caption left="Fig. 5.1 / Welcome, home, cards" right="iOS · 390 pt" />
     </figure>
     <div class="feature">
@@ -375,6 +388,34 @@ const half = '(min-width: 1440px) 640px, (min-width: 768px) 46vw, 100vw';
   @media (max-width: 767px) {
     .bento { display: flex; flex-direction: column; gap: 16px; }
     .bento .media { aspect-ratio: 16 / 9; }
+  }
+
+  /* Fig 5.1: three phones on one panel; a swipeable strip on phones */
+  .app-fig { container-type: inline-size; }
+  .app-strip {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    column-gap: calc(53.9 / 1312 * 100cqi);
+    padding: calc(17.6 / 1312 * 100cqi) calc(50.5 / 1312 * 100cqi) calc(60 / 1312 * 100cqi);
+    background: #141416;
+  }
+  .app-desc :global(.nowrap) { white-space: nowrap; }
+  .app-slide { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+  .app-slide :global(.app-phone), .app-slide :global(.app-phone img) { display: block; width: 100%; height: auto; }
+  .app-label { margin-top: calc(35 / 1312 * 100cqi); font-weight: 500; font-size: max(11px, calc(13 / 1312 * 100cqi)); line-height: 1.25; letter-spacing: 0.08em; text-transform: uppercase; color: var(--white); }
+  .app-desc { margin-top: calc(8 / 1312 * 100cqi); font-size: max(11px, calc(13 / 1312 * 100cqi)); line-height: 1.25; color: #8e8e93; }
+  @media (max-width: 767px) {
+    .app-strip {
+      display: flex; gap: 12px; padding: 0 var(--pad);
+      margin-inline: calc(-1 * var(--pad));
+      overflow-x: auto; overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad);
+      background: none; scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .app-strip::-webkit-scrollbar { display: none; }
+    .app-slide { flex: 0 0 76%; scroll-snap-align: start; background: #141416; padding: 20px 22px 24px; }
+    .app-label { margin-top: 18px; font-size: 12px; }
+    .app-desc { margin-top: 6px; font-size: 13px; line-height: 1.4; }
   }
 
   /* Product features */

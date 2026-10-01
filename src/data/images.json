@@ -1,74 +1,72 @@
 {
   "atlas-anim-card": {
-    "width": 264,
-    "height": 167,
+    "width": 528,
+    "height": 333,
     "widths": [
-      264
+      400,
+      528
     ],
     "alpha": true,
     "color": "rgb(8,8,8)"
   },
   "atlas-anim-sleeve": {
-    "width": 312,
-    "height": 172,
+    "width": 624,
+    "height": 344,
     "widths": [
-      312
+      400,
+      624
     ],
     "alpha": true,
     "color": "rgb(24,24,24)"
   },
-  "atlas-app": {
-    "width": 1312,
-    "height": 931,
-    "widths": [
-      400,
-      640,
-      828,
-      1080,
-      1312
-    ],
-    "alpha": false,
-    "color": "rgb(8,8,8)"
-  },
   "atlas-applications": {
-    "width": 1312,
-    "height": 679,
+    "width": 2100,
+    "height": 1087,
     "widths": [
       400,
       640,
       828,
       1080,
-      1312
+      1440,
+      1920,
+      2100
     ],
     "alpha": false,
     "color": "rgb(248,248,248)"
   },
   "atlas-card-physical": {
-    "width": 520,
-    "height": 328,
+    "width": 1040,
+    "height": 656,
     "widths": [
       400,
-      520
+      640,
+      828,
+      1040
     ],
-    "alpha": false,
+    "alpha": true,
     "color": "rgb(8,8,8)"
   },
   "atlas-card-virtual": {
-    "width": 520,
-    "height": 328,
+    "width": 1040,
+    "height": 656,
     "widths": [
       400,
-      520
+      640,
+      828,
+      1040
     ],
-    "alpha": false,
+    "alpha": true,
     "color": "rgb(24,24,40)"
   },
   "atlas-chip-crop": {
-    "width": 640,
-    "height": 476,
+    "width": 1280,
+    "height": 952,
     "widths": [
       400,
-      640
+      640,
+      828,
+      1080,
+      1280
     ],
     "alpha": false,
     "color": "rgb(248,248,248)"
@@ -88,34 +86,42 @@
     "color": "rgb(24,24,24)"
   },
   "atlas-colour": {
-    "width": 1312,
-    "height": 843,
+    "width": 2624,
+    "height": 1686,
     "widths": [
       400,
       640,
       828,
       1080,
-      1312
+      1440,
+      1920,
+      2624
     ],
     "alpha": false,
     "color": "rgb(24,40,248)"
   },
   "atlas-concept": {
-    "width": 640,
-    "height": 640,
+    "width": 1280,
+    "height": 1280,
     "widths": [
       400,
-      640
+      640,
+      828,
+      1080,
+      1280
     ],
     "alpha": false,
     "color": "rgb(8,8,8)"
   },
   "atlas-construction": {
-    "width": 640,
-    "height": 640,
+    "width": 1280,
+    "height": 1280,
     "widths": [
       400,
-      640
+      640,
+      828,
+      1080,
+      1280
     ],
     "alpha": false,
     "color": "rgb(24,24,24)"
@@ -147,35 +153,77 @@
     "color": "rgb(8,8,8)"
   },
   "atlas-logo-system": {
-    "width": 1312,
-    "height": 837,
+    "width": 2624,
+    "height": 1674,
     "widths": [
       400,
       640,
       828,
       1080,
-      1312
+      1440,
+      1920,
+      2624
     ],
     "alpha": false,
     "color": "rgb(8,8,8)"
   },
   "atlas-newcard-base": {
-    "width": 454,
-    "height": 908,
+    "width": 908,
+    "height": 1816,
     "widths": [
       400,
-      454
+      640,
+      828,
+      908
     ],
     "alpha": false,
     "color": "rgb(8,8,8)"
   },
-  "atlas-send": {
-    "width": 780,
-    "height": 785,
+  "atlas-phone-cards": {
+    "width": 919,
+    "height": 1906,
     "widths": [
       400,
       640,
-      780
+      828,
+      919
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-phone-home": {
+    "width": 919,
+    "height": 1906,
+    "widths": [
+      400,
+      640,
+      828,
+      919
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-phone-welcome": {
+    "width": 919,
+    "height": 1906,
+    "widths": [
+      400,
+      640,
+      828,
+      919
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-send": {
+    "width": 1560,
+    "height": 1570,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1560
     ],
     "alpha": false,
     "color": "rgb(8,8,8)"
@@ -194,12 +242,15 @@
     "color": "rgb(8,8,8)"
   },
   "home-pog-social": {
-    "width": 844,
-    "height": 520,
+    "width": 1688,
+    "height": 1040,
     "widths": [
       400,
       640,
-      844
+      828,
+      1080,
+      1440,
+      1688
     ],
     "alpha": false,
     "color": "rgb(248,8,216)"
@@ -449,13 +500,15 @@
     "color": "rgb(248,248,8)"
   },
   "pog-ohno-weights": {
-    "width": 403,
-    "height": 24,
+    "width": 805,
+    "height": 48,
     "widths": [
-      403
+      400,
+      640,
+      805
     ],
-    "alpha": false,
-    "color": "rgb(248,8,88)"
+    "alpha": true,
+    "color": "rgb(8,8,8)"
   },
   "pog-oversized-tee": {
     "width": 1000,
@@ -589,22 +642,27 @@
     "alpha": false,
     "color": "rgb(168,168,168)"
   },
-  "pog-thumb-208": {
-    "width": 208,
-    "height": 120,
+  "pog-thumb": {
+    "width": 1614,
+    "height": 710,
     "widths": [
-      208
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1614
     ],
     "alpha": false,
     "color": "rgb(248,8,216)"
   },
-  "pog-thumb": {
-    "width": 318,
-    "height": 140,
+  "pog-thumb-208": {
+    "width": 416,
+    "height": 240,
     "widths": [
-      318
+      416
     ],
-    "alpha": false,
+    "alpha": true,
     "color": "rgb(248,8,216)"
   },
   "pog-tote": {

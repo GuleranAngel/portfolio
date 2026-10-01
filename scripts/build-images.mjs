@@ -1,9 +1,10 @@
 // Generates responsive AVIF + WebP variants for every source image in a folder.
-// Usage: node scripts/build-images.mjs <source-folder>
+// Usage: node scripts/build-images.mjs <source-folder> [name ...]
+// Pass names to rebuild only those images; the rest of the manifest is kept.
 // Sources are pre-sized at roughly 2x their largest display size. Output goes to
 // public/img/ and a manifest (sizes, widths, alpha) goes to src/data/images.json.
 import sharp from 'sharp';
-import { readdir, mkdir, writeFile } from 'node:fs/promises';
+import { readdir, mkdir, writeFile, readFile, unlink } from 'node:fs/promises';
 import { join, parse } from 'node:path';
 
 const SRC = process.argv[2];
@@ -11,11 +12,21 @@ if (!SRC) throw new Error('Pass the source folder');
 const OUT = 'public/img';
 const STEPS = [400, 640, 828, 1080, 1440, 1920, 2624];
 // Figma captures of UI pieces (screens, panels, type) keep text crisp with a higher quality setting.
-const UI = /^(atlas-(colour|logo-system|card-|app|send|website|applications|chip-crop|concept|construction|newcard|anim)|home-pog-social|pog-thumb|pog-ohno)/;
+const UI = /^(atlas-(colour|logo-system|card-|app|phone-|send|website|applications|chip-crop|concept|construction|newcard|anim)|home-pog-social|pog-thumb|pog-ohno)/;
 
 await mkdir(OUT, { recursive: true });
-const manifest = {};
-const files = (await readdir(SRC)).filter((f) => /\.(png|jpe?g)$/i.test(f)).sort();
+const only = process.argv.slice(3);
+const manifest = only.length ? JSON.parse(await readFile('src/data/images.json', 'utf8')) : {};
+const files = (await readdir(SRC))
+  .filter((f) => /\.(png|jpe?g)$/i.test(f))
+  .filter((f) => !only.length || only.includes(parse(f).name))
+  .sort();
+// Remove stale variants of the images being rebuilt
+const existing = await readdir(OUT);
+for (const file of files) {
+  const name = parse(file).name;
+  for (const f of existing) if (new RegExp(`^${name}-\\d+\\.(avif|webp)$`).test(f)) await unlink(join(OUT, f));
+}
 
 for (const file of files) {
   const name = parse(file).name;
@@ -41,5 +52,6 @@ for (const file of files) {
   console.log(name, meta.width, 'x', meta.height, widths.join(','));
 }
 
-await writeFile('src/data/images.json', JSON.stringify(manifest, null, 2) + '\n');
+const sorted = Object.fromEntries(Object.keys(manifest).sort().map((k) => [k, manifest[k]]));
+await writeFile('src/data/images.json', JSON.stringify(sorted, null, 2) + '\n');
 console.log(`Done: ${files.length} images`);
