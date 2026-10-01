@@ -1,0 +1,101 @@
+---
+import RegMark from './RegMark.astro';
+interface Props {
+  num: string; title: string; lead: string;
+  info: [string, string][];
+  overview: string; deliverables: string; typeface: string; deck: string;
+  next: { name: string; href: string };
+}
+const { num, title, lead, info, overview, deliverables, typeface, deck, next } = Astro.props;
+---
+<section class="case-hero" aria-labelledby="case-title">
+  <div class="wrap">
+    <nav class="crumbs label" aria-label="Breadcrumb">
+      <a class="link c-accent" href="/#work"><span aria-hidden="true">← </span>All work</a>
+      <span class="c-grey-3 crumbs-mid">Selected work</span>
+      <a class="link c-grey-2" href={next.href}>Next project: {next.name}<span aria-hidden="true"> →</span></a>
+    </nav>
+    <div class="tb">
+      <RegMark class="corner tl" /><RegMark class="corner tr" /><RegMark class="corner bl" /><RegMark class="corner br" />
+      <div class="tb-row1">
+        <div class="tb-statement">
+          <p class="label c-accent">Case study {num}</p>
+          <div class="tb-title">
+            <h1 id="case-title" class="tb-h1">{title}</h1>
+            <p class="lead c-grey-2 tb-lead">{lead}</p>
+          </div>
+        </div>
+        <dl class="tb-info">
+          {info.map(([k, v]) => (
+            <div class="tb-cell"><dt class="label c-grey-3">{k}</dt><dd>{v}</dd></div>
+          ))}
+        </dl>
+      </div>
+      <div class="tb-row2">
+        <div class="tb-c tb-overview"><p class="label c-grey-3">Overview</p><p class="c-grey-2 ov">{overview}</p></div>
+        <div class="tb-c"><p class="label c-grey-3">Deliverables</p><p>{deliverables}</p></div>
+        <div class="tb-c"><p class="label c-grey-3">Typeface</p><p>{typeface}</p></div>
+        <a class="tb-c tb-deck" href={deck} target="_blank" rel="noopener">
+          <span class="label c-accent">Full deck <span aria-hidden="true">↗</span></span>
+          <span class="deck-text">View on Behance<span class="visually-hidden"> (opens in a new tab)</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .case-hero { padding: 31px 0 112px; }
+  .crumbs { display: flex; justify-content: space-between; gap: 16px; }
+  .tb { position: relative; margin-top: 32px; border: 1px solid var(--rule); }
+  .tb > :global(.corner) { position: absolute; z-index: 1; }
+  .tb > :global(.corner.tl) { left: -7px; top: -7px; } .tb > :global(.corner.tr) { right: -7px; top: -7px; }
+  .tb > :global(.corner.bl) { left: -7px; bottom: -7px; } .tb > :global(.corner.br) { right: -7px; bottom: -7px; }
+  .tb-row1 { display: grid; grid-template-columns: 866.67fr 445.33fr; min-height: 400px; }
+  .tb-statement { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; padding: 28px 32px 36px; border-right: 1px solid var(--rule); }
+  .tb-title { display: flex; flex-direction: column; gap: 24px; }
+  .tb-h1 { font-weight: 500; font-size: 136px; line-height: 0.92; letter-spacing: -0.045em; }
+  .tb-lead { max-width: 510px; }
+  .tb-info { display: flex; flex-direction: column; }
+  .tb-cell { flex: 1 1 0; display: flex; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 1px solid var(--rule); }
+  .tb-cell:last-child { border-bottom: 0; }
+  .tb-cell dt { width: 104px; flex: none; }
+  .tb-cell dd { flex: 1 1 auto; min-width: 0; }
+  .tb-row2 { display: grid; grid-template-columns: 434.67fr 292.44fr 292.44fr 292.44fr; border-top: 1px solid var(--rule); }
+  .tb-c { display: flex; flex-direction: column; gap: 10px; padding: 24px 24px 28px; border-left: 1px solid var(--rule); }
+  .tb-overview { padding: 24px 28px 28px 32px; border-left: 0; }
+  .ov { font-size: 17px; letter-spacing: -0.034px; max-width: 345px; }
+  .tb-deck { transition: background-color 0.2s ease; }
+  .tb-deck:hover { background: var(--surface); }
+  .tb-deck:hover .deck-text { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  @media (max-width: 1199px) {
+    .case-hero { padding-bottom: 96px; }
+    .tb-row1 { grid-template-columns: 1fr; min-height: 0; }
+    .tb-statement { border-right: 0; border-bottom: 1px solid var(--rule); gap: 72px; }
+    .tb-h1 { font-size: clamp(72px, 10vw, 112px); }
+    .tb-info { display: grid; grid-template-columns: 1fr 1fr; }
+    .tb-cell { border-bottom: 1px solid var(--rule); }
+    .tb-cell:nth-child(odd) { border-right: 1px solid var(--rule); }
+    .tb-cell:nth-last-child(-n + 2) { border-bottom: 0; }
+    .tb-row2 { grid-template-columns: 1fr 1fr; }
+    .tb-c:nth-child(odd) { border-left: 0; }
+    .tb-c:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+    .tb-overview { padding-left: 24px; }
+  }
+  @media (max-width: 767px) {
+    .case-hero { padding: 24px 0 72px; }
+    .crumbs-mid { display: none; }
+    .tb { margin-top: 24px; }
+    .tb-statement { padding: 20px 16px 24px; gap: 56px; }
+    .tb-h1 { font-size: 46px; line-height: 0.98; letter-spacing: -1.38px; }
+    .tb-title { gap: 16px; }
+    .tb-info { display: flex; }
+    .tb-cell { padding: 16px; border-right: 0 !important; border-bottom: 1px solid var(--rule) !important; }
+    .tb-cell:last-child { border-bottom: 0 !important; }
+    .tb-cell dt { width: 96px; }
+    .tb-row2 { display: flex; flex-direction: column; }
+    .tb-c, .tb-overview { padding: 16px 16px 20px; border-left: 0; border-top: 1px solid var(--rule); }
+    .tb-overview { border-top: 0; }
+    .ov { font-size: 16px; }
+  }
+</style>

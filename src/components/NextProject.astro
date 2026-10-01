@@ -1,0 +1,43 @@
+---
+import Picture from './Picture.astro';
+interface Props { num: string; name: string; href: string; desc: string; thumb: string; thumbAlt: string }
+const { num, name, href, desc, thumb, thumbAlt } = Astro.props;
+---
+<div class="next wrap">
+  <a class="next-link" href={href}>
+    <span class="next-title">
+      <span class="label c-grey-3">Next project {num}</span>
+      <span class="next-name">{name}</span>
+    </span>
+    <span class="next-desc c-grey-2">{desc}</span>
+    <span class="next-thumb media"><Picture name={thumb} alt={thumbAlt} sizes="208px" /></span>
+    <span class="next-arrow c-accent" aria-hidden="true">→</span>
+  </a>
+</div>
+<style>
+  .next { padding-bottom: 144px; }
+  .next-link { display: flex; align-items: center; gap: 40px; padding: 40px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .next-title { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .next-name { font-weight: 500; font-size: 112px; line-height: 1; letter-spacing: -4.48px; color: var(--white); white-space: nowrap; }
+  .next-desc { width: 320px; flex: none; }
+  .next-thumb { width: 208px; height: 120px; flex: none; border-radius: 2px; }
+  .next-arrow { font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -1.4px; transition: transform 0.25s ease; }
+  .next-link:hover .next-arrow { transform: translateX(8px); }
+  .next-link:hover .next-name { color: #fff; }
+  @media (max-width: 1199px) {
+    .next { padding-bottom: 112px; }
+    .next-link { flex-wrap: wrap; gap: 24px 32px; }
+    .next-title { flex-basis: 100%; }
+    .next-name { font-size: clamp(64px, 9vw, 96px); letter-spacing: -0.04em; }
+    .next-desc { flex: 1 1 260px; width: auto; }
+  }
+  @media (max-width: 767px) {
+    .next { padding-bottom: 80px; }
+    .next-link { padding: 28px 0; gap: 20px 16px; }
+    .next-title { gap: 8px; }
+    .next-name { font-size: 46px; line-height: 0.98; letter-spacing: -1.38px; }
+    .next-desc { flex-basis: 100%; }
+    .next-arrow { font-size: 40px; margin-left: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { .next-link:hover .next-arrow { transform: none; } }
+</style>

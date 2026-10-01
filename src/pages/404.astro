@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import Button from '../components/Button.astro';
+---
+<Base
+  title="Page not found | Angel Guleran"
+  description="This page does not exist. Head back to the work."
+  center="Error 404 · Off register"
+>
+  <meta slot="head" name="robots" content="noindex" />
+  <section class="nf wrap" aria-labelledby="nf-title">
+    <Divider tag="Error 404" as="p" />
+    <h1 id="nf-title" class="display">Off register.</h1>
+    <p class="lead c-grey-2 nf-lead">This page doesn't exist, or it moved. The work is still where it was.</p>
+    <div class="nf-actions">
+      <Button href="/#work" label="See the work" />
+      <Button href="/" label="Home" variant="secondary" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { display: flex; flex-direction: column; gap: 40px; padding-top: 160px; padding-bottom: 200px; }
+  .nf-lead { max-width: 520px; }
+  .nf-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 767px) { .nf { padding-top: 96px; padding-bottom: 120px; gap: 28px; } }
+</style>

@@ -1,0 +1,22 @@
+---
+import Divider from './Divider.astro';
+interface Props { tag: string; id: string; class?: string; flush?: boolean }
+const { tag, id, class: cls, flush = false } = Astro.props;
+---
+<section class:list={['chapter', cls, { flush }]} aria-labelledby={id}>
+  {flush ? (
+    <>
+      <div class="wrap"><Divider tag={tag} id={id} /></div>
+      <slot />
+    </>
+  ) : (
+    <div class="wrap chapter-inner">
+      <Divider tag={tag} id={id} />
+      <slot />
+    </div>
+  )}
+</section>
+<style>
+  .chapter { padding-bottom: var(--chapter-end); }
+  .chapter-inner, .flush { display: flex; flex-direction: column; gap: var(--gap-chapter); }
+</style>

@@ -1,0 +1,212 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import Picture from '../components/Picture.astro';
+import LoopVideo from '../components/LoopVideo.astro';
+import Contact from '../components/Contact.astro';
+
+const services = [
+  ['Experience', '10 years'],
+  ['Services', 'Brand identity & guidelines, logo design, visual systems, 3D objects & renders, motion'],
+  ['Works with', 'Brands directly, studios<br /> & agencies as an embedded designer'],
+  ['Handoff', 'Editable source files, brand guidelines, 3D scenes, specs for developers and animators'],
+  ['Clients', 'UK and Western Europe'],
+  ['Languages', 'English, Romanian'],
+  ['Billing', 'Hourly, in EUR'],
+  ['Revisions', 'As many rounds as it takes.<br /> You pay for time, not rounds.'],
+];
+---
+<Base
+  title="Angel Guleran | Brand identity designer"
+  description="Angel Guleran is a brand identity designer in Romania. Identities that work flat, in 3D and in motion, for founders and for studios."
+  center="Brand identity designer · Romania"
+  home
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-media media">
+      <LoopVideo name="atlas-card-push" label="Atlas Pay card, 3D loop" eager />
+    </div>
+    <div class="fade-top" aria-hidden="true"></div>
+    <div class="fade-bottom" aria-hidden="true"></div>
+    <div class="hero-content wrap">
+      <h1 id="hero-title" class="hero-title">I design identities<br /> that work flat,<br class="m-br" /> in 3D<br class="d-br" /> and in motion.</h1>
+      <p class="hero-intro c-grey-2">I work directly with founders, and with studios as an embedded designer. From the first sketch of a mark to the system,<br class="d-br" /> 3D and motion around it.</p>
+    </div>
+  </section>
+
+  <section class="work" id="work" aria-labelledby="work-title">
+    <div class="wrap stack-40">
+      <Divider tag="Selected work" id="work-title" />
+      <div class="projects">
+        <article class="project" aria-labelledby="p1-title">
+          <div class="p-head">
+            <div class="p-title">
+              <span class="label c-accent">01</span>
+              <h3 class="p-name" id="p1-title">Atlas Pay</h3>
+            </div>
+            <span class="label c-grey-3 p-sector">Cross-border payments</span>
+          </div>
+          <a class="btn btn-primary p-cta" href="/work/atlas-pay" aria-label="View case study: Atlas Pay"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
+          <div class="p-media p-media-atlas">
+            <div class="media m-main"><Picture name="atlas-chip-lit" alt="Atlas Pay chip in black metal, lit with blue light in the channels" sizes="(min-width: 1440px) 832px, (min-width: 768px) 62vw, 100vw" /></div>
+            <div class="media m-second"><Picture name="atlas-light-edge" alt="Corner of the black Atlas Pay card catching a line of light" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 100vw" /></div>
+            <div class="media m-third"><Picture name="atlas-form-relief" alt="The Atlas Pay mark in relief on the chip, in near darkness" sizes="(min-width: 1440px) 416px, 31vw" /></div>
+          </div>
+          <div class="p-foot">
+            <p class="p-desc c-grey-2">
+              <span class="d-only">A payments brand for businesses that move money across borders. The mark is a set of rays from a single origin inside a circle. It had to work flat, embossed and lit, so I designed the chip it lives in and built the card around it in 3D.</span>
+              <span class="m-only">A payments brand for businesses that move money across borders. One mark, drawn flat, milled into a chip and lit in 3D.</span>
+            </p>
+            <p class="label c-grey-2 p-tags">Identity · Custom chip · 3D · App</p>
+          </div>
+        </article>
+
+        <article class="project" aria-labelledby="p2-title">
+          <div class="p-head">
+            <div class="p-title">
+              <span class="label c-accent">02</span>
+              <h3 class="p-name" id="p2-title">POG</h3>
+            </div>
+            <span class="label c-grey-3 p-sector">Streaming and gaming</span>
+          </div>
+          <a class="btn btn-primary p-cta" href="/work/pog" aria-label="View case study: POG"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
+          <div class="p-media p-media-pog">
+            <div class="media m-main d-only"><Picture name="pog-pocket" alt="Phone in a back pocket showing a POG story: It's time to POG" sizes="(min-width: 1440px) 404px, 30vw" position="50% 15%" /></div>
+            <div class="media m-main m-only"><Picture name="pog-character-phone" alt="Phone showing the POG character in 3D" sizes="100vw" /></div>
+            <div class="media m-second d-only"><Picture name="home-pog-social" alt="Three POG story templates on phones: Live now, You're never just one vibe, Don't blink" sizes="(min-width: 1440px) 844px, 62vw" position="50% 0%" /></div>
+            <div class="media m-second m-only"><Picture name="pog-thumb" alt="Three POG story templates on phones" sizes="100vw" /></div>
+          </div>
+          <div class="p-foot">
+            <p class="p-desc c-grey-2">
+              <span class="d-only">An identity for a streamer and content creator, built around a character with a whole range of reactions, so the brand can react as fast as chat does.</span>
+              <span class="m-only">An identity for a streamer, built around a character with a whole range of reactions, so the brand can react as fast as chat does.</span>
+            </p>
+            <p class="label c-grey-2 p-tags">Identity · Character · Social</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services" aria-labelledby="services-title">
+    <div class="wrap">
+      <Divider tag="Services" id="services-title" />
+      <div class="services-body">
+        <div class="statement-col">
+          <p class="label c-accent">Approach</p>
+          <p class="statement">Every mark, render and file comes from the same pair of hands.</p>
+        </div>
+        <dl class="datasheet">
+          {services.map(([k, v]) => (
+            <div class="ds-row">
+              <dt class="label">{k}</dt>
+              <dd set:html={v} />
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <Contact />
+</Base>
+
+<style>
+  /* Hero */
+  .hero { position: relative; height: 829px; overflow: hidden; background: var(--black); }
+  .hero-media { position: absolute; inset: 0; background: var(--black); }
+  .hero-media :global(video) { opacity: 0.32; }
+  .hero-media :global(.vid-toggle) { z-index: 5; }
+  .fade-top { position: absolute; inset: 0 0 auto; height: 160px; background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0)); pointer-events: none; }
+  .fade-bottom { position: absolute; inset: auto 0 0; height: 64%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.8)); pointer-events: none; }
+  .hero-content { position: relative; height: 100%; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; padding-bottom: 88px; pointer-events: none; }
+  .hero-title { font-weight: 500; font-size: 112px; line-height: 0.92; letter-spacing: -4.48px; color: var(--white); }
+  .hero-intro { width: 320px; flex: none; text-align: right; margin-bottom: 6px; }
+  @media (max-width: 1199px) {
+    .hero { height: 720px; }
+    .hero-content { flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 28px; padding-bottom: 64px; }
+    .hero-title { font-size: clamp(56px, 8.4vw, 96px); letter-spacing: -0.04em; }
+    .hero-intro { width: auto; max-width: 420px; text-align: left; margin: 0; }
+    .hero-intro br { display: none; }
+  }
+  @media (max-width: 767px) {
+    .hero { height: 640px; }
+    .hero-media :global(video) { object-position: 46% 50%; }
+    .fade-top { height: 130px; }
+    .fade-bottom { height: 69%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.85)); }
+    .hero-content { gap: 20px; padding-bottom: 16px; }
+    .hero-title { font-size: 40px; line-height: 0.98; letter-spacing: -1.2px; }
+    .hero-intro { max-width: 350px; letter-spacing: -0.08px; }
+  }
+
+  /* Work */
+  .work { padding: 104px 0 144px; }
+  .stack-40 { display: flex; flex-direction: column; gap: 40px; }
+  .projects { display: flex; flex-direction: column; gap: 24px; }
+  .project {
+    position: relative; background: var(--surface); padding: 24px 24px 28px;
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px;
+  }
+  .p-head { display: flex; align-items: baseline; gap: 24px; min-width: 0; flex-wrap: wrap; }
+  .p-title { display: flex; align-items: baseline; gap: 24px; }
+  .p-name { font-weight: 500; font-size: 44px; line-height: 1.12; letter-spacing: -0.88px; }
+  .p-cta { justify-self: end; }
+  .p-cta::after { content: ''; position: absolute; inset: 0; }
+  .p-media { grid-column: 1 / -1; display: grid; gap: 16px; aspect-ratio: 1264 / 520; }
+  .p-media-atlas { grid-template-columns: 832fr 416fr; grid-template-rows: 1fr 1fr; }
+  .p-media-atlas .m-main { grid-row: 1 / span 2; }
+  .p-media-pog { grid-template-columns: 404fr 844fr; }
+  .p-media :global(img) { transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .project:hover .p-media :global(img) { transform: scale(1.02); }
+  .p-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
+  .p-desc { max-width: 700px; font-size: 20px; line-height: 1.5; letter-spacing: -0.1px; }
+  .p-tags { white-space: nowrap; text-align: right; line-height: 1.5; padding-top: 4px; }
+  @media (prefers-reduced-motion: reduce) { .project:hover .p-media :global(img) { transform: none; } }
+  @media (max-width: 1199px) {
+    .work { padding: 88px 0 120px; }
+    .p-name { font-size: 36px; letter-spacing: -0.72px; }
+    .p-foot { flex-direction: column; gap: 12px; }
+    .p-tags { text-align: left; white-space: normal; }
+    .p-desc { font-size: 18px; }
+  }
+  @media (max-width: 767px) {
+    .work { padding: 56px 0 96px; }
+    .stack-40 { gap: 24px; }
+    .projects { gap: 16px; }
+    .project { display: flex; flex-direction: column; align-items: stretch; gap: 16px; padding: 16px 16px 20px; }
+    .p-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .p-title { gap: 12px; }
+    .p-name { font-size: 28px; line-height: 1.18; letter-spacing: -0.42px; }
+    .p-cta { order: 5; align-self: flex-start; }
+    .p-media { display: flex; flex-direction: column; gap: 16px; aspect-ratio: auto; }
+    .p-media .m-main { height: 240px; }
+    .p-media .m-second { height: 140px; }
+    .p-media .m-third { display: none; }
+    .p-foot { gap: 16px; }
+    .p-desc { font-size: 16px; line-height: 1.55; letter-spacing: -0.032px; }
+  }
+
+  /* Services */
+  .services { background: var(--surface); padding: 96px 0 144px; }
+  .services-body { display: flex; justify-content: space-between; gap: 48px; padding-top: 80px; }
+  .statement-col { display: flex; flex-direction: column; gap: 28px; max-width: 700px; }
+  .datasheet { width: 532px; flex: none; background: var(--surface-raised); padding: 12px 28px 20px; }
+  .ds-row { display: flex; gap: 24px; padding: 16px 0 18px; border-top: 1px solid var(--rule); }
+  .ds-row:first-child { border-top: 0; }
+  .ds-row dt { width: 120px; flex: none; color: var(--grey-3); padding-top: 3px; }
+  .ds-row dd { flex: 1 1 auto; color: var(--white); }
+  @media (max-width: 1199px) {
+    .services { padding: 88px 0 120px; }
+    .services-body { flex-direction: column; gap: 48px; padding-top: 64px; }
+    .datasheet { width: 100%; max-width: 640px; }
+  }
+  @media (max-width: 767px) {
+    .services { padding: 56px 0 80px; }
+    .services-body { gap: 32px; padding-top: 32px; }
+    .statement-col { gap: 32px; }
+    .datasheet { padding: 4px 16px 16px; }
+    .ds-row { flex-direction: column; gap: 6px; padding: 12px 0 14px; }
+    .ds-row dt { width: auto; padding-top: 0; }
+    .ds-row dd { font-size: 15px; letter-spacing: -0.03px; }
+  }
+</style>

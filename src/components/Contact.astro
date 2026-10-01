@@ -1,0 +1,45 @@
+---
+import Divider from './Divider.astro';
+import { site } from '../data/site';
+---
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <Divider tag="Contact" id="contact-title" />
+    <div class="contact-body">
+      <a class="email" href={site.mailto}>guleranangel<span class="c-accent">@</span>gmail.com</a>
+    </div>
+    <ul class="tiles label">
+      <li class="tile tile-plain">Based in Romania</li>
+      <li><a class="tile" href={site.behance} target="_blank" rel="noopener">Behance <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      <li><a class="tile" href={site.linkedin} target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      <li><a class="tile c-accent" href="#top">Back to top <span aria-hidden="true">↑</span></a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact { padding: 96px 0 150px; }
+  .contact-body { padding-top: 136px; container-type: inline-size; }
+  .email {
+    display: inline-block; font-weight: 500; font-size: 9.09cqi; line-height: 1; letter-spacing: -0.04em;
+    white-space: nowrap; color: var(--white); transition: color 0.2s ease;
+  }
+  .email:hover { color: #fff; }
+  .email:hover .c-accent { color: #ff7a52; }
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding-top: 96px; }
+  .tiles li { display: flex; min-width: 0; }
+  .tile { display: block; width: 100%; padding: 22px 24px; background: var(--surface-raised); color: var(--grey-2); white-space: nowrap; transition: background-color 0.2s ease, color 0.2s ease; }
+  a.tile:hover { background: #262626; color: var(--white); }
+  a.tile.c-accent { color: var(--accent); }
+  a.tile.c-accent:hover { color: #ff7a52; }
+  .tile-plain { display: block; background: none; padding: 22px 24px 22px 0; color: var(--grey-2); }
+  @media (max-width: 767px) {
+    .contact { padding: 64px 0 120px; }
+    .contact-body { padding-top: 76px; }
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 48px; }
+    .tiles li:nth-child(1) { order: 3; }
+    .tiles li:nth-child(4) { order: 4; }
+    .tile { padding: 18px 16px; }
+    .tile-plain { padding: 18px 16px 18px 0; }
+  }
+</style>

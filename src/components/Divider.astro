@@ -1,0 +1,11 @@
+---
+import RegMark from './RegMark.astro';
+interface Props { tag: string; id?: string; as?: 'h2' | 'p' }
+const { tag, id, as: Tag = 'h2' } = Astro.props;
+---
+<div class="divider">
+  <RegMark />
+  <Tag class="tag label" id={id}>{tag}</Tag>
+  <span class="rule" aria-hidden="true"></span>
+  <RegMark class="reg-end" />
+</div>

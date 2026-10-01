@@ -1,0 +1,5 @@
+---
+interface Props { left: string; right?: string }
+const { left, right } = Astro.props;
+---
+<figcaption class="caption"><span>{left}</span>{right && <span>{right}</span>}</figcaption>

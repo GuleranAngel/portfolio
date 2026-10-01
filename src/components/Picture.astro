@@ -1,0 +1,32 @@
+---
+// Responsive <picture> from the pre-built AVIF/WebP variants (see scripts/build-images.mjs)
+import images from '../data/images.json';
+interface Props {
+  name: keyof typeof images | string;
+  alt: string;
+  sizes?: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  position?: string;
+}
+const { name, alt, sizes = '100vw', class: cls, loading = 'lazy', fetchpriority, position } = Astro.props;
+const img = (images as Record<string, { width: number; height: number; widths: number[]; alpha: boolean; color: string }>)[name];
+if (!img) throw new Error(`Unknown image: ${name}`);
+const set = (ext: string) => img.widths.map((w) => `/img/${name}-${w}.${ext} ${w}w`).join(', ');
+const fallbackW = img.widths.find((w) => w >= 1080) ?? img.widths[img.widths.length - 1];
+---
+<picture class={cls}>
+  <source type="image/avif" srcset={set('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={set('webp')} sizes={sizes} />
+  <img
+    src={`/img/${name}-${fallbackW}.webp`}
+    width={img.width}
+    height={img.height}
+    alt={alt}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    style={position ? `object-position:${position}` : undefined}
+  />
+</picture>

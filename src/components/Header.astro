@@ -1,0 +1,50 @@
+---
+import RegMark from './RegMark.astro';
+import { site } from '../data/site';
+interface Props { center: string; home?: boolean }
+const { center, home = false } = Astro.props;
+const base = home ? '' : '/';
+---
+<header class="site-header">
+  <div class="hdr wrap">
+    <a class="brand" href="/" aria-label="Angel Guleran, home">
+      <RegMark />
+      <span>Angel Guleran</span>
+    </a>
+    <p class="hdr-center label">{center}</p>
+    <nav class="hdr-nav label" aria-label="Main">
+      <a class="link c-grey-2" href={`${base}#work`}>Work</a>
+      <a class="link c-grey-2" href={`${base}#services`}>Services</a>
+      <a class="link c-accent" href={site.mailto}>Contact <span aria-hidden="true">↗</span></a>
+    </nav>
+    <button class="menu-btn label" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn>
+      <span data-menu-label>Menu</span>
+    </button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Main" hidden data-menu>
+    <a href={`${base}#work`} data-menu-link>Work</a>
+    <a href={`${base}#services`} data-menu-link>Services</a>
+    <a class="c-accent" href={site.mailto}>Contact <span aria-hidden="true">↗</span></a>
+    <p class="label c-grey-3">Brand identity designer · Romania</p>
+  </nav>
+</header>
+
+<style>
+  .site-header { position: relative; z-index: 20; background: var(--black); border-bottom: 1px solid var(--rule); }
+  .hdr { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; }
+  .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 500; font-size: 17px; line-height: 1.55; letter-spacing: -0.034px; color: var(--white); white-space: nowrap; }
+  .hdr-center { color: var(--grey-3); white-space: nowrap; }
+  .hdr-nav { display: flex; gap: 32px; white-space: nowrap; }
+  .menu-btn { display: none; color: var(--grey-2); padding: 12px 0 12px 16px; margin: -12px 0; }
+  .mobile-menu { border-top: 1px solid var(--rule); background: var(--black); padding: 8px var(--pad) 24px; }
+  .mobile-menu a { display: block; padding: 14px 0; border-bottom: 1px solid var(--rule); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: -0.22px; }
+  .mobile-menu p { margin-top: 20px; }
+  @media (max-width: 899px) { .hdr-center { display: none; } }
+  @media (max-width: 767px) {
+    .hdr { padding-block: 18px; }
+    .brand { gap: 10px; font-size: 16px; letter-spacing: -0.032px; }
+    .hdr-nav { display: none; }
+    .menu-btn { display: block; }
+  }
+  @media (min-width: 768px) { .mobile-menu { display: none; } }
+</style>

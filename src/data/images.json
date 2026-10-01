@@ -1,0 +1,623 @@
+{
+  "atlas-anim-card": {
+    "width": 264,
+    "height": 167,
+    "widths": [
+      264
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-anim-sleeve": {
+    "width": 312,
+    "height": 172,
+    "widths": [
+      312
+    ],
+    "alpha": true,
+    "color": "rgb(24,24,24)"
+  },
+  "atlas-app": {
+    "width": 1312,
+    "height": 931,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1312
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-applications": {
+    "width": 1312,
+    "height": 679,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1312
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
+  "atlas-card-physical": {
+    "width": 520,
+    "height": 328,
+    "widths": [
+      400,
+      520
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-card-virtual": {
+    "width": 520,
+    "height": 328,
+    "widths": [
+      400,
+      520
+    ],
+    "alpha": false,
+    "color": "rgb(24,24,40)"
+  },
+  "atlas-chip-crop": {
+    "width": 640,
+    "height": 476,
+    "widths": [
+      400,
+      640
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
+  "atlas-chip-lit": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1920
+    ],
+    "alpha": false,
+    "color": "rgb(24,24,24)"
+  },
+  "atlas-colour": {
+    "width": 1312,
+    "height": 843,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1312
+    ],
+    "alpha": false,
+    "color": "rgb(24,40,248)"
+  },
+  "atlas-concept": {
+    "width": 640,
+    "height": 640,
+    "widths": [
+      400,
+      640
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-construction": {
+    "width": 640,
+    "height": 640,
+    "widths": [
+      400,
+      640
+    ],
+    "alpha": false,
+    "color": "rgb(24,24,24)"
+  },
+  "atlas-form-relief": {
+    "width": 1280,
+    "height": 720,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1280
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-light-edge": {
+    "width": 1280,
+    "height": 720,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1280
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-logo-system": {
+    "width": 1312,
+    "height": 837,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1312
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-newcard-base": {
+    "width": 454,
+    "height": 908,
+    "widths": [
+      400,
+      454
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-send": {
+    "width": 780,
+    "height": 785,
+    "widths": [
+      400,
+      640,
+      780
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "atlas-website": {
+    "width": 1312,
+    "height": 781,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1312
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "home-pog-social": {
+    "width": 844,
+    "height": 520,
+    "widths": [
+      400,
+      640,
+      844
+    ],
+    "alpha": false,
+    "color": "rgb(248,8,216)"
+  },
+  "pog-bucket-hat": {
+    "width": 1000,
+    "height": 1498,
+    "widths": [
+      400,
+      640,
+      828,
+      1000
+    ],
+    "alpha": false,
+    "color": "rgb(136,184,216)"
+  },
+  "pog-bus-shelter": {
+    "width": 1600,
+    "height": 1200,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1600
+    ],
+    "alpha": false,
+    "color": "rgb(72,72,72)"
+  },
+  "pog-bus-stop": {
+    "width": 1600,
+    "height": 1067,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1600
+    ],
+    "alpha": false,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-business-cards": {
+    "width": 2624,
+    "height": 1749,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1920,
+      2624
+    ],
+    "alpha": false,
+    "color": "rgb(40,248,232)"
+  },
+  "pog-cap": {
+    "width": 1600,
+    "height": 1067,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1600
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
+  "pog-character-face": {
+    "width": 400,
+    "height": 406,
+    "widths": [
+      400
+    ],
+    "alpha": true,
+    "color": "rgb(248,8,88)"
+  },
+  "pog-character-phone": {
+    "width": 840,
+    "height": 1080,
+    "widths": [
+      400,
+      640,
+      840
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
+  "pog-face-1": {
+    "width": 695,
+    "height": 318,
+    "widths": [
+      400,
+      695
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-2": {
+    "width": 695,
+    "height": 318,
+    "widths": [
+      400,
+      695
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-3": {
+    "width": 695,
+    "height": 318,
+    "widths": [
+      400,
+      695
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-4": {
+    "width": 695,
+    "height": 318,
+    "widths": [
+      400,
+      695
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-5": {
+    "width": 695,
+    "height": 318,
+    "widths": [
+      400,
+      695
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-6": {
+    "width": 697,
+    "height": 318,
+    "widths": [
+      400,
+      640,
+      697
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-7": {
+    "width": 696,
+    "height": 318,
+    "widths": [
+      400,
+      640,
+      696
+    ],
+    "alpha": true,
+    "color": "rgb(248,248,248)"
+  },
+  "pog-face-8": {
+    "width": 696,
+    "height": 318,
+    "widths": [
+      400,
+      640,
+      696
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-face-9": {
+    "width": 697,
+    "height": 318,
+    "widths": [
+      400,
+      640,
+      697
+    ],
+    "alpha": true,
+    "color": "rgb(8,8,8)"
+  },
+  "pog-folded-tee": {
+    "width": 1000,
+    "height": 1000,
+    "widths": [
+      400,
+      640,
+      828,
+      1000
+    ],
+    "alpha": false,
+    "color": "rgb(248,8,216)"
+  },
+  "pog-headline-lockup": {
+    "width": 741,
+    "height": 969,
+    "widths": [
+      400,
+      640,
+      741
+    ],
+    "alpha": false,
+    "color": "rgb(88,8,248)"
+  },
+  "pog-ig-post": {
+    "width": 759,
+    "height": 991,
+    "widths": [
+      400,
+      640,
+      759
+    ],
+    "alpha": false,
+    "color": "rgb(88,8,248)"
+  },
+  "pog-ig-profile": {
+    "width": 1029,
+    "height": 999,
+    "widths": [
+      400,
+      640,
+      828,
+      1029
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
+  "pog-laptop": {
+    "width": 2624,
+    "height": 1750,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1920,
+      2624
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,8)"
+  },
+  "pog-ohno-weights": {
+    "width": 403,
+    "height": 24,
+    "widths": [
+      403
+    ],
+    "alpha": false,
+    "color": "rgb(248,8,88)"
+  },
+  "pog-oversized-tee": {
+    "width": 1000,
+    "height": 1500,
+    "widths": [
+      400,
+      640,
+      828,
+      1000
+    ],
+    "alpha": false,
+    "color": "rgb(120,168,200)"
+  },
+  "pog-pattern-still": {
+    "width": 2844,
+    "height": 1600,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1920,
+      2844
+    ],
+    "alpha": false,
+    "color": "rgb(216,8,184)"
+  },
+  "pog-pocket": {
+    "width": 1400,
+    "height": 2100,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1400
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
+  "pog-skate-tee": {
+    "width": 1600,
+    "height": 1067,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1600
+    ],
+    "alpha": false,
+    "color": "rgb(72,136,200)"
+  },
+  "pog-sticker-lockup": {
+    "width": 759,
+    "height": 993,
+    "widths": [
+      400,
+      640,
+      759
+    ],
+    "alpha": false,
+    "color": "rgb(248,8,88)"
+  },
+  "pog-sticker-set": {
+    "width": 1828,
+    "height": 1180,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1828
+    ],
+    "alpha": false,
+    "color": "rgb(88,8,248)"
+  },
+  "pog-sticker-sheet": {
+    "width": 1100,
+    "height": 956,
+    "widths": [
+      400,
+      640,
+      828,
+      1100
+    ],
+    "alpha": false,
+    "color": "rgb(88,8,248)"
+  },
+  "pog-stories": {
+    "width": 1827,
+    "height": 1165,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1827
+    ],
+    "alpha": false,
+    "color": "rgb(152,104,248)"
+  },
+  "pog-street-posters": {
+    "width": 2624,
+    "height": 1749,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1440,
+      1920,
+      2624
+    ],
+    "alpha": false,
+    "color": "rgb(200,200,200)"
+  },
+  "pog-tee": {
+    "width": 1000,
+    "height": 1333,
+    "widths": [
+      400,
+      640,
+      828,
+      1000
+    ],
+    "alpha": false,
+    "color": "rgb(168,168,168)"
+  },
+  "pog-thumb-208": {
+    "width": 208,
+    "height": 120,
+    "widths": [
+      208
+    ],
+    "alpha": false,
+    "color": "rgb(248,8,216)"
+  },
+  "pog-thumb": {
+    "width": 318,
+    "height": 140,
+    "widths": [
+      318
+    ],
+    "alpha": false,
+    "color": "rgb(248,8,216)"
+  },
+  "pog-tote": {
+    "width": 1248,
+    "height": 832,
+    "widths": [
+      400,
+      640,
+      828,
+      1080,
+      1248
+    ],
+    "alpha": false,
+    "color": "rgb(248,88,8)"
+  }
+}

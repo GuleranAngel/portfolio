@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://guleranangel.com/sitemap-index.xml

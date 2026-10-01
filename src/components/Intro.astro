@@ -1,0 +1,45 @@
+---
+// Chapter intro: statement on the left, datasheet on the right (stacks below 1200px)
+interface Props {
+  label: string;
+  statement: string;
+  statementWidth?: number;
+  body?: string;
+  bodyWidth?: number;
+  rows?: [string, string][];
+}
+const { label, statement, statementWidth = 700, body, bodyWidth, rows = [] } = Astro.props;
+---
+<div class="intro">
+  <div class="intro-statement" style={`--sw:${statementWidth}px`}>
+    <p class="label c-accent">{label}</p>
+    <p class="statement" set:html={statement} />
+    <slot name="after-statement" />
+  </div>
+  <div class="intro-data">
+    {body && <p class="c-grey-2 intro-body" style={bodyWidth ? `max-width:${bodyWidth}px` : undefined} set:html={body} />}
+    {rows.length > 0 && (
+      <dl class:list={['rows', 'end-rule', { spaced: !!body }]}>
+        {rows.map(([k, v]) => (
+          <div class="row"><dt class="label">{k}</dt><dd class="val" set:html={v} /></div>
+        ))}
+      </dl>
+    )}
+  </div>
+</div>
+<style>
+  .intro { display: flex; justify-content: space-between; gap: 48px; padding-top: 24px; }
+  .intro-statement { display: flex; flex-direction: column; gap: 28px; max-width: var(--sw); }
+  .intro-data { width: 532px; flex: none; }
+  .rows.spaced { margin-top: 32px; }
+  @media (max-width: 1199px) {
+    .intro { flex-direction: column; gap: 40px; }
+    .intro-statement { max-width: min(var(--sw), 720px); }
+    .intro-data { width: 100%; max-width: 640px; }
+  }
+  @media (max-width: 767px) {
+    .intro { gap: 32px; padding-top: 8px; }
+    .intro-statement { gap: 20px; }
+    .rows.spaced { margin-top: 24px; }
+  }
+</style>

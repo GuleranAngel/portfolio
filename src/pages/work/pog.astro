@@ -1,0 +1,411 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseHero from '../../components/CaseHero.astro';
+import Film from '../../components/Film.astro';
+import Chapter from '../../components/Chapter.astro';
+import Divider from '../../components/Divider.astro';
+import Intro from '../../components/Intro.astro';
+import Caption from '../../components/Caption.astro';
+import Picture from '../../components/Picture.astro';
+import LoopVideo from '../../components/LoopVideo.astro';
+import Credits from '../../components/Credits.astro';
+import NextProject from '../../components/NextProject.astro';
+import Contact from '../../components/Contact.astro';
+import { site } from '../../data/site';
+import * as ohno from '../../data/svg/ohno.js';
+
+// Expression sheet: positions in px on the 640px square (from Figma), crop = which part of the eye PNG shows
+const faces = [
+  { n: 1, x: 32, cy: 113.3, h: 34.31, crop: { h: 200.02, t: 0.53 } },
+  { n: 2, x: 245, cy: 113.3, h: 69 },
+  { n: 3, x: 458, cy: 113.3, h: 35.81, crop: { h: 191.64, t: 0.51 } },
+  { n: 4, x: 32, cy: 320.5, h: 14.12, crop: { h: 486.12, t: 1.3 } },
+  { n: 5, x: 245, cy: 320.5, h: 69 },
+  { n: 6, x: 458, cy: 320.5, h: 68 },
+  { n: 7, x: 32, cy: 533.5, h: 69 },
+  { n: 8, x: 245, cy: 530, h: 34.65, crop: { h: 197.79, t: 0.67 } },
+  { n: 9, x: 458, cy: 530, h: 34.65, crop: { h: 196.25, t: 0 } },
+];
+const swatches = [
+  { name: 'Lightning', hex: '#FAFF00', rgb: '250 / 255 / 0', dark: true },
+  { name: 'Lime Burst', hex: '#52FF00', rgb: '82 / 255 / 0', dark: true },
+  { name: 'Blaze', hex: '#FF3C00', rgb: '255 / 60 / 0' },
+  { name: 'Maroon', hex: '#870037', rgb: '135 / 0 / 55' },
+  { centre: true, hex: '#FAFF00' },
+  { name: 'Sky Pop', hex: '#00FFFB', rgb: '0 / 255 / 251', dark: true },
+  { name: 'Candy Pop', hex: '#FF00E0', rgb: '255 / 0 / 224' },
+  { name: 'Violet Punch', hex: '#5E00FF', rgb: '94 / 0 / 255' },
+  { name: 'White', hex: '#FFFFFF', rgb: '255 / 255 / 255', dark: true },
+];
+const paletteLabel = 'POG palette, eight colours plus white, with the POG face in the centre: ' + swatches.filter((s) => !s.centre).map((s) => `${s.name} ${s.hex}, RGB ${s.rgb.replace(/ \/ /g, ' ')}`).join('; ');
+const full = '(min-width: 1440px) 1312px, (min-width: 1200px) calc(100vw - 128px), (min-width: 768px) calc(100vw - 80px), calc(100vw - 40px)';
+const half = '(min-width: 1440px) 640px, (min-width: 768px) 46vw, 100vw';
+const third = '(min-width: 1440px) 416px, (min-width: 768px) 30vw, 46vw';
+const thirdLast = '(min-width: 1440px) 416px, (min-width: 768px) 30vw, 92vw';
+---
+<Base
+  title="POG case study | Angel Guleran"
+  description="POG: an identity for a streamer and content creator, built around a character with a whole range of reactions. Case study by Angel Guleran."
+  center="Case study: POG"
+  ogImage="/og-pog.jpg"
+  extraFonts
+>
+  <CaseHero
+    num="02"
+    title="POG"
+    lead="An identity for a streamer and content creator, built around a character with a whole range of reactions."
+    info={[
+      ['Sector', 'Streaming and gaming'],
+      ['Year', '2025'],
+      ['Role', 'Identity · Character · Motion · Social'],
+      ['Scope', 'Logo to merch, one designer'],
+    ]}
+    overview="POG is a streamer and content creator. The O in his name became a face, and that face became the whole system: logo, emotes, social, motion and merch."
+    deliverables="Logo, character, motion, social and merch"
+    typeface="Ohno Softie and Poppins"
+    deck={site.behancePog}
+    next={{ name: 'Atlas Pay', href: '/work/atlas-pay' }}
+  />
+
+  <Film video="pog-hero-3d-logo" label="The POG logo in 3D, looping" left="Fig. 01 / The logo, in 3D" right="3D loop · Blender" />
+
+  <Chapter tag="The challenge" id="ch-challenge">
+    <Intro
+      label="Challenge"
+      statement="A streamer's brand has to react as fast as chat does."
+      statementWidth={520}
+      body="POG needed a brand as loud as his streams. It had to win over casual viewers, give regulars something to rally around and work everywhere from Twitch and YouTube to a T-shirt."
+      rows={[
+        ['Bold', 'Loud enough to stand out in a<br class="d-br" /> crowded stream directory'],
+        ['Expressive', 'A mascot with a full emotional range,<br class="d-br" /> not one pose'],
+        ['Flexible', 'One system across Twitch,<br class="d-br" /> YouTube, social and merch'],
+        ['Structured', 'Playful, but built to grow<br class="d-br" /> with the channel'],
+      ]}
+    />
+  </Chapter>
+
+  <Chapter tag="01 / The character" id="ch-character">
+    <Intro
+      label="The idea"
+      statement="The O in POG became a face."
+      body="One circle and two eyes. The character lives inside the wordmark, so every reaction is still the logo, and the logo can react to anything that happens on stream."
+      rows={[
+        ['Base', 'The O from the wordmark'],
+        ['Expressions', 'Nine eye states, from hyped to knocked out'],
+        ['Formats', 'Flat, 3D and animated'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/820; background:#fff"><LoopVideo name="pog-faces-grid-flat" label="Nine POG logos, each with a different eye expression, animated" /></div>
+      <Caption left="Fig. 1.1 / Nine moods, one logo" right="Animated · After Effects" />
+    </figure>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="sheet" role="img" aria-label="Expression sheet: nine pairs of eyes on POG pink, from hyped to knocked out">
+          <span class="sheet-line v1"></span><span class="sheet-line v2"></span><span class="sheet-line h1"></span><span class="sheet-line h2"></span>
+          {faces.map((f, i) => (
+            <>
+              <span class="sheet-num label" aria-hidden="true" style={`left:${((i % 3) * 213.33 + 16) / 6.4}%; top:${(Math.floor(i / 3) * 213.33 + 14) / 6.4}%`}>{String(f.n).padStart(2, '0')}</span>
+              <span class="face" style={`left:${f.x / 6.4}%; top:${(f.cy - f.h / 2) / 6.4}%; height:${f.h / 6.4}%`}>
+                {f.crop ? (
+                  <span class="crop-box" style={`top:${f.crop.t}%; height:${f.crop.h}%; left:${f.n === 9 ? 0.32 : 0}%; width:${f.n === 9 ? 99.36 : 100}%`}>
+                    <Picture name={`pog-face-${f.n}`} alt="" sizes="(min-width: 1440px) 300px, 24vw" />
+                  </span>
+                ) : (
+                  <Picture name={`pog-face-${f.n}`} alt="" sizes="(min-width: 1440px) 300px, 24vw" class="fit" />
+                )}
+              </span>
+            </>
+          ))}
+        </div>
+        <Caption left="Fig. 1.2 / Expression sheet" right="Eyes only, on POG Pink" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1; background:#0041ff"><LoopVideo name="pog-3d-switch" label="The O of POG as a 3D ball, switching expressions" /></div>
+        <Caption left="Fig. 1.3 / The O, in 3D" right="3D loop · Blender" />
+      </figure>
+    </div>
+  </Chapter>
+
+  <Chapter tag="02 / System" id="ch-system" flush>
+    <div class="wrap">
+      <Intro
+        label="The system"
+        statement="Eight loud colours<br class='d-br' /> and one soft typeface."
+        statementWidth={560}
+        body="Ohno Softie carries the logo and the headlines, Poppins handles everything that has to be read. Every colour runs at full saturation, so it holds up on a stream overlay and on a bus stop."
+        bodyWidth={480}
+        rows={[
+          ['Main typeface', 'Ohno Softie'],
+          ['Secondary', 'Poppins'],
+          ['Palette', 'Eight colours plus white'],
+        ]}
+      />
+    </div>
+    <figure class="spread-fig full">
+      <div class="spread">
+        <div class="ohno" role="img" aria-label="Main typeface: Ohno Softie, shown as a large Aa in yellow on POG pink, in Black, Bold, Medium, Regular and Light">
+          <span class="p-label ohno-label" aria-hidden="true">Main typeface</span>
+          <span class="ohno-name" set:html={ohno.name} />
+          <span class="ohno-aa" set:html={ohno.aa} />
+          <span class="ohno-w"><Picture name="pog-ohno-weights" alt="" sizes="403px" /></span>
+        </div>
+        <div class="swatches" role="img" aria-label={paletteLabel}>
+          {swatches.map((s) => s.centre ? (
+            <div class="sw sw-centre" aria-hidden="true" style={`background:${s.hex}`}><span class="sw-face"><Picture name="pog-character-face" alt="" sizes="(min-width: 1200px) 160px, 22vw" /></span></div>
+          ) : (
+            <div class:list={['sw', { dark: s.dark }]} aria-hidden="true" style={`background:${s.hex}`}>
+              <span class="sw-name">{s.name}</span>
+              <span class="sw-val">{s.hex}<br />RGB {s.rgb}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="band" role="img" aria-label="Secondary typeface: Poppins, with the alphabet, numerals and symbols, in white on Violet Punch">
+        <span class="p-label band-label" aria-hidden="true">Secondary typeface</span>
+        <div class="band-row">
+          <span class="band-name">Poppins</span>
+          <span class="band-spec">AaBbCcDdEeFfGgHhIiJjKkLlMm<br />NnOoPpQqRrSsTtUuVvWwXxYyZz<br />0123456789 !?&amp;@#%</span>
+        </div>
+      </div>
+      <div class="wrap spread-cap"><Caption left="Fig. 2.1 / Type and palette" right="Ohno Softie, Poppins and nine colours" /></div>
+    </figure>
+    <div class="wrap stack-figs">
+      <div class="fig-row">
+        <figure class="fig">
+          <div class="media" style="aspect-ratio:640/837; background:#5e00ff"><Picture name="pog-headline-lockup" alt="Poster on Violet Punch: You just got POG'd, in yellow and white Ohno Softie on a pink pill" sizes={half} /></div>
+          <Caption left="Fig. 2.2 / Headline lockup" right="Ohno Softie on Violet Punch" />
+        </figure>
+        <figure class="fig">
+          <div class="media" style="aspect-ratio:640/837; background:#ff005d"><Picture name="pog-sticker-lockup" alt="Poster on POG pink: Ready to POG, as a sticker-style lockup with twitch.tv/pogstream above" sizes={half} /></div>
+          <Caption left="Fig. 2.3 / Sticker lockup" right="Ready to POG" />
+        </figure>
+      </div>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1312/847; background:#5e00ff"><Picture name="pog-sticker-set" alt="Sticker set on Violet Punch: Get POG'd, the pink face, angry eyes, crosses, Ready to POG, Lookin' good and two yellow arcs" sizes={full} /></div>
+        <Caption left="Fig. 2.4 / Sticker set" right="Reactions, lockups and eyes" />
+      </figure>
+    </div>
+  </Chapter>
+
+  <Chapter tag="03 / Motion" id="ch-motion">
+    <Intro
+      label="Motion"
+      statement="On stream, the brand never sits still."
+      body="Every part of the system has a moving version: a logo reveal,<br class='d-br' /> the full set of expressions and a looping 3D pattern for screens."
+      rows={[
+        ['Tools', 'After Effects · Blender'],
+        ['Loops', 'Logo reveal, expressions, 3D pattern'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/738"><LoopVideo name="pog-logo-reveal" label="POG logo reveal animation" /></div>
+      <Caption left="Fig. 3.1 / Logo reveal" right="Animated · After Effects" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/738"><LoopVideo name="pog-3d-pattern" label="Looping 3D pattern of POG shapes in blue on pink" /></div>
+      <Caption left="Fig. 3.2 / 3D pattern" right="3D loop · Blender" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="04 / Stream and social" id="ch-social">
+    <Intro
+      label="Stream and social"
+      statement="Made for the feed as much as the stream."
+      statementWidth={430}
+      body="Profile, post and story templates in the same voice, so every upload reads as POG before anyone sees the name."
+      rows={[
+        ['Platforms', 'Twitch, YouTube, Instagram and X'],
+        ['Templates', 'Stories, posts, profiles and banners'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/837; background:#9f66ff"><Picture name="pog-stories" alt="Three POG story templates on phones over lilac: Live now, You're never just one vibe, and Don't blink" sizes={full} /></div>
+      <Caption left="Fig. 4.1 / Stories" right="Live, mood and reaction templates" />
+    </figure>
+    <div class="ig-row">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:734/713; background:#ff005d"><Picture name="pog-ig-profile" alt="The pogstream Instagram profile with the POG face as avatar" sizes="(min-width: 1440px) 734px, (min-width: 768px) 54vw, 100vw" /></div>
+        <Caption left="Fig. 4.2 / Profile" right="Instagram" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:546/713; background:#61ff00"><Picture name="pog-ig-post" alt="A POG Instagram post: Let's bounce, with two eyes, on Violet Punch" sizes="(min-width: 1440px) 546px, (min-width: 768px) 40vw, 100vw" /></div>
+        <Caption left="Fig. 4.3 / Post" right="Let's bounce" />
+      </figure>
+    </div>
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/875"><Picture name="pog-laptop" alt="Laptop on yellow showing the POG profile on X with its banner and avatar" sizes={full} /></div>
+      <Caption left="Fig. 4.4 / Profile on X" right="Banner and avatar" />
+    </figure>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/800"><Picture name="pog-pocket" alt="Phone in a back pocket showing a POG story: It's time to POG" sizes={half} /></div>
+        <Caption left="Fig. 4.5 / In the pocket" right="Story template" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/800"><Picture name="pog-pattern-still" alt="Still of the 3D pattern: blue POG shapes, eyes and crosses on pink" sizes={half} /></div>
+        <Caption left="Fig. 4.6 / Stream background" right="3D pattern · Still" />
+      </figure>
+    </div>
+  </Chapter>
+
+  <Chapter tag="05 / In the world" id="ch-world">
+    <Intro
+      label="In the world"
+      statement="From an emote to a billboard."
+      body="Out-of-home, merch and print reuse the same parts: the O, the eyes and the colours, scaled up and turned louder."
+      rows={[
+        ['Out of home', 'Billboard, bus stops, posters and screens'],
+        ['Merch', 'Tees, cap, bucket hat, tote and stickers'],
+        ['Print', 'Business cards'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/738"><LoopVideo name="pog-billboard" label="3D corner billboard with the POG face looking around" /></div>
+      <Caption left="Fig. 5.1 / Billboard" right="3D corner billboard · Animated" />
+    </figure>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/427"><Picture name="pog-bus-stop" alt="Bus stop on a city street with a POG poster: Waiting for the hype?" sizes={half} /></div>
+        <Caption left="Fig. 5.2 / Bus stop" right="Waiting for the hype?" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/427"><Picture name="pog-bus-shelter" alt="Bus shelter billboard: It's time to bounce, with the POG face" sizes={half} /></div>
+        <Caption left="Fig. 5.3 / Bus shelter" right="It's time to bounce" />
+      </figure>
+    </div>
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/875"><Picture name="pog-street-posters" alt="Wall of POG street posters in the full palette along a pavement" sizes={full} /></div>
+      <Caption left="Fig. 5.4 / Street posters" right="Wild posting, full palette" />
+    </figure>
+    <div class="grid-3">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:416/555"><Picture name="pog-tee" alt="Model in a yellow tee with an all-over POG eye print" sizes={third} /></div>
+        <Caption left="Fig. 5.5 / Tee" right="All-over eye print" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:416/555"><Picture name="pog-oversized-tee" alt="Model in an oversized violet tee with sleepy eyes on the chest" sizes={third} /></div>
+        <Caption left="Fig. 5.6 / Oversized tee" right="Eyes on the chest" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:416/555"><Picture name="pog-bucket-hat" alt="Violet bucket hat with the POG wordmark in a laundry basket" sizes={thirdLast} /></div>
+        <Caption left="Fig. 5.7 / Bucket hat" right="Wordmark" />
+      </figure>
+    </div>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/427"><Picture name="pog-skate-tee" alt="Skater in a turquoise Get POG'd tee holding a violet board" sizes={half} /></div>
+        <Caption left="Fig. 5.8 / Skate tee" right="Get POG'd" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/427"><Picture name="pog-cap" alt="Orange cap with the POG wordmark on a court" sizes={half} /></div>
+        <Caption left="Fig. 5.9 / Cap" right="Wordmark" />
+      </figure>
+    </div>
+    <div class="grid-3">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1"><Picture name="pog-tote" alt="Pink tote bag with oversized POG eyes" sizes={third} /></div>
+        <Caption left="Fig. 5.10 / Tote" right="The face, oversized" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1"><Picture name="pog-folded-tee" alt="Folded violet tee with a pattern print and the POG wordmark on magenta" sizes={third} /></div>
+        <Caption left="Fig. 5.11 / Tee" right="Pattern print" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1"><Picture name="pog-sticker-sheet" alt="POG sticker sheet on violet" sizes={thirdLast} /></div>
+        <Caption left="Fig. 5.12 / Sticker sheet" right="Get POG'd" />
+      </figure>
+    </div>
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/875"><Picture name="pog-business-cards" alt="POG business cards in pink, yellow, green and violet, falling over turquoise" sizes={full} /></div>
+      <Caption left="Fig. 5.13 / Business cards" right="Print" />
+    </figure>
+  </Chapter>
+
+  <Credits
+    lines={['Logo, character, motion and merch.', 'One designer, start to finish.']}
+    rows={[
+      ['Design', 'Angel Guleran'],
+      ['Year', '2025'],
+      ['Tools', 'Illustrator · After Effects · Blender'],
+      ['Typeface', 'Ohno Softie · Poppins'],
+      ['Platforms', 'Twitch, YouTube and social'],
+    ]}
+    deck={site.behancePog}
+  />
+
+  <NextProject num="01" name="Atlas Pay" href="/work/atlas-pay" desc="A payments brand built from a single mark, from the chip to the app." thumb="atlas-chip-lit" thumbAlt="The Atlas Pay chip, lit in blue" />
+
+  <Contact />
+</Base>
+
+<style is:global>
+  @font-face { font-family: 'Poppins'; src: url('/fonts/poppins-regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'Poppins'; src: url('/fonts/poppins-medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+  @font-face { font-family: 'Poppins'; src: url('/fonts/poppins-semibold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+  @font-face { font-family: 'Poppins'; src: url('/fonts/poppins-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+</style>
+
+<style>
+  /* Expression sheet */
+  .sheet { position: relative; aspect-ratio: 1; background: #ff005d; overflow: hidden; }
+  .sheet-line { position: absolute; background: rgba(255, 255, 255, 0.22); }
+  .sheet-line.v1, .sheet-line.v2 { top: 0; bottom: 0; width: 1px; }
+  .sheet-line.h1, .sheet-line.h2 { left: 0; right: 0; height: 1px; }
+  .v1 { left: calc(213 / 640 * 100%); } .v2 { left: calc(427 / 640 * 100%); }
+  .h1 { top: calc(213 / 640 * 100%); } .h2 { top: calc(427 / 640 * 100%); }
+  .sheet-num { position: absolute; color: rgba(255, 255, 255, 0.7); }
+  .face { position: absolute; width: calc(150 / 640 * 100%); overflow: hidden; }
+  .face :global(picture) { position: absolute; inset: 0; }
+  .face :global(picture.fit img) { width: 100%; height: 100%; object-fit: contain; }
+  .crop-box { position: absolute; display: block; }
+  .crop-box :global(picture), .crop-box :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  @media (max-width: 767px) { .sheet-num { font-size: 9px; } }
+
+  /* Type and palette spread */
+  .spread-fig { display: flex; flex-direction: column; }
+  .spread { display: grid; grid-template-columns: 1fr 1fr; }
+  .ohno { position: relative; aspect-ratio: 1; background: #ff005d; container-type: inline-size; overflow: hidden; }
+  .p-label { font-family: 'Poppins', var(--sans); font-weight: 500; font-size: 14px; line-height: 1.5; letter-spacing: 0; color: #faff00; }
+  .ohno-label { position: absolute; left: calc(48 / 720 * 100%); top: calc(42 / 720 * 100%); font-size: max(12px, calc(14 / 720 * 100cqi)); }
+  .ohno-name { position: absolute; left: calc(48 / 720 * 100%); top: calc(72 / 720 * 100%); width: calc(304 / 720 * 100%); }
+  .ohno-aa { position: absolute; left: calc(44 / 720 * 100%); top: calc(282 / 720 * 100%); width: calc(538 / 720 * 100%); }
+  .ohno-w { position: absolute; left: calc(48 / 720 * 100%); top: calc(648 / 720 * 100%); width: calc(403 / 720 * 100%); }
+  .ohno :global(svg), .ohno-w :global(img) { width: 100%; height: auto; }
+  .swatches { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .sw { position: relative; aspect-ratio: 1; color: #fff; font-family: 'Poppins', var(--sans); letter-spacing: 0; container-type: inline-size; }
+  .sw.dark { color: #070707; }
+  .sw-name { position: absolute; left: calc(22 / 240 * 100%); top: calc(20 / 240 * 100%); font-weight: 700; font-size: clamp(13px, calc(20 / 240 * 100cqi), 20px); line-height: 1.5; }
+  .sw-val { position: absolute; left: calc(22 / 240 * 100%); bottom: calc(22 / 240 * 100%); font-weight: 500; font-size: clamp(9px, calc(12 / 240 * 100cqi), 12px); line-height: 1.5; }
+  .sw-face { position: absolute; left: 50%; top: 50%; width: calc(159 / 240 * 100%); transform: translate(-50%, -50%); }
+  .sw-face :global(img) { width: 100%; height: auto; }
+  .band { background: #5e00ff; padding: 42px 48px 47px; color: #fff; font-family: 'Poppins', var(--sans); letter-spacing: 0; }
+  .band-label { display: block; }
+  .band-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; margin-top: 87px; }
+  .band-name { font-weight: 600; font-size: 120px; line-height: 1; margin-left: -4px; }
+  .band-spec { font-weight: 400; font-size: 26px; line-height: 1.4; margin-top: 12px; width: 418px; flex: none; white-space: nowrap; }
+  .spread-cap { padding-top: 16px; }
+  @media (max-width: 1199px) {
+    .spread { grid-template-columns: 1fr; }
+    .band-row { flex-direction: column; gap: 24px; margin-top: 48px; }
+    .band-name { font-size: clamp(64px, 11vw, 120px); }
+    .band-spec { width: auto; margin-top: 0; font-size: clamp(14px, 2.6vw, 26px); }
+  }
+  @media (max-width: 767px) {
+    .band { padding: 28px var(--pad) 32px; }
+    .band-row { margin-top: 32px; gap: 16px; }
+    .spread-cap { padding-top: 16px; }
+  }
+
+  /* Instagram row: 734 + 546 */
+  .ig-row { display: grid; grid-template-columns: 734fr 546fr; gap: 32px; align-items: start; }
+  @media (max-width: 767px) { .ig-row { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* Three across, two across on phones */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; align-items: start; }
+  @media (max-width: 767px) {
+    .grid-3 { grid-template-columns: 1fr 1fr; gap: 32px 12px; }
+    /* the odd one out takes the full row instead of sitting alone at half width */
+    .grid-3 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+</style>

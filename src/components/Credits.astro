@@ -1,0 +1,40 @@
+---
+import Chapter from './Chapter.astro';
+import Button from './Button.astro';
+import { site } from '../data/site';
+interface Props { lines: string[]; rows: [string, string][]; deck: string }
+const { lines, rows, deck } = Astro.props;
+---
+<Chapter tag="Credits" id="credits" class="credits">
+  <div class="cr">
+    <div class="cr-statement">
+      <p class="label c-accent">Credits</p>
+      <p class="statement">{lines.map((l, i) => <>{l}{i < lines.length - 1 && <br />}</>)}</p>
+      <div class="cr-buttons">
+        <Button href={site.mailto} label="Start a project" />
+        <Button href="/#work" label="Back to all work" variant="secondary" />
+      </div>
+      <a class="label c-accent link cr-deck" href={deck} target="_blank" rel="noopener">Full deck on Behance <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+    </div>
+    <dl class="rows end-rule cr-rows">
+      {rows.map(([k, v]) => (<div class="row"><dt class="label">{k}</dt><dd class="val">{v}</dd></div>))}
+    </dl>
+  </div>
+</Chapter>
+<style>
+  :global(.chapter.credits) { padding-bottom: 120px; }
+  .cr { display: flex; justify-content: space-between; gap: 48px; padding-top: 24px; }
+  .cr-statement { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; max-width: 700px; }
+  .cr-buttons { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 12px; }
+  .cr-rows { width: 532px; flex: none; }
+  @media (max-width: 1199px) {
+    .cr { flex-direction: column; gap: 48px; }
+    .cr-rows { width: 100%; max-width: 640px; }
+  }
+  @media (max-width: 767px) {
+    :global(.chapter.credits) { padding-bottom: 80px; }
+    .cr { gap: 40px; padding-top: 8px; }
+    .cr-statement { gap: 20px; }
+    .cr-buttons { padding-top: 8px; }
+  }
+</style>

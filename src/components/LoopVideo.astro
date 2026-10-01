@@ -1,0 +1,25 @@
+---
+// Muted looping MP4 that only loads and plays while on screen.
+// Picks the 720p file on small screens, 1080p otherwise. Never autoplays with reduced motion.
+interface Props { name: string; label: string; class?: string; eager?: boolean; position?: string }
+const { name, label, class: cls, eager = false, position } = Astro.props;
+---
+<video
+  class:list={['loop-video', cls]}
+  muted
+  loop
+  playsinline
+  disablepictureinpicture
+  disableremoteplayback
+  preload="none"
+  poster={`/video/poster/${name}.webp`}
+  data-src-hd={`/video/${name}-1080.mp4`}
+  data-src-sd={`/video/${name}-720.mp4`}
+  data-eager={eager ? '' : undefined}
+  aria-label={label}
+  style={position ? `object-position:${position}` : undefined}
+></video>
+<button class="vid-toggle" type="button" aria-label="Pause video" data-vid-toggle>
+  <svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" fill="currentColor"/><rect x="7" y="1" width="3" height="10" fill="currentColor"/></svg>
+  <svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1L11 6L2.5 11Z" fill="currentColor"/></svg>
+</button>

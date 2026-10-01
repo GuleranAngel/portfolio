@@ -1,0 +1,412 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseHero from '../../components/CaseHero.astro';
+import Film from '../../components/Film.astro';
+import Chapter from '../../components/Chapter.astro';
+import Intro from '../../components/Intro.astro';
+import Caption from '../../components/Caption.astro';
+import Picture from '../../components/Picture.astro';
+import LoopVideo from '../../components/LoopVideo.astro';
+import Credits from '../../components/Credits.astro';
+import NextProject from '../../components/NextProject.astro';
+import Contact from '../../components/Contact.astro';
+import { site } from '../../data/site';
+import formsA from '../../data/svg/forms-a.js';
+import formsB from '../../data/svg/forms-b.js';
+import formsC from '../../data/svg/forms-c.js';
+import * as marks from '../../data/svg/marks.js';
+
+const forms = [...formsA, ...formsB, ...formsC].map((svg) => ({ svg, w: Number(svg.match(/width="(\d+)"/)?.[1] ?? 88) }));
+const markW = (svg: string) => Number(svg.match(/width="(\d+)"/)?.[1]);
+const early = [
+  { name: 'Bearing', svg: marks.bearing },
+  { name: 'Carrying', svg: marks.carrying },
+  { name: 'Leaning', svg: marks.leaning },
+  { name: 'Bracing', svg: marks.bracing },
+];
+const steps = [
+  { label: 'Rays appear', svg: marks.stepFan },
+  { label: 'Rays, contained', svg: marks.stepSquared },
+  { label: 'Rays from a corner', svg: marks.stepQuarter },
+  { label: 'One origin, every direction', svg: marks.stepFinal, accent: true },
+];
+const full = '(min-width: 1440px) 1312px, (min-width: 1200px) calc(100vw - 128px), (min-width: 768px) calc(100vw - 80px), calc(100vw - 40px)';
+const half = '(min-width: 1440px) 640px, (min-width: 768px) 46vw, 100vw';
+---
+<Base
+  title="Atlas Pay case study | Angel Guleran"
+  description="Atlas Pay: a payments brand built from a single mark, drawn flat, milled into a chip, lit in 3D and carried into the product. Case study by Angel Guleran."
+  center="Case study: Atlas Pay"
+  ogImage="/og-atlas-pay.jpg"
+>
+  <CaseHero
+    num="01"
+    title="Atlas Pay"
+    lead="A payments brand built from a single mark, drawn flat, milled into a chip, lit in 3D and carried into the product."
+    info={[
+      ['Sector', 'Cross-border payments'],
+      ['Year', '2026'],
+      ['Role', 'Identity · Chip · 3D · Product'],
+      ['Scope', 'Mark to app, one designer'],
+    ]}
+    overview="A brand for businesses that move money across borders, with one account, cards for the whole team and every payment visible the moment it happens."
+    deliverables="Mark, chip, card, 3D films, app and web"
+    typeface="Aeonik by CoType Foundry"
+    deck={site.behanceAtlas}
+    next={{ name: 'POG', href: '/work/pog' }}
+  />
+
+  <Film video="atlas-card-push" label="The Atlas Pay metal card pushed through a beam of light, 3D loop" left="Fig. 01 / The card, pushed through light" right="3D loop · Blender" />
+
+  <Chapter tag="The challenge" id="ch-challenge">
+    <Intro
+      label="Challenge"
+      statement="One identity that holds up flat on a screen, milled into metal and lit in 3D, without changing its shape."
+      body="A payments brand for businesses that move money across borders. The brief’s four words became the test every decision had to pass."
+      rows={[
+        ['Global', 'Built for money that crosses borders.<br class="d-br" /> One system that reads the same in every market.'],
+        ['Intelligent', 'Precise, calm, considered. The product<br class="d-br" /> does the heavy lifting, not the decoration.'],
+        ['Trustworthy', 'High contrast and nothing hidden.<br class="d-br" /> Every number readable at a glance.'],
+        ['Premium', 'Materials over ornament:<br class="d-br" /> metal, light and a lot of black.'],
+      ]}
+    />
+  </Chapter>
+
+  <Chapter tag="01 / Process" id="ch-process">
+    <div class="intro-single">
+      <p class="label c-accent">Process</p>
+      <p class="statement">It started with Atlas, the Titan who holds the world on his shoulders.</p>
+      <p class="lead c-grey-2">The first marks took that literally, with strokes bracing, carrying and leaning into a circle. A lot of shapes later, the strokes stopped holding the world and became it.</p>
+    </div>
+
+    <figure class="fig cq">
+      <div class="forms-panel" role="img" aria-label="Eighteen early abstract forms in white on dark grey: dot grids, rounded blocks, rings, pinwheels and stacked bars">
+        {forms.map((f) => <div class="form" style={`--w:${f.w}`} set:html={f.svg} />)}
+      </div>
+      <Caption left="Fig. 1.1 / First round: forms before names" right="18 forms" />
+    </figure>
+
+    <figure class="fig">
+      <ul class="tiles-4">
+        {early.map((m) => (
+          <li class="tile-mark">
+            <div class="tm-svg" style={`--w:${markW(m.svg)}`} set:html={m.svg} role="img" aria-label={`${m.name}: early mark`} />
+            <span class="label c-grey-2 tm-label">{m.name}</span>
+          </li>
+        ))}
+      </ul>
+      <Caption left="Fig. 1.2 / Holding the world" right="Early marks, all built on the Atlas idea" />
+    </figure>
+
+    <figure class="fig">
+      <div class="routes">
+        <div class="route">
+          <div class="route-mark" style={`--w:${markW(marks.columns)}`} set:html={marks.columns} role="img" aria-label="Columns mark: four tapered pillars" />
+          <div class="route-text">
+            <p class="label">Columns</p>
+            <p class="c-grey-2">Atlas as support. It never translated into a real idea, just another generic “connecting people worldwide” mark.</p>
+          </div>
+        </div>
+        <div class="route">
+          <div class="route-mark" style={`--w:${markW(marks.network)}`} set:html={marks.network} role="img" aria-label="Network mark: a grid of dots growing towards the centre" />
+          <div class="route-text">
+            <p class="label">Network</p>
+            <p class="c-grey-2">It read like a tech start-up rather than a finance brand, with the generic “connecting people worldwide” look.</p>
+          </div>
+        </div>
+      </div>
+      <Caption left="Fig. 1.3 / Two routes that didn’t make it" />
+    </figure>
+
+    <figure class="fig">
+      <ol class="turn">
+        {steps.map((s) => (
+          <li class="turn-step">
+            <div class="ts-svg" style={`--w:${markW(s.svg)}`} set:html={s.svg} aria-hidden="true" />
+            <span class:list={['label', s.accent ? 'c-accent' : 'c-grey-2']}>{s.label}</span>
+          </li>
+        ))}
+      </ol>
+      <Caption left="Fig. 1.4 / The turn" right="The strokes stop holding the world and become it" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="02 / Mark to chip" id="ch-mark">
+    <Intro
+      label="The idea"
+      statement="Every card has a chip.<br class='d-br' /> Ours carries the mark."
+      statementWidth={460}
+      body="Rays from a single origin, held inside a circle, then milled into the contact grid. The mark sits in negative space where every card already has a chip."
+      bodyWidth={415}
+      rows={[
+        ['Origin', '0.044 x below the top edge'],
+        ['Angle', '7.5° steps, ten edges, five cut-outs'],
+        ['Chip', 'Mark in negative space, pads redrawn around it'],
+      ]}
+    />
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/476"><Picture name="atlas-chip-crop" alt="Vector master of the Atlas Pay chip: the mark set in a circular well, with the contact pads redrawn around it and four numbered callouts" sizes={half} /></div>
+        <Caption left="Fig. 2.1 / Chip, vector master" right="The mark in negative space" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:640/476; background:#070707"><LoopVideo name="atlas-chip-spinning" label="The Atlas Pay chip rendered in 3D, spinning slowly" /></div>
+        <Caption left="Fig. 2.2 / Chip, rendered" right="3D loop" />
+      </figure>
+    </div>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1"><Picture name="atlas-concept" alt="The Atlas Pay mark: white rays from a single origin inside a circle, with lines extending past it" sizes={half} /></div>
+        <Caption left="Fig. 2.3 / Concept" right="Rays from one point" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style="aspect-ratio:1"><Picture name="atlas-construction" alt="Construction drawing of the mark on a grid: the bounding circle, the origin where the outer edges meet and the 7.5 degree angle between rays" sizes={half} /></div>
+        <Caption left="Fig. 2.4 / Construction" right="7.5° grid" />
+      </figure>
+    </div>
+  </Chapter>
+
+  <Chapter tag="03 / System" id="ch-system">
+    <Intro
+      label="System"
+      statement="Black and white do the work.<br class='d-br' /> Blue behaves like light."
+      statementWidth={570}
+      body="Greys support and one blue is kept for light, with every value taken from the product itself. Aeonik carries everything from balances to headlines."
+      bodyWidth={415}
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/837"><Picture name="atlas-logo-system" alt="Atlas Pay logo system: horizontal lockup on black, stacked lockup on white, the mark on white and the wordmark on black" sizes={full} /></div>
+      <Caption left="Fig. 3.1 / Lockups" right="Horizontal · Stacked · Mark · Wordmark" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/843"><Picture name="atlas-colour" alt="Atlas Pay palette: Atlas Black, Atlas White, Paper, the Depth gradient, Signal Blue, Graphite, Carbon, Steel and Silver with their HEX, RGB and CMYK values" sizes={full} /></div>
+      <Caption left="Fig. 3.2 / Palette" right="Black, white, four greys, one blue" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="04 / Card & 3D" id="ch-card">
+    <Intro
+      label="Card & 3D"
+      statement="A metal card in black, and a virtual one that only lives in the app."
+      body="Signal Blue only becomes a surface on the virtual card, as the Depth gradient crossed by the ray grid. The 3D films push the metal card through the same light the brand is built on."
+      bodyWidth={470}
+      rows={[
+        ['Material', 'Stainless steel, ~18 g (proposed)'],
+        ['Chip', 'Custom, with the mark in the contact grid'],
+        ['Virtual', 'Unlimited, per person or per supplier'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="card-panel">
+        <div class="card"><Picture name="atlas-card-physical" alt="The physical Atlas Pay card: black metal with the lockup and the custom silver chip" sizes="(min-width: 1200px) 520px, (min-width: 768px) 40vw, 86vw" /></div>
+        <div class="card"><Picture name="atlas-card-virtual" alt="The virtual Atlas Pay card: the Depth gradient from black to Signal Blue, crossed by the ray grid, card ending 7702" sizes="(min-width: 1200px) 520px, (min-width: 768px) 40vw, 86vw" /></div>
+      </div>
+      <Caption left="Fig. 4.1 / Physical and virtual" right="Metal card · In-app card" />
+    </figure>
+    <figure class="fig">
+      <div class="bento">
+        <div class="media b-main" style="background:#070707"><LoopVideo name="atlas-mark-closeup" label="Close-up of the mark on the chip, 3D loop" /></div>
+        <div class="media b-a" style="background:#070707"><LoopVideo name="atlas-card-top" label="The metal card seen from above, 3D loop" /></div>
+        <div class="media b-b" style="background:#070707"><LoopVideo name="atlas-light-reveal" label="A line of light revealing the card, 3D loop" /></div>
+      </div>
+      <Caption left="Fig. 4.2 Light reveal · 4.3 Top view · 4.4 Mark, close-up" right="3D loops · Blender" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="05 / Product" id="ch-product">
+    <Intro
+      label="Product"
+      statement="In the app, the numbers come first."
+      body="The card’s contrast carries into everyday use: a black balance panel, amounts in Aeonik Light with the cents stepped back, flat buttons and one floating bar. No glass and no gradients on controls.<br />The material lives on the card."
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/931; background:#141416"><Picture name="atlas-app" alt="Three Atlas Pay app screens: welcome with the 3D film, home with a balance of 248,590.40 euro and today's transactions, and the cards screen with freeze, details, limits and PIN" sizes={full} /></div>
+      <Caption left="Fig. 5.1 / Welcome, home, cards" right="iOS · 390 pt" />
+    </figure>
+    <div class="feature">
+      <div class="feature-text">
+        <p class="label c-accent">Ordering a card</p>
+        <h3 class="h3 ft-title">Ordering a card ends with it sliding out of its sleeve.</h3>
+        <p class="c-grey-2 ft-body">Instead of a confirmation screen, the card slides out under the same light as the 3D films, then the details settle underneath.</p>
+      </div>
+      <figure class="fig feature-fig">
+        <div class="phone-panel">
+          <div class="newcard">
+            <Picture name="atlas-newcard-base" alt="New card screen in the Atlas Pay app: the black metal card slides out of its sleeve above the text Your card is ready, with physical and virtual options and an Order card button" sizes="(min-width: 1200px) 454px, (min-width: 768px) 44vw, 70vw" />
+            <div class="stage" aria-hidden="true">
+              <div class="anim-card"><Picture name="atlas-anim-card" alt="" sizes="(min-width: 1200px) 264px, 40vw" /></div>
+              <div class="anim-sleeve"><Picture name="atlas-anim-sleeve" alt="" sizes="(min-width: 1200px) 312px, 48vw" /></div>
+            </div>
+          </div>
+        </div>
+        <Caption left="Fig. 5.2 / New card" right="Slides out on loop" />
+      </figure>
+    </div>
+    <div class="feature feature-rev">
+      <figure class="fig feature-fig">
+        <div class="phone-panel">
+          <div class="send"><Picture name="atlas-send" alt="Two Atlas Pay screens: sending 4,200 euro to Morrow Labs in dark mode, and a transaction from Halden Supply Co. in light mode with its status timeline" sizes="(min-width: 1200px) 780px, (min-width: 768px) 60vw, 92vw" /></div>
+        </div>
+        <Caption left="Fig. 5.3 / Send and transaction" right="Dark and light" />
+      </figure>
+      <div class="feature-text">
+        <p class="label c-accent">Payments</p>
+        <h3 class="h3 ft-title" style="max-width:250px">Every payment shows where it is.</h3>
+        <p class="c-grey-2 ft-body">Authorised, settled, receipt: a short timeline under the amount, which stays the loudest thing on screen. The same system switches to Paper for daylight and documents.</p>
+      </div>
+    </div>
+  </Chapter>
+
+  <Chapter tag="06 / In the world" id="ch-world">
+    <Intro
+      label="In the world"
+      statement="The ray grid carries the mark onto every surface."
+      statementWidth={510}
+      body="Website, out-of-home, social and the welcome letter that would ship with every card, all cut from the same 7.5° grid."
+    />
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/781"><Picture name="atlas-website" alt="Atlas Pay website hero in a browser: One account. Every direction. Over a dark render of the chip, with stats for 38 currencies, free transfers between your own accounts, 14 cards per team and 24/7 support" sizes={full} /></div>
+      <Caption left="Fig. 6.1 / Website" right="Hero led by the 3D film" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style="aspect-ratio:1312/679"><Picture name="atlas-applications" alt="Atlas Pay applications: a poster reading Pay suppliers in any currency, social launch posts and a welcome letter with the metal and virtual cards" sizes={full} /></div>
+      <Caption left="Fig. 6.2 / Applications" right="Poster · Social · Card carrier" />
+    </figure>
+  </Chapter>
+
+  <Credits
+    lines={['Mark, chip, 3D and product.', 'One designer, start to finish.']}
+    rows={[
+      ['Design', 'Angel Guleran'],
+      ['Year', '2026'],
+      ['Tools', 'Figma · Illustrator · Blender'],
+      ['Typeface', 'Aeonik, CoType Foundry'],
+      ['Audience', 'Businesses that trade across borders'],
+    ]}
+    deck={site.behanceAtlas}
+  />
+
+  <NextProject num="02" name="POG" href="/work/pog" desc="Identity for a creator, built around a character with a whole range of reactions." thumb="pog-thumb-208" thumbAlt="POG story templates on three phones" />
+
+  <Contact />
+</Base>
+
+<style>
+  /* Process: single column intro */
+  .intro-single { display: flex; flex-direction: column; gap: 24px; padding-top: 24px; }
+  .intro-single .statement { max-width: 980px; }
+  .intro-single .lead { max-width: 760px; }
+
+  /* Fig 1.1: 18 forms, 9 / 6 / 3 across */
+  .cq { container-type: inline-size; }
+  .forms-panel {
+    --cols: 9;
+    --u: min(1px, 100cqi / var(--cols) / 145.78);
+    display: grid; grid-template-columns: repeat(var(--cols), 1fr); grid-auto-rows: calc(190 * var(--u));
+    padding-block: calc(20 * var(--u));
+    background: var(--surface);
+  }
+  .form { display: grid; place-items: center; }
+  .form :global(svg) { width: calc(var(--w) * var(--u)); height: auto; }
+  @media (max-width: 1199px) { .forms-panel { --cols: 6; grid-auto-rows: calc(170 * var(--u)); } }
+  @media (max-width: 767px) { .forms-panel { --cols: 3; --u: min(0.85px, 100cqi / 3 / 145.78); grid-auto-rows: calc(150 * var(--u)); } }
+
+  /* Fig 1.2: four tiles, 2 across on mobile */
+  .tiles-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .tile-mark { position: relative; aspect-ratio: 316 / 300; background: var(--surface); container-type: inline-size; }
+  .tm-svg { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); width: calc(var(--w) / 316 * 100cqi); }
+  .tm-svg :global(svg) { width: 100%; height: auto; }
+  .tm-label { position: absolute; left: 20px; bottom: 20px; }
+  @media (max-width: 767px) {
+    .tiles-4 { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tm-label { left: 14px; bottom: 12px; }
+  }
+
+  /* Fig 1.3: two routes */
+  .routes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .route { display: flex; flex-direction: column; justify-content: space-between; min-height: 380px; background: var(--surface); padding: 0 24px 24px; }
+  .route-mark { flex: 1 1 auto; display: grid; place-items: center; padding: 56px 0 40px; }
+  .route-mark :global(svg) { width: calc(var(--w) * 1px); max-width: 40%; height: auto; }
+  .route-text { display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
+  @media (max-width: 767px) {
+    .routes { grid-template-columns: 1fr; }
+    .route { min-height: 0; padding: 0 16px 20px; }
+    .route-mark { padding: 48px 0 32px; }
+  }
+
+  /* Fig 1.4: the turn, four steps */
+  .turn { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); padding: 100px 0 26px; container-type: inline-size; }
+  .turn-step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 84px; }
+  .ts-svg { height: 150px; display: grid; place-items: center; }
+  .ts-svg :global(svg) { width: calc(var(--w) / 1312 * 100cqi); max-width: none; height: auto; }
+  .turn-step .label { text-align: center; padding-inline: 8px; }
+  .turn-step + .turn-step::before {
+    content: '→'; position: absolute; left: 0; top: 75px; transform: translate(-50%, -50%);
+    font-size: 20px; line-height: 1.5; color: var(--grey-3);
+  }
+  @media (max-width: 1199px) {
+    .turn { padding: 64px 0 24px; }
+    .turn-step { gap: 48px; }
+    .ts-svg { height: 120px; }
+    .turn-step + .turn-step::before { top: 60px; }
+  }
+  @media (max-width: 767px) {
+    .turn { grid-template-columns: 1fr 1fr; row-gap: 40px; padding: 40px 0 24px; }
+    .turn-step { gap: 20px; }
+    .ts-svg { height: 112px; }
+    .ts-svg :global(svg) { width: calc(var(--w) * 0.58 / 350 * 100cqi); }
+    .turn-step + .turn-step::before { top: 56px; }
+    .turn-step:nth-child(3)::before { display: none; }
+  }
+
+  /* Fig 4.1: card panel */
+  .card-panel { display: flex; align-items: center; justify-content: center; gap: 56px; aspect-ratio: 1312 / 620; background: var(--surface); padding: 0 6%; }
+  .card { flex: 0 1 520px; aspect-ratio: 520 / 328; border-radius: 3.5% / 5.5%; overflow: hidden; }
+  .card :global(img) { width: 100%; height: 100%; }
+  @media (max-width: 767px) {
+    .card-panel { flex-direction: column; aspect-ratio: auto; gap: 24px; padding: 40px 24px; }
+    .card { width: 100%; flex: none; }
+  }
+
+  /* Fig 4.2: 3D films bento */
+  .bento { display: grid; grid-template-columns: 864fr 416fr; grid-template-rows: 1fr 1fr; column-gap: 32px; row-gap: 18px; }
+  .b-main { grid-row: 1 / span 2; aspect-ratio: 864 / 486; }
+  .b-a, .b-b { min-height: 0; }
+  @media (max-width: 767px) {
+    .bento { display: flex; flex-direction: column; gap: 16px; }
+    .bento .media { aspect-ratio: 16 / 9; }
+  }
+
+  /* Product features */
+  .feature { display: grid; grid-template-columns: 348fr 840fr; column-gap: 124px; align-items: center; }
+  .feature-rev { grid-template-columns: 840fr 353fr; column-gap: 119px; }
+  .feature-text { display: flex; flex-direction: column; gap: 20px; padding-bottom: 33px; }
+  .ft-title { max-width: 270px; }
+  .ft-body { max-width: 355px; }
+  .phone-panel { aspect-ratio: 840 / 980; background: #0a0a0a; display: grid; place-items: center; container-type: inline-size; }
+  .newcard { position: relative; width: calc(454 / 840 * 100cqi); aspect-ratio: 454 / 908; }
+  .newcard > :global(picture img) { width: 100%; height: auto; }
+  .send { width: calc(780 / 840 * 100cqi); aspect-ratio: 780 / 785; }
+  .send :global(img) { width: 100%; height: auto; }
+  .stage { position: absolute; left: calc(32 / 454 * 100%); top: calc(136 / 908 * 100%); width: calc(390 / 454 * 100%); height: calc(340 / 908 * 100%); overflow: hidden; }
+  .anim-card { position: absolute; left: calc(63 / 390 * 100%); top: calc(48 / 340 * 100%); width: calc(264 / 390 * 100%); animation: card-slide 4.9s infinite; }
+  .anim-sleeve { position: absolute; left: calc(39 / 390 * 100%); top: calc(164 / 340 * 100%); width: calc(312 / 390 * 100%); }
+  .anim-card :global(img), .anim-sleeve :global(img) { width: 100%; height: auto; }
+  /* Out, hold 1.8s, slide in 0.9s, rest 1.0s, slide out 1.2s (from the Figma prototype) */
+  @keyframes card-slide {
+    0% { transform: translateY(0); animation-timing-function: linear; }
+    36.73% { transform: translateY(0); animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+    55.1% { transform: translateY(62.4%); animation-timing-function: linear; }
+    75.51% { transform: translateY(62.4%); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+    100% { transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .anim-card { animation: none; } }
+  @media (max-width: 1199px) {
+    .feature, .feature-rev { display: flex; flex-direction: column; align-items: stretch; gap: 32px; }
+    .feature-rev .feature-text { order: -1; }
+    .feature-text { padding-bottom: 0; max-width: 560px; }
+  }
+  @media (max-width: 767px) {
+    .feature-text { gap: 16px; }
+  }
+</style>

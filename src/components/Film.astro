@@ -1,0 +1,15 @@
+---
+import LoopVideo from './LoopVideo.astro';
+import Caption from './Caption.astro';
+interface Props { video: string; label: string; left: string; right: string }
+const { video, label, left, right } = Astro.props;
+---
+<figure class="film">
+  <div class="film-media media full"><LoopVideo name={video} label={label} /></div>
+  <div class="wrap"><Caption left={left} right={right} /></div>
+</figure>
+<style>
+  .film { display: flex; flex-direction: column; gap: 20px; padding-bottom: 144px; }
+  .film-media { aspect-ratio: 16 / 9; background: var(--black); }
+  @media (max-width: 767px) { .film { gap: 16px; padding-bottom: 96px; } }
+</style>
