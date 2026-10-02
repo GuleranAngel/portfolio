@@ -3,6 +3,7 @@
 // Picks the 720p file on small screens, 1080p otherwise. Never autoplays with reduced motion.
 // The poster is a frame from the middle of the loop; playback starts from that same moment so there is no jump.
 import starts from '../data/video-starts.json';
+import { versioned } from '../data/asset-version';
 interface Props { name: string; label: string; class?: string; eager?: boolean; position?: string }
 const { name, label, class: cls, eager = false, position } = Astro.props;
 const start = (starts as Record<string, number>)[name];
@@ -16,9 +17,9 @@ const start = (starts as Record<string, number>)[name];
   disablepictureinpicture
   disableremoteplayback
   preload="none"
-  poster={`/video/poster/${name}.webp`}
-  data-src-hd={`/video/${name}-1080.mp4`}
-  data-src-sd={`/video/${name}-720.mp4`}
+  poster={versioned(`/video/poster/${name}.webp`)}
+  data-src-hd={versioned(`/video/${name}-1080.mp4`)}
+  data-src-sd={versioned(`/video/${name}-720.mp4`)}
   data-eager={eager ? '' : undefined}
   data-start={start}
   aria-label={label}

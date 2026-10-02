@@ -4,6 +4,7 @@
 // Sources are pre-sized at roughly 2x their largest display size. Output goes to
 // public/img/ and a manifest (sizes, widths, alpha) goes to src/data/images.json.
 import sharp from 'sharp';
+import { createHash } from 'node:crypto';
 import { readdir, mkdir, writeFile, readFile, unlink } from 'node:fs/promises';
 import { join, parse } from 'node:path';
 
@@ -41,6 +42,9 @@ for (const file of files) {
     await base.clone().avif({ quality: ui ? 70 : 58, effort: 5, chromaSubsampling: ui ? '4:4:4' : '4:2:0' }).toFile(join(OUT, `${name}-${w}.avif`));
     await base.clone().webp({ quality: ui ? 88 : 80, effort: 5, alphaQuality: 90 }).toFile(join(OUT, `${name}-${w}.webp`));
   }
+  // Content hash of every variant: added to the URLs (?v=...) so browsers never keep a stale copy
+  const hash = createHash('sha1');
+  for (const w of widths) for (const ext of ['avif', 'webp']) hash.update(await readFile(join(OUT, `${name}-${w}.${ext}`)));
   const { dominant } = await sharp(join(SRC, file)).stats();
   manifest[name] = {
     width: meta.width,
@@ -48,6 +52,7 @@ for (const file of files) {
     widths,
     alpha: Boolean(alpha),
     color: `rgb(${dominant.r},${dominant.g},${dominant.b})`,
+    v: hash.digest('hex').slice(0, 8),
   };
   console.log(name, meta.width, 'x', meta.height, widths.join(','));
 }

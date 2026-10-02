@@ -7,7 +7,8 @@
       528
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "a62a01bd"
   },
   "atlas-anim-sleeve": {
     "width": 624,
@@ -17,7 +18,8 @@
       624
     ],
     "alpha": true,
-    "color": "rgb(24,24,24)"
+    "color": "rgb(24,24,24)",
+    "v": "c98feab0"
   },
   "atlas-applications": {
     "width": 2100,
@@ -32,7 +34,8 @@
       2100
     ],
     "alpha": false,
-    "color": "rgb(248,248,248)"
+    "color": "rgb(248,248,248)",
+    "v": "15d81a0e"
   },
   "atlas-card-physical": {
     "width": 1040,
@@ -44,7 +47,8 @@
       1040
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "3a4de988"
   },
   "atlas-card-virtual": {
     "width": 1040,
@@ -56,7 +60,8 @@
       1040
     ],
     "alpha": true,
-    "color": "rgb(24,24,40)"
+    "color": "rgb(24,24,40)",
+    "v": "26624690"
   },
   "atlas-chip-crop": {
     "width": 1280,
@@ -69,7 +74,8 @@
       1280
     ],
     "alpha": false,
-    "color": "rgb(248,248,248)"
+    "color": "rgb(248,248,248)",
+    "v": "42147521"
   },
   "atlas-chip-lit": {
     "width": 1920,
@@ -83,7 +89,8 @@
       1920
     ],
     "alpha": false,
-    "color": "rgb(24,24,24)"
+    "color": "rgb(24,24,24)",
+    "v": "97705fa9"
   },
   "atlas-colour": {
     "width": 2624,
@@ -98,7 +105,8 @@
       2624
     ],
     "alpha": false,
-    "color": "rgb(24,40,248)"
+    "color": "rgb(24,40,248)",
+    "v": "95f4cf32"
   },
   "atlas-concept": {
     "width": 1280,
@@ -111,7 +119,8 @@
       1280
     ],
     "alpha": false,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "cc675975"
   },
   "atlas-construction": {
     "width": 1280,
@@ -124,7 +133,8 @@
       1280
     ],
     "alpha": false,
-    "color": "rgb(24,24,24)"
+    "color": "rgb(24,24,24)",
+    "v": "24686fc3"
   },
   "atlas-construction-tile": {
     "width": 1260,
@@ -137,7 +147,8 @@
       1260
     ],
     "alpha": false,
-    "color": "rgb(24,24,24)"
+    "color": "rgb(24,24,24)",
+    "v": "f28c670c"
   },
   "atlas-logo-system": {
     "width": 2624,
@@ -152,7 +163,8 @@
       2624
     ],
     "alpha": false,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "28c576c5"
   },
   "atlas-newcard-base": {
     "width": 908,
@@ -164,7 +176,8 @@
       908
     ],
     "alpha": false,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "d5cac49d"
   },
   "atlas-phone-cards": {
     "width": 919,
@@ -176,7 +189,8 @@
       919
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "6318d376"
   },
   "atlas-phone-home": {
     "width": 919,
@@ -188,7 +202,8 @@
       919
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "3c77a55b"
   },
   "atlas-phone-welcome": {
     "width": 919,
@@ -200,7 +215,8 @@
       919
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "dd166d10"
   },
   "atlas-send": {
     "width": 1560,
@@ -213,7 +229,8 @@
       1560
     ],
     "alpha": false,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "bda8ead2"
   },
   "home-pog-social": {
     "width": 1688,
@@ -227,7 +244,8 @@
       1688
     ],
     "alpha": false,
-    "color": "rgb(248,8,216)"
+    "color": "rgb(248,8,216)",
+    "v": "71069e1c"
   },
   "pog-bucket-hat": {
     "width": 1000,
@@ -239,7 +257,8 @@
       1000
     ],
     "alpha": false,
-    "color": "rgb(136,184,216)"
+    "color": "rgb(136,184,216)",
+    "v": "f336e821"
   },
   "pog-bus-shelter": {
     "width": 1600,
@@ -253,7 +272,8 @@
       1600
     ],
     "alpha": false,
-    "color": "rgb(72,72,72)"
+    "color": "rgb(72,72,72)",
+    "v": "c0be018c"
   },
   "pog-bus-stop": {
     "width": 1600,
@@ -267,7 +287,8 @@
       1600
     ],
     "alpha": false,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "8fb696a4"
   },
   "pog-business-cards": {
     "width": 2624,
@@ -282,7 +303,8 @@
       2624
     ],
     "alpha": false,
-    "color": "rgb(40,248,232)"
+    "color": "rgb(40,248,232)",
+    "v": "33937848"
   },
   "pog-cap": {
     "width": 1600,
@@ -296,7 +318,8 @@
       1600
     ],
     "alpha": false,
-    "color": "rgb(248,248,248)"
+    "color": "rgb(248,248,248)",
+    "v": "fcfa77ca"
   },
   "pog-character-face": {
     "width": 400,
@@ -305,7 +328,8 @@
       400
     ],
     "alpha": true,
-    "color": "rgb(248,8,88)"
+    "color": "rgb(248,8,88)",
+    "v": "d78bbb00"
   },
   "pog-face-1": {
     "width": 695,
@@ -315,7 +339,8 @@
       695
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "1919c90f"
   },
   "pog-face-2": {
     "width": 695,
@@ -325,7 +350,8 @@
       695
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "0cbdaa6b"
   },
   "pog-face-3": {
     "width": 695,
@@ -335,7 +361,8 @@
       695
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "1edfb720"
   },
   "pog-face-4": {
     "width": 695,
@@ -345,7 +372,8 @@
       695
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "fe44de03"
   },
   "pog-face-5": {
     "width": 695,
@@ -355,7 +383,8 @@
       695
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "6a8c0aad"
   },
   "pog-face-6": {
     "width": 697,
@@ -366,7 +395,8 @@
       697
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "b8f78bc0"
   },
   "pog-face-7": {
     "width": 696,
@@ -377,7 +407,8 @@
       696
     ],
     "alpha": true,
-    "color": "rgb(248,248,248)"
+    "color": "rgb(248,248,248)",
+    "v": "1c4d89b8"
   },
   "pog-face-8": {
     "width": 696,
@@ -388,7 +419,8 @@
       696
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "f5acf613"
   },
   "pog-face-9": {
     "width": 697,
@@ -399,7 +431,8 @@
       697
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "dca1def6"
   },
   "pog-folded-tee": {
     "width": 1000,
@@ -411,7 +444,8 @@
       1000
     ],
     "alpha": false,
-    "color": "rgb(248,8,216)"
+    "color": "rgb(248,8,216)",
+    "v": "1436a153"
   },
   "pog-headline-lockup": {
     "width": 741,
@@ -422,7 +456,8 @@
       741
     ],
     "alpha": false,
-    "color": "rgb(88,8,248)"
+    "color": "rgb(88,8,248)",
+    "v": "bf6bcc83"
   },
   "pog-ig-post": {
     "width": 759,
@@ -433,7 +468,8 @@
       759
     ],
     "alpha": false,
-    "color": "rgb(88,8,248)"
+    "color": "rgb(88,8,248)",
+    "v": "11b6f1bd"
   },
   "pog-ig-profile": {
     "width": 1029,
@@ -445,7 +481,8 @@
       1029
     ],
     "alpha": false,
-    "color": "rgb(248,248,248)"
+    "color": "rgb(248,248,248)",
+    "v": "30c62a8a"
   },
   "pog-laptop": {
     "width": 2624,
@@ -460,7 +497,8 @@
       2624
     ],
     "alpha": false,
-    "color": "rgb(248,248,8)"
+    "color": "rgb(248,248,8)",
+    "v": "3673c95d"
   },
   "pog-ohno-weights": {
     "width": 805,
@@ -471,7 +509,8 @@
       805
     ],
     "alpha": true,
-    "color": "rgb(8,8,8)"
+    "color": "rgb(8,8,8)",
+    "v": "15e27239"
   },
   "pog-oversized-tee": {
     "width": 1000,
@@ -483,7 +522,8 @@
       1000
     ],
     "alpha": false,
-    "color": "rgb(120,168,200)"
+    "color": "rgb(120,168,200)",
+    "v": "0eb735a2"
   },
   "pog-pattern-still": {
     "width": 2844,
@@ -498,7 +538,8 @@
       2844
     ],
     "alpha": false,
-    "color": "rgb(216,8,184)"
+    "color": "rgb(216,8,184)",
+    "v": "cea9938a"
   },
   "pog-pocket": {
     "width": 1400,
@@ -511,7 +552,8 @@
       1400
     ],
     "alpha": false,
-    "color": "rgb(248,248,248)"
+    "color": "rgb(248,248,248)",
+    "v": "c06db83b"
   },
   "pog-skate-tee": {
     "width": 1600,
@@ -525,7 +567,8 @@
       1600
     ],
     "alpha": false,
-    "color": "rgb(72,136,200)"
+    "color": "rgb(72,136,200)",
+    "v": "382444cb"
   },
   "pog-sticker-lockup": {
     "width": 759,
@@ -536,7 +579,8 @@
       759
     ],
     "alpha": false,
-    "color": "rgb(248,8,88)"
+    "color": "rgb(248,8,88)",
+    "v": "525cd78d"
   },
   "pog-sticker-set": {
     "width": 1828,
@@ -550,7 +594,8 @@
       1828
     ],
     "alpha": false,
-    "color": "rgb(88,8,248)"
+    "color": "rgb(88,8,248)",
+    "v": "08dd0ed4"
   },
   "pog-sticker-sheet": {
     "width": 1100,
@@ -562,7 +607,8 @@
       1100
     ],
     "alpha": false,
-    "color": "rgb(88,8,248)"
+    "color": "rgb(88,8,248)",
+    "v": "f6e98a14"
   },
   "pog-stories": {
     "width": 1827,
@@ -576,7 +622,8 @@
       1827
     ],
     "alpha": false,
-    "color": "rgb(152,104,248)"
+    "color": "rgb(152,104,248)",
+    "v": "12cc352f"
   },
   "pog-street-posters": {
     "width": 2624,
@@ -591,7 +638,8 @@
       2624
     ],
     "alpha": false,
-    "color": "rgb(200,200,200)"
+    "color": "rgb(200,200,200)",
+    "v": "4b6563a7"
   },
   "pog-tee": {
     "width": 1000,
@@ -603,7 +651,8 @@
       1000
     ],
     "alpha": false,
-    "color": "rgb(168,168,168)"
+    "color": "rgb(168,168,168)",
+    "v": "0d83c0e2"
   },
   "pog-thumb-208": {
     "width": 416,
@@ -612,7 +661,8 @@
       416
     ],
     "alpha": true,
-    "color": "rgb(248,8,216)"
+    "color": "rgb(248,8,216)",
+    "v": "3679aa12"
   },
   "pog-tote": {
     "width": 1248,
@@ -625,6 +675,7 @@
       1248
     ],
     "alpha": false,
-    "color": "rgb(248,88,8)"
+    "color": "rgb(248,88,8)",
+    "v": "faf34077"
   }
 }
