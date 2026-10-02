@@ -50,7 +50,7 @@ const services = [
           <div class="p-media">
             <div class="media m-main"><LoopVideo name="atlas-mark-closeup" label="The Atlas Pay chip lighting up in blue, 3D loop" /></div>
             <div class="media m-second"><LoopVideo name="atlas-card-push" label="The Atlas Pay card pushed through a beam of light, 3D loop" /></div>
-            <div class="media m-third"><Picture name="atlas-construction" alt="Construction drawing of the Atlas Pay mark: rays from one origin on a 7.5 degree grid" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 46vw" position="50% 22%" /></div>
+            <div class="media m-third fit" style="background:#161618"><Picture name="atlas-construction-tile" alt="Construction drawing of the Atlas Pay mark: rays from one origin, a 7.5 degree step and the diameter marked x" sizes="(min-width: 1440px) 300px, (min-width: 768px) 22vw, 60vw" /></div>
           </div>
           <div class="p-foot">
             <p class="p-desc c-grey-2">
@@ -72,8 +72,8 @@ const services = [
           <a class="btn btn-primary p-cta" href="/work/pog" aria-label="View case study: POG"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
           <div class="p-media">
             <div class="media m-main" style="background:#870037"><LoopVideo name="pog-hero-3d-logo" label="The POG logo bouncing in 3D, loop" /></div>
-            <div class="media m-second" style="background:#ff00e0"><Picture name="home-pog-social" alt="Three POG story templates on phones: Live now, You're never just one vibe, Don't blink" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 46vw" /></div>
-            <div class="media m-third"><Picture name="pog-pocket-crop" alt="Phone in a back pocket showing a POG story, with the POG eyes peeking over the pocket" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 46vw" /></div>
+            <div class="media m-second" style="background:#ff00e0"><Picture name="home-pog-social" alt="Three POG story templates on phones: Live now, You're never just one vibe, Don't blink" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 92vw" /></div>
+            <div class="media m-third"><Picture name="pog-street-posters" alt="Five POG posters wild-posted on a street wall: Mood: unknown, Stare back, Live now, Lookin' good and All the feels" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 92vw" position="50% 44%" /></div>
           </div>
           <div class="p-foot">
             <p class="p-desc c-grey-2">
@@ -155,6 +155,8 @@ const services = [
   /* Media: big tile left, two stacked tiles right (832 + 416, 520 high) */
   .p-media { grid-column: 1 / -1; display: grid; gap: 16px; aspect-ratio: 1264 / 520; grid-template-columns: 832fr 416fr; grid-template-rows: 1fr 1fr; }
   .p-media .m-main { grid-row: 1 / span 2; }
+  /* Tiles that show the whole artwork instead of a crop */
+  .p-media .fit :global(img) { object-fit: contain; }
   .p-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
   .p-desc { max-width: 700px; font-size: 20px; line-height: 1.5; letter-spacing: -0.1px; }
   .p-tags { white-space: nowrap; text-align: right; line-height: 1.5; padding-top: 4px; }
@@ -174,9 +176,10 @@ const services = [
     .p-title { gap: 12px; }
     .p-name { font-size: 28px; line-height: 1.18; letter-spacing: -0.42px; }
     .p-cta { order: 5; align-self: flex-start; }
-    /* Phones: big tile on top, the two small tiles side by side under it */
-    .p-media { grid-template-columns: 1fr 1fr; grid-template-rows: 240px 140px; gap: 16px; aspect-ratio: auto; }
-    .p-media .m-main { grid-row: auto; grid-column: 1 / -1; }
+    /* Phones: all three tiles full width, the small ones keep their desktop shape so nothing gets cut off */
+    .p-media { grid-template-columns: 1fr; grid-template-rows: none; gap: 16px; aspect-ratio: auto; }
+    .p-media .m-main { grid-row: auto; height: 240px; }
+    .p-media .m-second, .p-media .m-third { aspect-ratio: 416 / 252; }
     .p-foot { gap: 16px; }
     .p-desc { font-size: 16px; line-height: 1.55; letter-spacing: -0.032px; }
   }
