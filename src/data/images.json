@@ -126,32 +126,6 @@
     "alpha": false,
     "color": "rgb(24,24,24)"
   },
-  "atlas-form-relief": {
-    "width": 1280,
-    "height": 720,
-    "widths": [
-      400,
-      640,
-      828,
-      1080,
-      1280
-    ],
-    "alpha": false,
-    "color": "rgb(8,8,8)"
-  },
-  "atlas-light-edge": {
-    "width": 1280,
-    "height": 720,
-    "widths": [
-      400,
-      640,
-      828,
-      1080,
-      1280
-    ],
-    "alpha": false,
-    "color": "rgb(8,8,8)"
-  },
   "atlas-logo-system": {
     "width": 2624,
     "height": 1674,
@@ -224,19 +198,6 @@
       828,
       1080,
       1560
-    ],
-    "alpha": false,
-    "color": "rgb(8,8,8)"
-  },
-  "atlas-website": {
-    "width": 1312,
-    "height": 781,
-    "widths": [
-      400,
-      640,
-      828,
-      1080,
-      1312
     ],
     "alpha": false,
     "color": "rgb(8,8,8)"
@@ -332,17 +293,6 @@
     ],
     "alpha": true,
     "color": "rgb(248,8,88)"
-  },
-  "pog-character-phone": {
-    "width": 840,
-    "height": 1080,
-    "widths": [
-      400,
-      640,
-      840
-    ],
-    "alpha": false,
-    "color": "rgb(248,248,248)"
   },
   "pog-face-1": {
     "width": 695,
@@ -550,6 +500,18 @@
     "alpha": false,
     "color": "rgb(248,248,248)"
   },
+  "pog-pocket-crop": {
+    "width": 1147,
+    "height": 695,
+    "widths": [
+      400,
+      640,
+      828,
+      1147
+    ],
+    "alpha": false,
+    "color": "rgb(248,248,248)"
+  },
   "pog-skate-tee": {
     "width": 1600,
     "height": 1067,
@@ -641,20 +603,6 @@
     ],
     "alpha": false,
     "color": "rgb(168,168,168)"
-  },
-  "pog-thumb": {
-    "width": 1614,
-    "height": 710,
-    "widths": [
-      400,
-      640,
-      828,
-      1080,
-      1440,
-      1614
-    ],
-    "alpha": false,
-    "color": "rgb(248,8,216)"
   },
   "pog-thumb-208": {
     "width": 416,

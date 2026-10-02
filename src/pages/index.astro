@@ -47,10 +47,10 @@ const services = [
             <span class="label c-grey-3 p-sector">Cross-border payments</span>
           </div>
           <a class="btn btn-primary p-cta" href="/work/atlas-pay" aria-label="View case study: Atlas Pay"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
-          <div class="p-media p-media-atlas">
-            <div class="media m-main"><Picture name="atlas-chip-lit" alt="Atlas Pay chip in black metal, lit with blue light in the channels" sizes="(min-width: 1440px) 832px, (min-width: 768px) 62vw, 100vw" /></div>
-            <div class="media m-second"><Picture name="atlas-light-edge" alt="Corner of the black Atlas Pay card catching a line of light" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 100vw" /></div>
-            <div class="media m-third"><Picture name="atlas-form-relief" alt="The Atlas Pay mark in relief on the chip, in near darkness" sizes="(min-width: 1440px) 416px, 31vw" /></div>
+          <div class="p-media">
+            <div class="media m-main"><LoopVideo name="atlas-mark-closeup" label="The Atlas Pay chip lighting up in blue, 3D loop" /></div>
+            <div class="media m-second"><LoopVideo name="atlas-card-push" label="The Atlas Pay card pushed through a beam of light, 3D loop" /></div>
+            <div class="media m-third"><Picture name="atlas-construction" alt="Construction drawing of the Atlas Pay mark: rays from one origin on a 7.5 degree grid" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 46vw" position="50% 22%" /></div>
           </div>
           <div class="p-foot">
             <p class="p-desc c-grey-2">
@@ -70,11 +70,10 @@ const services = [
             <span class="label c-grey-3 p-sector">Streaming and gaming</span>
           </div>
           <a class="btn btn-primary p-cta" href="/work/pog" aria-label="View case study: POG"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
-          <div class="p-media p-media-pog">
-            <div class="media m-main d-only"><Picture name="pog-pocket" alt="Phone in a back pocket showing a POG story: It's time to POG" sizes="(min-width: 1440px) 404px, 30vw" position="50% 15%" /></div>
-            <div class="media m-main m-only"><Picture name="pog-character-phone" alt="Phone showing the POG character in 3D" sizes="100vw" /></div>
-            <div class="media m-second d-only"><Picture name="home-pog-social" alt="Three POG story templates on phones: Live now, You're never just one vibe, Don't blink" sizes="(min-width: 1440px) 844px, 62vw" position="50% 0%" /></div>
-            <div class="media m-second m-only"><Picture name="pog-thumb" alt="Three POG story templates on phones" sizes="100vw" /></div>
+          <div class="p-media">
+            <div class="media m-main" style="background:#870037"><LoopVideo name="pog-hero-3d-logo" label="The POG logo bouncing in 3D, loop" /></div>
+            <div class="media m-second" style="background:#ff00e0"><Picture name="home-pog-social" alt="Three POG story templates on phones: Live now, You're never just one vibe, Don't blink" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 46vw" /></div>
+            <div class="media m-third"><Picture name="pog-pocket-crop" alt="Phone in a back pocket showing a POG story, with the POG eyes peeking over the pocket" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 46vw" /></div>
           </div>
           <div class="p-foot">
             <p class="p-desc c-grey-2">
@@ -116,7 +115,8 @@ const services = [
   .hero { position: relative; height: 829px; overflow: hidden; background: var(--black); }
   .hero-media { position: absolute; inset: 0; background: var(--black); }
   .hero-media :global(video) { opacity: 0.32; }
-  .hero-media :global(.vid-toggle) { z-index: 5; }
+  /* Video control: top-right, just under the header, lined up with the content edge. Never near the headline. */
+  .hero-media :global(.vid-toggle) { z-index: 5; top: 20px; bottom: auto; right: max(var(--pad), calc((100% - var(--maxw)) / 2 + var(--pad))); }
   .fade-top { position: absolute; inset: 0 0 auto; height: 160px; background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0)); pointer-events: none; }
   .fade-bottom { position: absolute; inset: auto 0 0; height: 64%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.8)); pointer-events: none; }
   .hero-content { position: relative; height: 100%; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; padding-bottom: 88px; pointer-events: none; }
@@ -132,6 +132,7 @@ const services = [
   @media (max-width: 767px) {
     .hero { height: 640px; }
     .hero-media :global(video) { object-position: 46% 50%; }
+    .hero-media :global(.vid-toggle) { top: 16px; }
     .fade-top { height: 130px; }
     .fade-bottom { height: 69%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.85)); }
     .hero-content { gap: 20px; padding-bottom: 16px; }
@@ -151,17 +152,12 @@ const services = [
   .p-title { display: flex; align-items: baseline; gap: 24px; }
   .p-name { font-weight: 500; font-size: 44px; line-height: 1.12; letter-spacing: -0.88px; }
   .p-cta { justify-self: end; }
-  .p-cta::after { content: ''; position: absolute; inset: 0; }
-  .p-media { grid-column: 1 / -1; display: grid; gap: 16px; aspect-ratio: 1264 / 520; }
-  .p-media-atlas { grid-template-columns: 832fr 416fr; grid-template-rows: 1fr 1fr; }
-  .p-media-atlas .m-main { grid-row: 1 / span 2; }
-  .p-media-pog { grid-template-columns: 404fr 844fr; }
-  .p-media :global(img) { transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
-  .project:hover .p-media :global(img) { transform: scale(1.02); }
+  /* Media: big tile left, two stacked tiles right (832 + 416, 520 high) */
+  .p-media { grid-column: 1 / -1; display: grid; gap: 16px; aspect-ratio: 1264 / 520; grid-template-columns: 832fr 416fr; grid-template-rows: 1fr 1fr; }
+  .p-media .m-main { grid-row: 1 / span 2; }
   .p-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
   .p-desc { max-width: 700px; font-size: 20px; line-height: 1.5; letter-spacing: -0.1px; }
   .p-tags { white-space: nowrap; text-align: right; line-height: 1.5; padding-top: 4px; }
-  @media (prefers-reduced-motion: reduce) { .project:hover .p-media :global(img) { transform: none; } }
   @media (max-width: 1199px) {
     .work { padding: 88px 0 120px; }
     .p-name { font-size: 36px; letter-spacing: -0.72px; }
@@ -178,10 +174,9 @@ const services = [
     .p-title { gap: 12px; }
     .p-name { font-size: 28px; line-height: 1.18; letter-spacing: -0.42px; }
     .p-cta { order: 5; align-self: flex-start; }
-    .p-media { display: flex; flex-direction: column; gap: 16px; aspect-ratio: auto; }
-    .p-media .m-main { height: 240px; }
-    .p-media .m-second { height: 140px; }
-    .p-media .m-third { display: none; }
+    /* Phones: big tile on top, the two small tiles side by side under it */
+    .p-media { grid-template-columns: 1fr 1fr; grid-template-rows: 240px 140px; gap: 16px; aspect-ratio: auto; }
+    .p-media .m-main { grid-row: auto; grid-column: 1 / -1; }
     .p-foot { gap: 16px; }
     .p-desc { font-size: 16px; line-height: 1.55; letter-spacing: -0.032px; }
   }
