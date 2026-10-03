@@ -247,31 +247,6 @@
     "color": "rgb(248,8,216)",
     "v": "71069e1c"
   },
-  "home-topout-mark": {
-    "width": 832,
-    "height": 504,
-    "widths": [
-      400,
-      640,
-      832
-    ],
-    "alpha": false,
-    "color": "rgb(248,248,232)",
-    "v": "903456f6"
-  },
-  "home-topout-mark-m": {
-    "width": 954,
-    "height": 596,
-    "widths": [
-      400,
-      640,
-      828,
-      954
-    ],
-    "alpha": false,
-    "color": "rgb(248,248,232)",
-    "v": "203c0847"
-  },
   "pog-bucket-hat": {
     "width": 1000,
     "height": 1498,
