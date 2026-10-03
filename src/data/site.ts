@@ -8,4 +8,6 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/guleranangel/',
   behanceAtlas: 'https://www.behance.net/gallery/256518407/Atlas-Pay-Brand-Identity-UI-3D',
   behancePog: 'https://www.behance.net/gallery/235138187/POG-Brand-Identity',
+  // Topout is not on Behance yet: the profile until the project is published, then swap in its gallery URL
+  behanceTopout: 'https://www.behance.net/guleranangel',
 };

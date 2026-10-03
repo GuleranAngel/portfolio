@@ -42,7 +42,33 @@ const services = [
           <div class="p-head">
             <div class="p-title">
               <span class="label c-accent">01</span>
-              <h3 class="p-name" id="p1-title">Atlas Pay</h3>
+              <h3 class="p-name" id="p1-title">Topout</h3>
+            </div>
+            <span class="label c-grey-3 p-sector">Bouldering gym</span>
+          </div>
+          <a class="btn btn-primary p-cta" href="/work/topout" aria-label="View case study: Topout"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
+          <div class="p-media p-media-16x10">
+            <div class="media m-main" style="background:#0e0e0e"><LoopVideo name="topout-cover-loop" label="The Topout wordmark over a field of dots that light up orange in waves, loop" /></div>
+            <div class="media m-second" style="background:#f4f3ef">
+              <Picture name="home-topout-mark" class="d-only" alt="Close-up of the Topout mark: black holds with the top one lit orange, next to the wordmark and the line 21 holds. One lit." sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 0px" />
+              <Picture name="home-topout-mark-m" class="m-only" alt="Close-up of the Topout mark: black holds with the top one lit orange, next to the wordmark and the line 21 holds. One lit." sizes="calc(100vw - 72px)" />
+            </div>
+            <div class="media m-third d-only" style="background:#0e0e0e"><Picture name="topout-photo-entrance" alt="The Topout entrance at night: a brick building with warm windows and the lit Topout sign over the glass doors" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 0px" /></div>
+          </div>
+          <div class="p-foot">
+            <p class="p-desc c-grey-2">
+              <span class="d-only">A brand for a bouldering gym built around Board B, a wall with a light under every hold. The mark, a dot typeface, the app and the screens all come from that one lit hold.</span>
+              <span class="m-only">A brand for a bouldering gym built around Board B, a wall with a light under every hold. The mark, the type and the app all come from that one lit hold.</span>
+            </p>
+            <p class="label c-grey-2 p-tags">Identity · Dot type · App · Web</p>
+          </div>
+        </article>
+
+        <article class="project" aria-labelledby="p2-title">
+          <div class="p-head">
+            <div class="p-title">
+              <span class="label c-accent">02</span>
+              <h3 class="p-name" id="p2-title">Atlas Pay</h3>
             </div>
             <span class="label c-grey-3 p-sector">Cross-border payments</span>
           </div>
@@ -61,11 +87,11 @@ const services = [
           </div>
         </article>
 
-        <article class="project" aria-labelledby="p2-title">
+        <article class="project" aria-labelledby="p3-title">
           <div class="p-head">
             <div class="p-title">
-              <span class="label c-accent">02</span>
-              <h3 class="p-name" id="p2-title">POG</h3>
+              <span class="label c-accent">03</span>
+              <h3 class="p-name" id="p3-title">POG</h3>
             </div>
             <span class="label c-grey-3 p-sector">Streaming and gaming</span>
           </div>
@@ -180,6 +206,9 @@ const services = [
     .p-media { grid-template-columns: 1fr; grid-template-rows: none; gap: 16px; aspect-ratio: auto; }
     .p-media .m-main { grid-row: auto; height: 240px; }
     .p-media .m-second, .p-media .m-third { aspect-ratio: 416 / 252; }
+    /* Topout: two 16:10 tiles on phones, as in the mobile Figma frame */
+    .p-media-16x10 .m-main { height: auto; aspect-ratio: 318 / 199; }
+    .p-media-16x10 .m-second { aspect-ratio: 318 / 199; }
     .p-foot { gap: 16px; }
     .p-desc { font-size: 16px; line-height: 1.55; letter-spacing: -0.032px; }
   }

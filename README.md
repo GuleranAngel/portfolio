@@ -15,7 +15,7 @@ Node 22.12 or newer.
 
 ## Structure
 
-- `src/pages/` the homepage, the two case studies (`work/atlas-pay`, `work/pog`) and the 404 page
+- `src/pages/` the homepage, the three case studies (`work/topout`, `work/atlas-pay`, `work/pog`) and the 404 page
 - `src/components/` shared pieces: header, footer, dividers, case study hero, credits, next project, contact
 - `src/styles/global.css` tokens (colours, spacing, breakpoints) and the type styles from the Figma file
 - `src/data/site.ts` name, email and links

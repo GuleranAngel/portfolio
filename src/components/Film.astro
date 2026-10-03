@@ -1,11 +1,11 @@
 ---
 import LoopVideo from './LoopVideo.astro';
 import Caption from './Caption.astro';
-interface Props { video: string; label: string; left: string; right: string }
-const { video, label, left, right } = Astro.props;
+interface Props { video: string; label: string; left: string; right: string; aspect?: string }
+const { video, label, left, right, aspect } = Astro.props;
 ---
 <figure class="film">
-  <div class="film-media media full"><LoopVideo name={video} label={label} /></div>
+  <div class="film-media media full" style={aspect ? `aspect-ratio:${aspect}` : undefined}><LoopVideo name={video} label={label} /></div>
   <div class="wrap"><Caption left={left} right={right} /></div>
 </figure>
 <style>

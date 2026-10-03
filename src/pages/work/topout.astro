@@ -1,0 +1,287 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseHero from '../../components/CaseHero.astro';
+import Film from '../../components/Film.astro';
+import Chapter from '../../components/Chapter.astro';
+import Intro from '../../components/Intro.astro';
+import Caption from '../../components/Caption.astro';
+import Picture from '../../components/Picture.astro';
+import LoopVideo from '../../components/LoopVideo.astro';
+import Credits from '../../components/Credits.astro';
+import NextProject from '../../components/NextProject.astro';
+import Contact from '../../components/Contact.astro';
+import { site } from '../../data/site';
+
+const full = '(min-width: 1440px) 1312px, (min-width: 1200px) calc(100vw - 128px), (min-width: 768px) calc(100vw - 80px), calc(100vw - 40px)';
+const half = '(min-width: 1440px) 640px, (min-width: 768px) 46vw, calc(100vw - 40px)';
+// Brand colours, used as the frame colour while an image or video loads
+const black = '#0e0e0e';
+const chalk = '#f4f3ef';
+---
+<Base
+  title="Topout case study | Angel Guleran"
+  description="Topout: a brand for a bouldering gym, built around one wall that lights the way. Mark, dot typeface, app, website and gym screens. Case study by Angel Guleran."
+  center="Case study: Topout"
+  ogImage="/og-topout.jpg"
+>
+  <CaseHero
+    num="01"
+    title="Topout"
+    lead="A brand for a bouldering gym, built around one wall that lights the way."
+    info={[
+      ['Sector', 'Bouldering gym'],
+      ['Year', '2026'],
+      ['Role', 'Identity · Type · App · Web'],
+      ['Scope', 'Mark to wall screens, one designer'],
+    ]}
+    overview="Topout is a bouldering gym built around Board B, a 40° wall with a light under every hold. The mark, a dot typeface, the app, the site and the screens all grow from that one lit hold."
+    deliverables="Logo, dot typeface, icons, app, website and screens"
+    typeface="Funnel Display, Funnel Sans and Geist Mono"
+    deck={site.behanceTopout}
+    next={{ name: 'Atlas Pay', href: '/work/atlas-pay' }}
+  />
+
+  <Film video="topout-cover-loop" aspect="16 / 10" label="The Topout wordmark over a field of dots that light up orange in waves, looping" left="Fig. 01 / The dot field, looping" right="Seamless loop · 20 s" />
+
+  <Chapter tag="The challenge" id="ch-challenge">
+    <Intro
+      label="Challenge"
+      statement="Every gym has walls.<br class='d-br' /> This one lights up."
+      statementWidth={514}
+      body="Board B is a 40° wall with a light under every hold. Pick a problem in the app and the wall lights the way. The brand had to come out of that moment and still read from the mats, in a chalky hand and across the hall."
+      rows={[
+        ['Lit', 'One orange light that means go, the rest stays dark'],
+        ['Readable', 'Clear from the mats, on a phone and across the hall'],
+        ['Systematic', 'One dot grid for the mark, the type and the icons'],
+        ['Calm', 'Dry and specific, like a good route setter'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/733; background:${black}`}><Picture name="topout-photo-board-b" alt="A climber on Board B, a steep black wall in a brick gym, with warm lights glowing under the holds" sizes={full} /></div>
+      <Caption left="Fig. 0.1 / Board B" right="40° · A light under every hold" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="01 / The mark" id="ch-mark">
+    <Intro
+      label="The idea"
+      statement="21 holds. One lit."
+      body="The mark is Board B seen from the mats: a disc of holds, smaller toward the top, with one of them lit. It is the moment a problem lights up, before the first move."
+      rows={[
+        ['Holds', 'Every dot is a hold on the board'],
+        ['Rows', '3, 5, 5, 5 and 3, smaller toward the top'],
+        ['Signal', 'One orange light, kept for the top'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/820; background:${black}`}><LoopVideo name="topout-hold-film" label="3D film: one orange climbing hold on a grey wall, then the camera pulls back to all 21 holds of the mark, with only that one lit" /></div>
+      <Caption left="Fig. 1.1 / One hold, then all 21" right="3D film · 12 s" />
+    </figure>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style={`aspect-ratio:640/800; background:${black}`}><Picture name="topout-mark-board" alt="The Topout mark in white on board black: 21 dots in rows of 3, 5, 5, 5 and 3, with the middle dot of the top row lit orange" sizes={half} /></div>
+        <Caption left="Fig. 1.2 / On the board" right="Board black" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style={`aspect-ratio:640/800; background:${chalk}`}><Picture name="topout-construction" alt="Construction drawing of the mark on chalk: rows of 3, 5, 5, 5 and 3 dots on one grid, each row with its own dot size from 92% to 50%, and the signal dot in orange" sizes={half} /></div>
+        <Caption left="Fig. 1.3 / Construction" right="Five rows on one grid" />
+      </figure>
+    </div>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/366; background:${chalk}`}><Picture name="topout-process" alt="Six rounds of the mark on a timeline: origin, heavier, halftone, rising disc, 37 dots and the final 21 dots with one hold lit" sizes={full} /></div>
+      <Caption left="Fig. 1.4 / From a spark of dots to one lit hold" right="Six rounds" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/995; background:${black}`}><Picture name="topout-logo-system" alt="Topout logo system: the stacked lockup on black, two app icons in black and orange, the wordmark on chalk, the mark at 64, 32, 20 and 16 px, and the mark in white on orange" sizes={full} /></div>
+      <Caption left="Fig. 1.5 / Logo system" right="Lockups, icon and micro" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="02 / Colour and type" id="ch-system">
+    <Intro
+      label="The system"
+      statement="Board black, chalk and one orange."
+      body="Orange is never a fill for big areas. It is a lit hold, a live state or the one button that matters. Funnel Display does the talking, Funnel Sans the reading and Geist Mono the numbers."
+      rows={[
+        ['Display', 'Funnel Display'],
+        ['Text', 'Funnel Sans'],
+        ['Data', 'Geist Mono'],
+        ['Signal', 'Orange, one thing at a time'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/820; background:${black}`}><Picture name="topout-palette" alt="Topout palette: big swatches of Board black and Chalk, then narrow bands of white, six greys and Signal orange" sizes={full} /></div>
+      <Caption left="Fig. 2.1 / Palette" right="Board, chalk, six greys and signal" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/706; background:${chalk}`}><Picture name="topout-type" alt="Type specimen: Topped out. in Funnel Display, Fall. Chalk. Go again. in Funnel Sans, REST 0:42 / GO 3 in Geist Mono and V7 12/12 in the dot matrix" sizes={full} /></div>
+      <Caption left="Fig. 2.2 / Type" right="Funnel Display · Funnel Sans · Geist Mono" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/576; background:#e9e8e3`}><Picture name="topout-voice" alt="Voice lines on chalk: Every route ends at the top. New problems every Monday. Board B is yours tonight. You topped Night shift. 3 goes. Fall. Chalk. Go again. Rest 0:42. Below them, crossed out, the lines it never uses: Crush your goals!! Unleash your inner beast. The ultimate climbing experience." sizes={full} /></div>
+      <Caption left="Fig. 2.3 / Voice" right="Talks like a good route setter" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="03 / Topout Dot" id="ch-type">
+    <Intro
+      label="The typeface"
+      statement="A typeface made of light."
+      body="Drawn from scratch for the board. Every letter is a pattern of lit holds on the same grid as Board B, so the type, the icons and the wall speak one language."
+      rows={[
+        ['Grid', '5 × 7 cells on a 12 px pitch'],
+        ['Glyphs', '54: A to Z, 0 to 9, symbols and €'],
+        ['States', 'Off, dim, lit and signal'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/841; background:${black}`}><Picture name="topout-exploded" alt="Exploded view of one dot letter in four layers, from the bottom: Grid, 5 × 7 cells on a 12 px pitch; Off, a dark dot in every cell; Lit, the letter switched on; and Light, every lit dot glowing, one of them orange" sizes={full} /></div>
+      <Caption left="Fig. 3.1 / How a letter is built" right="Grid, off, lit, light" />
+    </figure>
+    <div class="fig-row">
+      <figure class="fig">
+        <div class="media" style={`aspect-ratio:640/732; background:${black}`}><Picture name="topout-glyph-t" alt="The letter T in Topout Dot: white lit dots on a 5 by 7 grid of dark dots" sizes={half} /></div>
+        <Caption left="Fig. 3.2 / T, lit" right="5 × 7" />
+      </figure>
+      <figure class="fig">
+        <div class="media" style={`aspect-ratio:640/732; background:${chalk}`}><Picture name="topout-glyph-r" alt="The letter R in Topout Dot on chalk, on its grid, with the cell size, spacing, cap height and 83% dot size marked" sizes={half} /></div>
+        <Caption left="Fig. 3.3 / R, on the grid" right="Dot 83%" />
+      </figure>
+    </div>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/809; background:${chalk}`}><Picture name="topout-charset" alt="The full Topout Dot character set in capitals: 0 to 9, A to Z, punctuation, arrows and symbols including the euro sign" sizes={full} /></div>
+      <Caption left="Fig. 3.4 / 54 glyphs" right="No lowercase, the board only shouts" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/255; background:${chalk}`}><Picture name="topout-rows-fill" alt="Eight frames, 30 ms apart, of a dot character drawing itself: the dots light up row by row from the bottom, the newest one in orange" sizes={full} /></div>
+      <Caption left="Fig. 3.5 / Rows fill from the bottom" right="One row every 30 ms" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/357; background:#161615`}><Picture name="topout-icons" alt="Twenty icons drawn in dots: arrows up, right, down and left, plus, close, check, home, board, timer, chart, profile, trophy, calendar, pin, bell, search, check-in, streak and live" sizes={full} /></div>
+      <Caption left="Fig. 3.6 / Twenty icons" right="Same dots as the type" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="04 / App" id="ch-app">
+    <Intro
+      label="Product"
+      statement="Built to be read from the mats."
+      body="The session screen does the counting, the board lights the problem and your grades build themselves. Everything you need mid-session reads at arm’s length, with chalk on your hands."
+      rows={[
+        ['Session clock', 'Dot matrix, starts when you check in'],
+        ['Rest ring', 'Counts your rest in lit dots'],
+        ['Fell or topped', 'One tap logs every go'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/720; background:#e9e8e3`}><Picture name="topout-app-screens" alt="Four app screens: Today with the 07:12 check-in and how busy the gym is, Board with Night shift lit on Board B, Session with the dot clock, the rest ring at 0:42 and Fell or Topped, and Progress with 128 tops and a 12 day streak" sizes={full} /></div>
+      <Caption left="Fig. 4.1 / Four screens" right="Today · Board · Session · Progress" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/738; background:${black}`}><LoopVideo name="topout-app-session" label="App motion loop: the session clock counts up, the rest ring counts your rest in lit dots and a go is logged as topped" /></div>
+      <Caption left="Fig. 4.2 / A session, start to top" right="Motion loop" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/687; background:#161615`}><Picture name="topout-member-area" alt="Member area on the website and in the app: Your climbing, with 128 tops, 14 sessions, a 22% flash rate, a 12 day streak and a dot for every day climbed, next to the member profile on a phone" sizes={full} /></div>
+      <Caption left="Fig. 4.3 / Member area" right="One dot per day" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="05 / Web and screens" id="ch-web">
+    <Intro
+      label="Web and gym"
+      statement="The site opens on Board B, live."
+      body="A climber moves through the grid as light. In the gym, the screen beside Board B shows the problem that is lit, who is on it and how far they got. At the door: how busy it is."
+      rows={[
+        ['Website', 'Home, boards, membership and comp night'],
+        ['Gym', 'Wall screen and door display'],
+        ['Social', 'Posts and stories on one grid'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/877; background:#e9e8e3`}><Picture name="topout-web-home" alt="Topout website home page in a browser: Climb in the light. on black, beside a climber drawn in orange dots, with Book a session and Get the app buttons" sizes={full} /></div>
+      <Caption left="Fig. 5.1 / Website" right="topout.club" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/1108; background:#161615`}><Picture name="topout-web-pages" alt="Three website pages: What’s on the wall, with the problems on Board B; Climb more, pay less, with the day pass, monthly and 10 visit prices; and Comp night, with the countdown and who is in so far" sizes={full} /></div>
+      <Caption left="Fig. 5.2 / Boards, membership and comp night" right="Three pages" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/738; background:${black}`}><LoopVideo name="topout-board-replay" label="Wall screen loop: the problem Night shift, V7, lights up hold by hold on a map of Board B as the count goes from 0 to 12" /></div>
+      <Caption left="Fig. 5.3 / Board B, lighting a problem" right="Wall screen loop" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/596; background:${black}`}><Picture name="topout-gym-screens" alt="Two gym screens: the wall screen with V7 Night shift lit on a map of Board B and the climber on her third go, and the door display with 42 people in and Quiet from 21:00." sizes={full} /></div>
+      <Caption left="Fig. 5.4 / In the gym" right="Wall screen · Door display" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/445; background:#e9e8e3`}><Picture name="topout-posts" alt="Four social posts: NEW SET, 18 new problems on Board B in dot type; Comp night. over a crowd in orange dots; Tops this week, a leaderboard on chalk; and V7 Night shift on black" sizes={full} /></div>
+      <Caption left="Fig. 5.5 / Posts" right="4:5 · Chalk for lists, black for glow" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/483; background:#161615`}><Picture name="topout-stories" alt="Five stories in the same system: NEW SET, Comp night., Tops this week on chalk, Climb in the light. and V7 Night shift" sizes={full} /></div>
+      <Caption left="Fig. 5.6 / Stories" right="9:16" />
+    </figure>
+  </Chapter>
+
+  <Chapter tag="06 / In the world" id="ch-world">
+    <Intro
+      label="In the world"
+      statement="From the wall to the street."
+      body="Scenes made with Figma Weave and Freepik, with the real artwork placed back on every screen, so the type and the dots stay exact."
+      rows={[
+        ['In the gym', 'Comp night, wall screen and entrance'],
+        ['Out of home', 'City screen, street and metro'],
+        ['Photography', 'Dark rooms, chalk and one warm light'],
+      ]}
+    />
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/733; background:${black}`}><Picture name="topout-photo-comp-night" alt="Comp night: a seated crowd watches a climber on the lit wall, beside a big LED screen reading Comp night. over orange dots" sizes={full} /></div>
+      <Caption left="Fig. 6.1 / Comp night" right="LED wall · Board B" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/738; background:${black}`}><LoopVideo name="topout-comp-night" label="Comp night wall screen loop: the countdown to the final ticks down while the live qualifier rankings change" /></div>
+      <Caption left="Fig. 6.2 / Comp night, live" right="Wall screen loop" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/733; background:${black}`}><Picture name="topout-photo-entrance" alt="The Topout entrance at night: a brick building with warm windows and the lit Topout sign over the glass doors" sizes={full} /></div>
+      <Caption left="Fig. 6.3 / Entrance" right="Hall 4, Riverside Works" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/733; background:${black}`}><Picture name="topout-photo-city-screen" alt="A big screen on an old city square at night reading NEW SET, 18 new problems on Board B, above people with umbrellas on wet cobbles" sizes={full} /></div>
+      <Caption left="Fig. 6.4 / City screen" right="New set, every Monday" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/815; background:${black}`}><Picture name="topout-photo-metro" alt="Two scenes: a Comp night screen on a metro platform, and a hand holding a phone with the session clock at 48:20 in front of a climbing wall" sizes={full} /></div>
+      <Caption left="Fig. 6.5 / Metro and phone" right="Comp night · Session" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/733; background:${black}`}><Picture name="topout-photo-street" alt="A street at dusk with a digital billboard reading Climb in the light." sizes={full} /></div>
+      <Caption left="Fig. 6.6 / Street screen" right="Climb in the light" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/733; background:${black}`}><Picture name="topout-photo-wall-screen" alt="A climber chalks up beside Board B, under a screen showing V7 Night shift, 12/12" sizes={full} /></div>
+      <Caption left="Fig. 6.7 / Beside the wall" right="Night shift, 12 of 12" />
+    </figure>
+    <figure class="fig">
+      <div class="media" style={`aspect-ratio:1312/820; background:${black}`}><Picture name="topout-photo-chalk-kit" alt="Two close-ups: chalk dust between two hands in front of the lit holds, and climbing shoes and tape on a black mat" sizes={full} /></div>
+      <Caption left="Fig. 6.8 / Chalk and kit" right="Photography" />
+    </figure>
+  </Chapter>
+
+  <Credits
+    lines={['Mark, typeface, app and web.', 'One designer, start to finish.']}
+    rows={[
+      ['Design', 'Angel Guleran'],
+      ['Year', '2026'],
+      ['Tools', 'Figma · Figma Weave · Freepik'],
+      ['Typeface', 'Funnel Display · Funnel Sans · Geist Mono'],
+      ['Touchpoints', 'App, web, gym screens and social'],
+    ]}
+    deck={site.behanceTopout}
+  />
+
+  <NextProject num="02" name="Atlas Pay" href="/work/atlas-pay" desc="A payments brand built from a single mark, from the chip to the app." thumb="atlas-chip-lit" thumbAlt="The Atlas Pay chip, lit in blue" />
+
+  <Contact />
+</Base>

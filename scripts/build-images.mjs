@@ -13,7 +13,7 @@ if (!SRC) throw new Error('Pass the source folder');
 const OUT = 'public/img';
 const STEPS = [400, 640, 828, 1080, 1440, 1920, 2624];
 // Figma captures of UI pieces (screens, panels, type) keep text crisp with a higher quality setting.
-const UI = /^(atlas-(colour|logo-system|card-|app|phone-|send|website|applications|chip-crop|concept|construction|newcard|anim)|home-pog-social|pog-thumb|pog-ohno)/;
+const UI = /^(atlas-(colour|logo-system|card-|app|phone-|send|website|applications|chip-crop|concept|construction|newcard|anim)|home-pog-social|pog-thumb|pog-ohno|home-topout|topout-(?!photo-))/;
 
 await mkdir(OUT, { recursive: true });
 const only = process.argv.slice(3);
