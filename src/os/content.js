@@ -320,14 +320,33 @@ function trash(body) {
   body.innerHTML = `<div class="empty"><h2>Nothing to see here.</h2><p>Rejected marks end up in this folder. Some of them become whole brands later, like Topout did.</p></div>`;
 }
 
+// the reward: a celebration GIF, played from GIPHY (with credit), a different one each time
+const GIFS = [
+  { id: 'Ae7SI3LoPYj8Q', w: 480, h: 290, alt: 'The Wolf of Wall Street: the office bangs the table, chanting one of us' },
+  { id: 'WUmwGKySIjs8L7oYn9', w: 480, h: 480, alt: 'Matthew McConaughey slowly applauding' },
+  { id: 'BPJmthQ3YRwD6QqcVD', w: 480, h: 270, alt: 'The Great Gatsby: Leonardo DiCaprio raises a glass as fireworks go off' },
+  { id: '8VrtCswiLDNnO', w: 258, h: 148, alt: 'The Office: a celebration' }
+];
+const GIF_PAGE = { Ae7SI3LoPYj8Q: 'nhl-minnesota-wild-welcome-home-Ae7SI3LoPYj8Q', WUmwGKySIjs8L7oYn9: 'TheGentlemen-clapping-applause-mcconaughey-WUmwGKySIjs8L7oYn9', BPJmthQ3YRwD6QqcVD: 'HBOMax-hbomax-the-great-gatsby-2013-thegreatgatsbyonhbomax-BPJmthQ3YRwD6QqcVD', '8VrtCswiLDNnO': 'the-office-nbc-8VrtCswiLDNnO' };
+let gifN = Math.floor(Math.random() * GIFS.length);
+const gifHtml = (g) => `<div class="gif" style="aspect-ratio:${g.w} / ${g.h};width:min(100%, ${Math.round((240 * g.w) / g.h)}px)">
+    <video src="https://media.giphy.com/media/${g.id}/giphy.mp4" poster="https://media.giphy.com/media/${g.id}/giphy_s.gif" ${RM ? 'controls' : 'autoplay'} muted loop playsinline aria-label="${esc(g.alt)}"></video></div>`;
+
 function topped(body, _o, ctx) {
   body.innerHTML = `<article class="doc doc--note">
-    <pre class="doc__hold" aria-hidden="true">${HOLD(true)}</pre>
+    <figure class="gif-wrap"><div class="gif-slot">${gifHtml(GIFS[gifN])}</div>
+      <figcaption class="gif-cap"><a href="https://giphy.com/gifs/${GIF_PAGE[GIFS[gifN].id]}" target="_blank" rel="noopener">via GIPHY</a><button type="button" class="gif-next">Another one</button></figcaption></figure>
     <h2>You topped out.</h2>
     <p>You found the hidden route on Board B: 21 holds, a 7.5° ray grid and 9 faces. That means you actually looked at the work, which is exactly the kind of person I like working with.</p>
     <p>Say hi with the subject “Topped out” and I’ll know you got here.</p>
     <div class="os-row"><a class="os-btn os-btn--hot" href="mailto:${PERSON.email}?subject=${encodeURIComponent('Topped out')}">Say hi</a></div>
   </article>`;
+  body.querySelector('.gif-next').addEventListener('click', () => {
+    gifN = (gifN + 1) % GIFS.length;
+    const g = GIFS[gifN];
+    body.querySelector('.gif-slot').innerHTML = gifHtml(g);
+    body.querySelector('.gif-cap a').href = `https://giphy.com/gifs/${GIF_PAGE[g.id]}`;
+  });
 }
 
 function info(body, { file, p } = {}, ctx) {
@@ -369,7 +388,7 @@ export const APPS = {
   mail: { title: 'New message', size: [560, 440], build: mail },
   term: { title: 'Terminal', size: [660, 420], route: 'terminal', build: terminal, dark: true },
   trash: { title: 'Old logos', size: [440, 300], build: trash },
-  topped: { title: 'topped-out.txt', size: [480, 520], build: topped },
+  topped: { title: 'topped-out.txt', size: [500, 660], build: topped },
   info: { title: 'Info', size: [380, 360], build: info }
 };
 // folder windows share one slot on the desktop, so opening Atlas Pay reuses an open Topout window
