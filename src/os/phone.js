@@ -1,6 +1,6 @@
 // Angel OS, phone shell: a lock screen, a home screen of apps that open full screen and stack,
 // long-press menus, a jiggle mode to rearrange the icons and a control centre.
-import { APPS, PROJECTS, PERSON, glyph, copyText, copyEmail, goNormal, linkFor, store, caseUrl } from './content.js';
+import { APPS, PROJECTS, PERSON, glyph, copyText, copyEmail, goNormal, linkFor, store } from './content.js';
 import { $, RM, say, clock, timeBig, fmtDate, setWall, savedWall, wallField, WALLS, routeApp, onLongPress } from './shared.js';
 
 const P = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
@@ -168,7 +168,6 @@ const APPS_HOME = {
   about: { label: 'About', html: glyph('file', { ext: 'TXT' }), app: 'about' },
   contact: { label: 'Contact', html: glyph('file', { ext: 'VCF' }), app: 'contact' },
   term: { label: 'Terminal', html: '<span class="tile tile--dark" aria-hidden="true">&gt;_</span>', app: 'term' },
-  trash: { label: 'Old logos', html: glyph('trash'), app: 'trash' },
   topped: { label: 'Topped out', html: glyph('file', { ext: 'TXT' }), app: 'topped', secret: true }
 };
 const DEFAULT_ORDER = Object.keys(APPS_HOME);
@@ -180,7 +179,7 @@ let jiggle = false;
 function appMenu(key, el) {
   const a = APPS_HOME[key];
   const items = [['Open', () => openSheet(a.app, {}, el)]];
-  if (a.p) items.push(['Read the case study', () => { location.href = caseUrl(a.p); }], ['Share', () => share(a.p.name, linkFor(a.p.id))]);
+  if (a.p) items.push(['Read the case study', () => openSheet('case', { p: a.p })], ['Share', () => share(a.p.name, linkFor(a.p.id))]);
   if (key === 'contact') items.push(['Copy email', () => copyEmail({ say })]);
   items.push('-', ['Edit Home Screen', startJiggle]);
   pressMenu(el, items);

@@ -34,7 +34,6 @@ export const SIDEBAR = ['Work', 'Topout', 'Atlas Pay', 'POG'];
 
 export function glyph(kind, opts = {}) {
   if (kind === 'folder') return `<span class="glyph glyph--folder" style="--g1:${opts.p ? opts.p.color : '#e4e1d9'}" aria-hidden="true"></span>`;
-  if (kind === 'trash') return '<span class="glyph glyph--trash" aria-hidden="true"></span>';
   if (kind === 'site') return '<span class="glyph glyph--site" aria-hidden="true"><i></i></span>';
   if (kind === 'capsule') return '<span class="glyph glyph--capsule" aria-hidden="true"><i></i><i></i></span>';
   return `<span class="glyph glyph--file" aria-hidden="true"><b>${esc(opts.ext || '')}</b></span>`;
@@ -68,13 +67,15 @@ function folder(body, { name = 'Work' } = {}, ctx) {
       ? `<nav class="folder__side" aria-label="Folders">${SIDEBAR.map((s) => `<button type="button" class="${s === n ? 'is-on' : ''}" data-go="${esc(s)}" ${s === n ? 'aria-current="true"' : ''}>${esc(s)}</button>`).join('')}</nav>`
       : '';
     const head = p
-      ? `<header class="folder__head"><div><h2>${esc(p.name)}</h2><p>${esc(p.desc)}</p></div><a class="os-btn" href="${caseUrl(p)}">Read the case study</a></header>`
+      ? `<header class="folder__head"><div><h2>${esc(p.name)}</h2><p>${esc(p.desc)}</p></div><a class="os-btn" href="${caseUrl(p)}" data-case>Read the case study</a></header>`
       : `<header class="folder__head"><div><h2>Selected work</h2><p>Three brands, each built from one idea. Open a folder to look around.</p></div></header>`;
     const hint = ctx.mode === 'desk' ? 'Double-click to open' : 'Tap to open';
     body.innerHTML = `<div class="folder ${side ? '' : 'folder--solo'}">${side}<div class="folder__main">${head}
       <ul class="folder__grid" role="list">${files.map((f, i) => `<li><button type="button" class="file" data-i="${i}">${thumb(f)}<span class="file__name">${esc(f.name)}</span></button></li>`).join('')}</ul>
       <p class="folder__status" aria-live="polite">${files.length} items. ${hint}.</p></div></div>`;
     const status = body.querySelector('.folder__status');
+    const cs = body.querySelector('[data-case]');
+    if (cs) cs.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); ctx.open('case', { p }, cs); });
     body.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => render(b.dataset.go)));
     const openFile = (f, b) => {
       if (f.type === 'folder') return ctx.mode === 'desk' ? render(f.name) : ctx.open(f.id, {}, b);
@@ -101,7 +102,7 @@ function folder(body, { name = 'Work' } = {}, ctx) {
         if (!ctx.menu) return;
         select();
         const items = [['Open', () => openFile(f, b)]];
-        if (f.p) items.push(['Get info', () => ctx.open('info', { file: f }, b)], '-', ['Read the case study', () => { location.href = caseUrl(f.p); }]);
+        if (f.p) items.push(['Get info', () => ctx.open('info', { file: f }, b)], '-', ['Read the case study', () => ctx.open('case', { p: f.p }, b)]);
         if (f.type === 'folder') items.push(['Copy link', () => copyText(linkFor(f.id), ctx, 'Link copied')]);
         ctx.menu(items, e);
       };
@@ -112,15 +113,170 @@ function folder(body, { name = 'Work' } = {}, ctx) {
   render(name);
 }
 
+// The viewer: arrows or swipes step through; pictures zoom (wheel, pinch, double-click, + and -) and pan;
+// videos that have a soundtrack play a full cut with a sound switch.
+let soundOn = false; // once someone turns sound on, the next film starts with it
+const SPK = (on) => `<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M3 7.5h3l4-3.5v12l-4-3.5H3z" fill="currentColor"/>${on
+  ? '<path d="M13 7a4 4 0 0 1 0 6M15.2 4.8a7 7 0 0 1 0 10.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'
+  : '<path d="M13.5 7.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'}</svg>`;
+
 function viewer(body, { list, idx = 0 }, ctx) {
-  body.innerHTML = `<div class="viewer"><div class="viewer__stage"></div>
+  body.innerHTML = `<div class="viewer"><div class="viewer__wrap"><div class="viewer__stage"></div>
+      <div class="viewer__tools" hidden><button type="button" data-z="-" aria-label="Zoom out">&minus;</button><button type="button" data-z="0" class="viewer__pct" aria-label="Fit to the window">100%</button><button type="button" data-z="+" aria-label="Zoom in">+</button></div>
+      <button type="button" class="viewer__sound" hidden></button></div>
     <div class="viewer__bar"><button type="button" class="viewer__nav" data-d="-1" aria-label="Previous">&larr;</button><p class="viewer__cap" aria-live="polite"></p><button type="button" class="viewer__nav" data-d="1" aria-label="Next">&rarr;</button></div></div>`;
   const stage = body.querySelector('.viewer__stage'), cap = body.querySelector('.viewer__cap');
+  const tools = body.querySelector('.viewer__tools'), pct = body.querySelector('.viewer__pct'), snd = body.querySelector('.viewer__sound');
+  let img = null, vid = null, z = { s: 1, x: 0, y: 0 };
+
+  // ---- zoom: the picture's box fills the stage; the image sits contained inside it
+  const fit = () => {
+    const bw = img.clientWidth, bh = img.clientHeight, ar = (img.naturalWidth || 1) / (img.naturalHeight || 1);
+    let cw = bw, ch = bw / ar;
+    if (ch > bh) { ch = bh; cw = bh * ar; }
+    return { bw, bh, cw, ch, ox: (bw - cw) / 2, oy: (bh - ch) / 2 };
+  };
+  const maxS = () => { const r = fit(); return Math.min(8, Math.max(3, 2.5 * (img.naturalWidth || 1) / (r.cw || 1))); };
+  const paint = (anim) => {
+    if (!img) return;
+    const r = fit();
+    // small picture: keep it centred; big picture: no empty gaps at the edges
+    const keep = (t, b, c, o) => z.s * c <= b ? (b - z.s * c) / 2 - z.s * o : Math.min(-z.s * o, Math.max(b - z.s * (o + c), t));
+    z.x = keep(z.x, r.bw, r.cw, r.ox); z.y = keep(z.y, r.bh, r.ch, r.oy);
+    img.classList.toggle('is-anim', !!anim && !RM);
+    img.style.transform = z.s > 1.001 ? `translate(${z.x}px, ${z.y}px) scale(${z.s})` : '';
+    stage.classList.toggle('is-zoomed', z.s > 1.001);
+    pct.textContent = Math.round(z.s * 100) + '%';
+  };
+  const zoomAt = (s2, px, py, anim) => {
+    if (!img) return;
+    s2 = Math.min(maxS(), Math.max(1, s2));
+    z.x = px - (px - z.x) * (s2 / z.s); z.y = py - (py - z.y) * (s2 / z.s); z.s = s2;
+    paint(anim);
+  };
+  const local = (cx, cy) => { const r = stage.getBoundingClientRect(); return { x: cx - r.left - img.offsetLeft, y: cy - r.top - img.offsetTop }; };
+  const mid = () => ({ x: img.clientWidth / 2, y: img.clientHeight / 2 });
+  const zoomKey = (k) => {
+    if (!img) return;
+    const m = mid();
+    if (k === '0') zoomAt(1, m.x, m.y, true);
+    else zoomAt(z.s * (k === '-' ? 1 / 1.6 : 1.6), m.x, m.y, true);
+  };
+  tools.querySelectorAll('[data-z]').forEach((b) => b.addEventListener('click', () => zoomKey(b.dataset.z)));
+  ctx.zoom = (k) => zoomKey(k === '=' ? '+' : k);
+
+  // a mouse wheel zooms; a trackpad's two-finger scroll pans and its pinch (ctrl + wheel) zooms
+  stage.addEventListener('wheel', (e) => {
+    if (!img) return;
+    e.preventDefault();
+    const pan = !e.ctrlKey && (Math.abs(e.deltaX) > 0.5 || (e.deltaMode === 0 && Math.abs(e.deltaY) < 40 && !Number.isInteger(e.deltaY)));
+    if (pan) { if (z.s > 1.001) { z.x -= e.deltaX; z.y -= e.deltaY; paint(); } return; }
+    const d = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY, p = local(e.clientX, e.clientY);
+    zoomAt(z.s * Math.exp(-d * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
+  }, { passive: false });
+
+  // one pointer pans (or swipes to the next one), two pinch, a double tap toggles the zoom
+  const pts = new Map();
+  let drag = null, pinch = null, lastTap = null, lastType = 'mouse';
+  stage.addEventListener('pointerdown', (e) => {
+    lastType = e.pointerType;
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    if (vid) { drag = { x: e.clientX, y: e.clientY, type: e.pointerType }; return; }
+    if (!img) return;
+    stage.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, m: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+      drag = null;
+    } else if (pts.size === 1) drag = { x: e.clientX, y: e.clientY, zx: z.x, zy: z.y, type: e.pointerType, moved: false };
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!img || !pts.has(e.pointerId)) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinch && pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y) || 1, m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      z.x += m.x - pinch.m.x; z.y += m.y - pinch.m.y;
+      const p = local(m.x, m.y);
+      zoomAt(z.s * d / pinch.d, p.x, p.y);
+      pinch.d = d; pinch.m = m;
+      return;
+    }
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 5) drag.moved = true;
+    if (z.s > 1.001) { z.x = drag.zx + dx; z.y = drag.zy + dy; paint(); stage.classList.add('is-panning'); }
+  });
+  const up = (e) => {
+    if (vid) {
+      if (drag && drag.type !== 'mouse') { const dx = e.clientX - drag.x; if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - drag.y)) step(dx < 0 ? 1 : -1); }
+      drag = null; return;
+    }
+    if (!pts.has(e.pointerId)) return;
+    pts.delete(e.pointerId);
+    stage.classList.remove('is-panning');
+    if (pinch) {
+      pinch = null;
+      const rest = [...pts.values()][0];
+      drag = rest ? { x: rest.x, y: rest.y, zx: z.x, zy: z.y, type: e.pointerType, moved: true } : null;
+      return;
+    }
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (e.type === 'pointercancel') return;
+    const dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if (z.s <= 1.001 && d.type !== 'mouse' && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) return step(dx < 0 ? 1 : -1);
+    if (d.moved || d.type === 'mouse') return; // a mouse double-click is handled below
+    const now = performance.now();
+    if (lastTap && now - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30) { lastTap = null; toggle(e.clientX, e.clientY); }
+    else lastTap = { t: now, x: e.clientX, y: e.clientY };
+  };
+  stage.addEventListener('pointerup', up);
+  stage.addEventListener('pointercancel', up);
+  const toggle = (cx, cy) => { const p = local(cx, cy); if (z.s > 1.001) zoomAt(1, p.x, p.y, true); else zoomAt(2.5, p.x, p.y, true); };
+  stage.addEventListener('dblclick', (e) => { if (img && lastType === 'mouse') toggle(e.clientX, e.clientY); }); // touch has its own double tap above
+  new ResizeObserver(() => paint()).observe(stage);
+
+  // ---- sound
+  const setSnd = () => {
+    const on = vid && !vid.muted;
+    snd.innerHTML = `${SPK(on)}<span>${on ? 'Sound off' : 'Sound on'}</span>`;
+    snd.setAttribute('aria-label', on ? 'Turn the sound off' : 'Turn the sound on');
+    snd.classList.toggle('is-muted', !on);
+  };
+  snd.addEventListener('click', () => {
+    if (!vid) return;
+    if (vid.muted) {
+      if (!vid.dataset.heard && vid.currentTime > 1) vid.currentTime = 0; // first time: from the top
+      vid.dataset.heard = '1';
+      vid.muted = false; soundOn = true;
+      vid.play().catch(() => {});
+    } else { vid.muted = true; soundOn = false; }
+    setSnd();
+  });
+
   const show = () => {
     const f = list[idx];
+    z = { s: 1, x: 0, y: 0 }; pts.clear(); drag = pinch = lastTap = null;
+    stage.classList.remove('is-zoomed', 'is-panning');
+    const label = esc(f.p.name + ': ' + f.cap);
     stage.innerHTML = f.type === 'image'
-      ? `<img src="${f.src}" alt="${esc(f.p.name + ': ' + f.cap)}">`
-      : `<video src="${f.src}" poster="${f.poster}" ${RM ? 'controls' : 'autoplay'} muted loop playsinline aria-label="${esc(f.p.name + ': ' + f.cap)}"></video>`;
+      ? `<img src="${f.src}" alt="${label}" draggable="false">`
+      : `<video src="${f.sound || f.src}" poster="${f.poster}" ${RM ? 'controls' : 'autoplay'} ${f.sound ? 'controls' : ''} muted loop playsinline aria-label="${label}"></video>`;
+    img = stage.querySelector('img'); vid = stage.querySelector('video');
+    tools.hidden = !img; snd.hidden = !(vid && f.sound);
+    if (img) {
+      pct.textContent = '100%';
+      if (!img.complete) img.addEventListener('load', () => paint(), { once: true });
+      // the sharp version (same framing, more pixels) takes over once it has loaded
+      if (f.hd) { const hi = new Image(); hi.onload = () => { if (img && img.isConnected && list[idx] === f) { img.src = f.hd; paint(); } }; hi.src = f.hd; }
+    }
+    if (vid && f.sound) {
+      vid.addEventListener('volumechange', setSnd);
+      if (soundOn && !RM) { vid.muted = false; vid.dataset.heard = '1'; vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); setSnd(); }); }
+      setSnd();
+    }
     cap.innerHTML = `<span class="viewer__text">${esc(f.cap)}</span><span class="viewer__count">${esc(f.p.name)}, ${idx + 1} of ${list.length}</span>`;
     ctx.setTitle(f.name);
     // warm the next one so stepping through feels instant
@@ -129,11 +285,45 @@ function viewer(body, { list, idx = 0 }, ctx) {
   };
   const step = (d) => { idx = (idx + d + list.length) % list.length; show(); };
   body.querySelectorAll('[data-d]').forEach((b) => b.addEventListener('click', () => step(+b.dataset.d)));
-  let sx = null;
-  stage.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') sx = e.clientX; });
-  stage.addEventListener('pointerup', (e) => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1); });
   ctx.step = step;
   show();
+}
+
+// A case study, inside the OS: the real page in a window (desk) or a full-screen sheet (phone).
+// Same origin, so the window can follow the page's title as you click through to the next project.
+function casestudy(body, { p }, ctx) {
+  const host = location.host.replace(/^www\./, '');
+  body.innerHTML = `<div class="cs">
+    <div class="cs__bar"><span class="cs__url" title="${esc(host + p.url)}"><i aria-hidden="true"></i><span>${esc(host)}<b>${esc(p.url)}</b></span></span>
+      <a class="cs__out" href="${p.url}" target="_blank" rel="noopener">Open in a new tab</a></div>
+    <div class="cs__frame"><iframe src="${p.url}" title="${esc(p.name)} case study"></iframe><p class="cs__load" role="status">Opening ${esc(p.name)}</p></div>
+  </div>`;
+  const frame = body.querySelector('iframe'), load = body.querySelector('.cs__load'), url = body.querySelector('.cs__url'), out = body.querySelector('.cs__out');
+  ctx.setTitle(`${p.name} case study`);
+  frame.addEventListener('load', () => {
+    load.hidden = true;
+    try {
+      const w = frame.contentWindow, path = w.location.pathname.replace(/\/$/, '') || '/';
+      const t = (w.document.title || '').split(' | ')[0].trim();
+      if (t) ctx.setTitle(t);
+      url.title = host + path;
+      url.querySelector('b').textContent = path;
+      out.href = path;
+      // clicks inside the page don't reach the window, so pass them on (focus, closing menus)
+      w.addEventListener('pointerdown', () => frame.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
+      w.addEventListener('keydown', (e) => { if (e.key === 'Escape') frame.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); });
+    } catch (e) { /* not same origin: leave the title as it is */ }
+  });
+  // links the page hands up (it can't leave the window by itself)
+  const onMsg = (e) => {
+    if (!frame.isConnected) return removeEventListener('message', onMsg);
+    if (e.source !== frame.contentWindow || e.origin !== location.origin || !e.data || e.data.aos !== 'link') return;
+    const u = new URL(e.data.href, location.origin);
+    if (u.pathname === '/site' && (!u.hash || u.hash === '#work')) ctx.open('work', {}, frame);
+    else if (u.pathname !== '/') location.href = u.href;
+  };
+  addEventListener('message', onMsg);
+  ctx.focusTarget = frame;
 }
 
 const LEDE = 'I design brand identities that work flat, in 3D and in motion: the mark, the type, the app and the film, all from one idea.';
@@ -324,9 +514,6 @@ function terminal(body, _o, ctx) {
   ctx.focusTarget = inp;
 }
 
-function trash(body) {
-  body.innerHTML = `<div class="empty"><h2>Nothing to see here.</h2><p>Rejected marks end up in this folder. Some of them become whole brands later, like Topout did.</p></div>`;
-}
 
 // the reward: a celebration GIF, played from GIPHY (with credit), a different one each time
 const GIFS = [
@@ -396,10 +583,10 @@ export const APPS = {
   contact: { title: 'contact.vcf', size: [460, 380], route: 'contact', build: contact },
   mail: { title: 'New message', size: [560, 440], build: mail },
   term: { title: 'Terminal', size: [660, 420], route: 'terminal', build: terminal, dark: true },
-  trash: { title: 'Old logos', size: [440, 300], build: trash },
   topped: { title: 'topped-out.txt', size: [500, 660], build: topped },
   info: { title: 'Info', size: [380, 360], build: info },
-  gallery: { title: 'gallery.exe', size: [1120, 740], route: 'gallery', build: gallery }
+  gallery: { title: 'gallery.exe', size: [1120, 740], route: 'gallery', build: gallery },
+  case: { title: 'Case study', size: [1180, 800], build: casestudy, dark: true }
 };
 // folder windows share one slot on the desktop, so opening Atlas Pay reuses an open Topout window
 export const SLOT = { work: 'folder', topout: 'folder', atlas: 'folder', pog: 'folder' };

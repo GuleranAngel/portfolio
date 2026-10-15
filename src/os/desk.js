@@ -1,5 +1,5 @@
 // Angel OS, desktop shell: windows, menus, desktop icons, a dock and right-click menus.
-import { APPS, SLOT, PROJECTS, PERSON, glyph, copyEmail, copyText, goNormal, linkFor, store, caseUrl } from './content.js';
+import { APPS, SLOT, PROJECTS, PERSON, glyph, copyEmail, copyText, goNormal, linkFor, store } from './content.js';
 import { $, RM, say, clock, setWall, savedWall, WALLS, wallField, routeApp, setRoute } from './shared.js';
 
 const desk = $('#desk'), layer = $('#windows');
@@ -31,7 +31,7 @@ export function open(id, opts = {}, from) {
   let win = wins.get(key);
   if (win) {
     if (win.min) restore(win);
-    if (win.id !== id || ['viewer', 'mail', 'info'].includes(id)) build(win, id, opts);
+    if (win.id !== id || ['viewer', 'mail', 'info', 'case'].includes(id)) build(win, id, opts);
     focusWin(win, true);
     return win;
   }
@@ -51,7 +51,7 @@ function build(win, id, opts) {
   win.ctx = ctxFor(win);
   setTitle(win, app.title);
   app.build(win.body, opts, win.ctx);
-  win.body.classList.toggle('win__body--fixed', id === 'viewer');
+  win.body.classList.toggle('win__body--fixed', id === 'viewer' || id === 'case');
 }
 
 function createWin(id, key, app, from) {
@@ -248,7 +248,6 @@ const ICONS = [
   { id: 'contact', label: 'contact.vcf', html: glyph('file', { ext: 'VCF' }), app: 'contact' },
   { id: 'gallery', label: 'gallery.exe', html: glyph('capsule'), app: 'gallery' },
   { id: 'term', label: 'Terminal', html: '<span class="glyph glyph--term" aria-hidden="true">&gt;_</span>', app: 'term' },
-  { id: 'trash', label: 'Old logos', html: glyph('trash'), app: 'trash' },
   { id: 'topped', label: 'topped-out.txt', html: glyph('file', { ext: 'TXT' }), app: 'topped', secret: true }
 ];
 const iconsEl = $('#icons');
@@ -324,9 +323,8 @@ ICONS.forEach((def, i) => {
 function iconMenu(ic, x, y, focusFirst) {
   const many = selected.size > 1;
   const items = [[many ? `Open ${selected.size} items` : 'Open', () => (many ? [...selected] : [ic]).forEach((s) => open(s.app, {}, s.el))]];
-  if (ic.p && !many) items.push(['Get info', () => open('info', { p: ic.p }, ic.el)], ['Read the case study', () => { location.href = caseUrl(ic.p); }], ['Copy link', () => copyText(linkFor(ic.id), { say }, 'Link copied')]);
+  if (ic.p && !many) items.push(['Get info', () => open('info', { p: ic.p }, ic.el)], ['Read the case study', () => open('case', { p: ic.p }, ic.el)], ['Copy link', () => copyText(linkFor(ic.id), { say }, 'Link copied')]);
   if (ic.id === 'contact') items.push(['Copy email address', () => copyEmail({ say })]);
-  items.push('-', ['Move to Old logos', () => say(ic.id === 'trash' ? 'It is already in there.' : 'Nope. That one is a keeper.')]);
   showMenuAt(items, x, y, focusFirst);
 }
 
@@ -440,7 +438,7 @@ const link = (url) => () => window.open(url, '_blank', 'noopener');
 const MENUS = [
   ['Angel OS', [['Welcome', () => open('welcome')], ['About this site', () => open('about')], '-', ['Switch to normal website', goNormal], ['Restart', () => restart()]]],
   ['File', [['New Work window', () => open('work'), 'Alt N'], ['Close window', () => active && closeWin(active), 'Alt W'], ['Close all windows', closeAll]]],
-  ['Work', [['Topout', () => open('topout')], ['Atlas Pay', () => open('atlas')], ['POG', () => open('pog')], '-', ['gallery.exe', () => open('gallery')], ['Old logos', () => open('trash')], ['Terminal', () => open('term')]]],
+  ['Work', [['Topout', () => open('topout')], ['Atlas Pay', () => open('atlas')], ['POG', () => open('pog')], '-', ['gallery.exe', () => open('gallery')], ['Terminal', () => open('term')]]],
   ['View', [['Clean up icons', cleanUp], ['Tidy windows', tidy], '-', ...Object.keys(WALLS).map((k) => [`Wallpaper: ${k}`, () => setWall($('#wall'), k)])]],
   ['Contact', [['Write an email…', () => open('mail')], ['Copy email address', () => copyEmail({ say })], ['Contact card', () => open('contact')], '-', ['Behance', link(PERSON.behance)], ['LinkedIn', link(PERSON.linkedin)]]]
 ];
@@ -517,6 +515,9 @@ window.addEventListener('keydown', (e) => {
   if (e.altKey && e.code === 'KeyN') { e.preventDefault(); open('work'); }
   if (active && active.ctx && active.ctx.step && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input, textarea, [role=menu], .menubar')) {
     e.preventDefault(); active.ctx.step(e.key === 'ArrowRight' ? 1 : -1);
+  }
+  if (active && active.ctx && active.ctx.zoom && ['+', '=', '-', '0'].includes(e.key) && !e.ctrlKey && !e.metaKey && !e.target.closest('input, textarea, [role=menu], .menubar')) {
+    e.preventDefault(); active.ctx.zoom(e.key);
   }
 });
 

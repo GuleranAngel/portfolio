@@ -28,6 +28,23 @@ const ld = {
   address: { '@type': 'PostalAddress', addressCountry: 'RO' },
   sameAs: [site.behance, site.linkedin],
 };
+// Inside Angel OS a case study opens in a window (an iframe): drop the site chrome there.
+// Case study links stay in the window; anything else is handed to the OS.
+const EMBED = `(function () {
+  if (self === top && !/[?&]embed(=|&|$)/.test(location.search)) return;
+  document.documentElement.classList.add('is-embedded');
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || a.target) return;
+    var u = new URL(a.href, location.href);
+    if (!/^https?:$/.test(u.protocol)) return;
+    if (u.origin !== location.origin) { a.target = '_blank'; a.rel = 'noopener'; return; }
+    if (u.pathname.indexOf('/work/') === 0 || u.pathname === location.pathname) return;
+    // the OS decides: "All work" opens its Work folder, anything else takes the whole tab
+    if (self !== top) { e.preventDefault(); top.postMessage({ aos: 'link', href: u.pathname + u.search + u.hash }, location.origin); return; }
+    a.target = '_top';
+  }, true);
+})();`;
 ---
 <!doctype html>
 <html lang="en">
@@ -55,6 +72,7 @@ const ld = {
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    {!bare && <script is:inline set:html={EMBED} />}
     <slot name="head" />
   </head>
   <body id="top" class:list={[bare && 'aos']}>

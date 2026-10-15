@@ -1,4 +1,4 @@
-// gallery.exe: the 72 pieces from the Portfolio Gallery in Figma (3D, motion, branding, logos, xMoney visuals,
+// gallery.exe: the pieces from the Portfolio Gallery in Figma (3D, motion, branding, logos, xMoney visuals,
 // overview sheets). Stills were exported from Figma; motion pieces are short MP4 loops cut from the originals.
 // Facts here come from the gallery itself (section captions, piece names, years) and from where the source
 // files live. Anything not known is left out rather than guessed.
@@ -17,7 +17,7 @@ export const RARITY = {
 
 // the case board groups the work into cases; red string links related cases
 export const CASES = [
-  { id: 'coins', title: 'The XM coins', note: 'Coin renders for EURXM, RONXM and USDXM, and the EURXM coin flip.', items: ['105', '142', '143', '144', '145', '146', '147', '202'] },
+  { id: 'coins', title: 'The XM coins', note: 'Coin renders for EURXM, RONXM and USDXM, and the EURXM coin flip.', items: ['105', '142', '144', '145', '146', '147', '202'] },
   { id: 'xmoney3d', title: 'xMoney in 3D and motion', note: '3D loops, icons and motion pieces for xMoney.', items: ['106', '107', '108', '112', '213', '239', '240', '203', '204'] },
   { id: 'xmv', title: 'xMoney visuals', where: 'xMoney, in-house', note: 'Marketing visuals for xMoney.', items: ['801', '803', '804', '805', '806', '807', '808', '809', '810'] },
   { id: 'xportal', title: 'xPortal frosted cards', note: 'Frosted glass cards for xPortal.', items: ['111', '140', '141'] },
@@ -41,8 +41,12 @@ export const LINKS = [
 ];
 
 // pieces whose source files sit in the MultiversX folders (made in-house there, later at xMoney)
-const IN_HOUSE = ['103', '105', '106', '107', '108', '111', '112', '140', '141', '142', '143', '144', '145', '146', '147', '202', '203', '204', '213', '214', '239', '240'];
+const IN_HOUSE = ['103', '105', '106', '107', '108', '111', '112', '140', '141', '142', '144', '145', '146', '147', '202', '203', '204', '213', '214', '239', '240'];
 const WHERE = { '219': 'Wagmi Markets' };
+// pieces whose original has a soundtrack: the viewer plays a full-length cut with sound (<key>-sound.mp4)
+const SOUND = ['103', '213', '214', '219'];
+// stills rebuilt from the original files at up to 2400px, so the viewer stays sharp when you zoom in (<key>-hd.webp)
+const HD = ['105', '111', '112', '140', '141', '142', '144', '145', '146', '147', '310', '320', '328', '350', '351', '352', '354', '355', '377', '503', '504'];
 
 const catOf = (id) => {
   if (id.startsWith('X')) return 'Logos';
@@ -76,7 +80,9 @@ export function buildGallery(stills, versioned) {
     return {
       id: s.id, title: s.name, year: s.year || c.year || null, cat, case: c.id, kind: kindOf(cat, s.name, s.video),
       where: where || null, role: c.role || null, video: s.video, w: s.w, h: s.h,
-      src: versioned(`${base}.webp`), thumb: versioned(`${base}-t.webp`), mp4: s.video ? versioned(`${base}.mp4`) : null
+      src: versioned(`${base}.webp`), thumb: versioned(`${base}-t.webp`), mp4: s.video ? versioned(`${base}.mp4`) : null,
+      sound: SOUND.includes(s.id) ? versioned(`${base}-sound.mp4`) : null,
+      hd: HD.includes(s.id) ? versioned(`${base}-hd.webp`) : null
     };
   });
   const order = (a, b) => CATS.indexOf(a.cat) - CATS.indexOf(b.cat) || a.id.localeCompare(b.id, 'en', { numeric: true });

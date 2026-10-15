@@ -15,7 +15,7 @@ const gal = () => {
 };
 const caseOf = (it) => gal().caseById[it.case];
 // the viewer app expects the same shape as the project folders
-const asFile = (it) => ({ type: it.video ? 'video' : 'image', src: it.video ? it.mp4 : it.src, poster: it.src, cap: it.title, name: `${it.id} ${it.title}`, p: { name: caseOf(it).title } });
+const asFile = (it) => ({ type: it.video ? 'video' : 'image', src: it.video ? it.mp4 : it.src, sound: it.sound, hd: it.hd, poster: it.src, cap: it.title, name: `${it.id} ${it.title}`, p: { name: caseOf(it).title } });
 const openIn = (ctx, list, it, from) => ctx.open('viewer', { list: list.map(asFile), idx: list.indexOf(it) }, from);
 const media = (it, cls = '') => it.video
   ? `<video class="${cls}" src="${it.mp4}" poster="${it.src}" ${RM ? '' : 'autoplay'} muted loop playsinline aria-label="${esc(it.title)}"></video>`
