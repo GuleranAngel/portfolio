@@ -169,7 +169,7 @@ function machine(pane, ctx, count) {
   function showTen(picks, fresh) {
     reveal.innerHTML = `<div class="prize prize--ten" role="dialog" aria-label="Ten capsules">
       <div class="prize__card"><h3>${fresh.size} new ${fresh.size === 1 ? 'piece' : 'pieces'}${fresh.size < picks.length ? `, ${picks.length - fresh.size} you had` : ''}</h3>
-        <ul class="ten" role="list">${picks.map((it, i) => `<li style="--c:${rar(it).color};--d:${i * 60}ms"><button type="button" data-id="${it.id}"><img src="${it.thumb}" alt="" decoding="async"><span>${esc(it.title)}</span>${fresh.has(it.id) ? '<b>New</b>' : ''}</button></li>`).join('')}</ul>
+        <ul class="ten" role="list">${picks.map((it, i) => `<li style="--c:${rar(it).color};--d:${i * 60}ms"><button type="button" data-id="${it.id}"><span class="ten__pic"><img src="${it.thumb}" alt="" decoding="async" width="${it.w}" height="${it.h}"></span><span class="ten__name">${fresh.has(it.id) ? '<b>New</b> ' : ''}${esc(it.title)}</span></button></li>`).join('')}</ul>
         <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Turn once more</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
       </div></div>`;
     openReveal();
