@@ -41,7 +41,8 @@ function openSheet(id, opts = {}, from, { push = true } = {}) {
   const sheet = { id, el, from: from || document.activeElement };
   sheet.ctx = ctxFor(sheet);
   sheet.ctx.setTitle(app.title || '');
-  app.build(el.querySelector('.sheet__body'), opts, sheet.ctx);
+  const body = el.querySelector('.sheet__body');
+  try { app.build(body, opts, sheet.ctx); } catch (err) { console.error(err); body.innerHTML = '<div class="empty"><h2>That didn’t open.</h2><p>Something went wrong here. Try again, or switch to the normal website.</p></div>'; }
   stack.push(sheet);
   setInert();
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('is-opening')));

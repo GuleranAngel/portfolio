@@ -192,17 +192,17 @@ function mail(body, { subject = '' } = {}, ctx) {
 // the holds in the Topout mark, the angle of the Atlas Pay ray grid and the faces of POG.
 const TOPPED = () => !!store.get('topped');
 const NOTE = `There's a secret route on Board B, and it's locked.
-The code is three numbers, all hiding in the work:
+The code is three numbers. Each one is hiding somewhere in my work:
 
-  1. How many holds make the Topout mark?
-  2. Atlas Pay is built on a grid of rays. How many degrees apart are they?
-  3. How many faces does POG have?
+  1. One lit hold started a whole brand. How many holds make its mark?
+  2. A card's mark is drawn with rays. How many degrees apart are they?
+  3. A pink logo keeps changing its face. How many faces does it have?
 
-Find them in the folders on the desktop, then type the three
-numbers here with dashes between them, like this: <b>10-45-3</b>
+Look through the folders on the desktop. When you have all three,
+type them here with dashes between them, like this: <b>10-45-3</b>
 
-Stuck? Type <b>hint</b> for a clue.`;
-const HINTS = ['The Topout mark is in the Topout folder, file 07-the-mark. Count the dots.', 'In the Atlas Pay folder, 08-icon-construction gives the angle.', 'In the POG folder, count the faces in 09-all-the-faces.'];
+Stuck? Type <b>hint</b>.`;
+const HINTS = ['The first number is in the Topout folder. Look for the page about the logo.', 'The second is in Atlas Pay, on the page that shows how the mark is built.', 'The third is in POG. Find the page where every face shows up at once.'];
 const LOCKED = 'Psst. Something on Board B is locked. Type <b>cd board-b</b> to take a look.';
 const EXAMPLE = 'like this: <b>10-45-3</b>';
 const HOLD = (lit) => {
@@ -225,7 +225,7 @@ function terminal(body, _o, ctx) {
     if (parts.length < 3) return print(`That's ${parts.length || 'none'} of the three numbers. Type all three with dashes between them, ${EXAMPLE}`);
     const ok = [parts[0] === '21', ['7.5', '7.50'].includes(parts[1]), parts[2] === '9'];
     const right = ok.filter(Boolean).length;
-    if (right < 3) return print(`<span class="dim">click.</span> ${ok.map((x) => (x ? '<b>●</b>' : '○')).join(' ')}   ${right} of 3 right.${right ? ' The lit ones are correct.' : ''} Type <b>hint</b> for a clue.`);
+    if (right < 3) return print(`<span class="dim">click.</span> ${right} of 3 right. Keep looking${hintN < 3 ? ', or type <b>hint</b>' : ''}.`);
     print(`\n${HOLD(true)}\n\n<b>You topped out.</b> Not many people find this.\nA file just appeared on your ${ctx.mode === 'desk' ? 'desktop' : 'home screen'}.`);
     store.set('topped', true);
     document.dispatchEvent(new CustomEvent('aos:topped'));
@@ -287,7 +287,7 @@ function terminal(body, _o, ctx) {
     ':q': () => print('See? Easy.'),
     ping: () => print('pong'),
     coffee: () => print('   ( (\n    ) )\n  ........\n  |      |]\n  \\      /\n   `----\'   brewing… the work will wait.'),
-    climb: () => print(HOLD(true) + '\n\n21 holds. One lit.'),
+    climb: () => print('You flashed a V0. Board B is still locked though.'),
     hello: () => print('hi :)'),
     hi: () => print('hello :)')
   };
