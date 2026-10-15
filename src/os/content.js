@@ -36,12 +36,30 @@ export function glyph(kind, opts = {}) {
   if (kind === 'folder') return `<span class="glyph glyph--folder" style="--g1:${opts.p ? opts.p.color : '#e4e1d9'}" aria-hidden="true"></span>`;
   if (kind === 'site') return '<span class="glyph glyph--site" aria-hidden="true"><i></i></span>';
   if (kind === 'capsule') return '<span class="glyph glyph--capsule" aria-hidden="true"><i></i><i></i></span>';
+  if (kind === 'doom') return `<span class="glyph glyph--doom" aria-hidden="true">${flame()}</span>`;
   return `<span class="glyph glyph--file" aria-hidden="true"><b>${esc(opts.ext || '')}</b></span>`;
+}
+
+// DOOM.exe's icon: a pixel flame (drawn here, not the game's logo)
+const FLAME = ['......1.....', '.....11.....', '.....121..1.', '....1221..1.', '...12321.121', '...1233211221', '..12333212321', '..123433223321', '.1234443323321', '.12344443433321', '.1234444443321.', '..12344444321..', '..1233444321...', '...12333321....', '....112211.....'];
+const FIRE = { 1: '#5a1206', 2: '#b3260c', 3: '#ec5a12', 4: '#ffc23a' };
+export const flame = () => `<svg class="flame" viewBox="0 0 15 15" shape-rendering="crispEdges" aria-hidden="true">${FLAME.map((r, y) => [...r].map((c, x) => FIRE[c] ? `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${FIRE[c]}"/>` : '').join('')).join('')}</svg>`;
+
+// Thumbnails load as they scroll near view. The browser's own loading="lazy" measures against the page,
+// and a folder scrolls inside its window, so it fetched every one at once.
+const scrollerOf = (el) => { for (let p = el.parentElement; p; p = p.parentElement) { const o = getComputedStyle(p).overflowY; if (o === 'auto' || o === 'scroll') return p; } return null; };
+export function lazyImages(root) {
+  const imgs = [...root.querySelectorAll('img[data-src]')];
+  if (!imgs.length) return;
+  const show = (img) => { img.src = img.dataset.src; img.removeAttribute('data-src'); };
+  if (!('IntersectionObserver' in window)) return imgs.forEach(show);
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } }), { root: scrollerOf(imgs[0]), rootMargin: '240px 0px' });
+  imgs.forEach((img) => io.observe(img));
 }
 
 function thumb(f) {
   if (f.type === 'image' || f.type === 'video') {
-    return `<span class="file__thumb"><img src="${f.thumb}" alt="" loading="lazy" decoding="async" width="${f.tw}" height="${f.th}">${f.type === 'video' ? '<span class="file__kind">Video</span>' : ''}</span>`;
+    return `<span class="file__thumb"><img data-src="${f.thumb}" alt="" decoding="async" width="${f.tw}" height="${f.th}">${f.type === 'video' ? '<span class="file__kind">Video</span>' : ''}</span>`;
   }
   if (f.type === 'folder') return `<span class="file__thumb file__thumb--bare">${glyph('folder', { p: PROJECT_OF[f.name] })}</span>`;
   return `<span class="file__thumb file__thumb--bare">${glyph('file', { ext: f.name.split('.').pop().toUpperCase() })}</span>`;
@@ -74,6 +92,7 @@ function folder(body, { name = 'Work' } = {}, ctx) {
       <ul class="folder__grid" role="list">${files.map((f, i) => `<li><button type="button" class="file" data-i="${i}">${thumb(f)}<span class="file__name">${esc(f.name)}</span></button></li>`).join('')}</ul>
       <p class="folder__status" aria-live="polite">${files.length} items. ${hint}.</p></div></div>`;
     const status = body.querySelector('.folder__status');
+    lazyImages(body);
     const cs = body.querySelector('[data-case]');
     if (cs) cs.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); ctx.open('case', { p }, cs); });
     body.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => render(b.dataset.go)));
@@ -127,6 +146,7 @@ function viewer(body, { list, idx = 0 }, ctx) {
     <div class="viewer__bar"><button type="button" class="viewer__nav" data-d="-1" aria-label="Previous">&larr;</button><p class="viewer__cap" aria-live="polite"></p><button type="button" class="viewer__nav" data-d="1" aria-label="Next">&rarr;</button></div></div>`;
   const stage = body.querySelector('.viewer__stage'), cap = body.querySelector('.viewer__cap');
   const tools = body.querySelector('.viewer__tools'), pct = body.querySelector('.viewer__pct'), snd = body.querySelector('.viewer__sound');
+  const zin = tools.querySelector('[data-z="+"]'), zout = tools.querySelector('[data-z="-"]');
   let img = null, vid = null, z = { s: 1, x: 0, y: 0 };
 
   // ---- zoom: the picture's box fills the stage; the image sits contained inside it
@@ -147,6 +167,8 @@ function viewer(body, { list, idx = 0 }, ctx) {
     img.style.transform = z.s > 1.001 ? `translate(${z.x}px, ${z.y}px) scale(${z.s})` : '';
     stage.classList.toggle('is-zoomed', z.s > 1.001);
     pct.textContent = Math.round(z.s * 100) + '%';
+    zin.disabled = z.s >= maxS() - 0.01;
+    zout.disabled = pct.disabled = z.s <= 1.001;
   };
   const zoomAt = (s2, px, py, anim) => {
     if (!img) return;
@@ -267,7 +289,7 @@ function viewer(body, { list, idx = 0 }, ctx) {
     img = stage.querySelector('img'); vid = stage.querySelector('video');
     tools.hidden = !img; snd.hidden = !(vid && f.sound);
     if (img) {
-      pct.textContent = '100%';
+      pct.textContent = '100%'; zout.disabled = pct.disabled = true; zin.disabled = false;
       if (!img.complete) img.addEventListener('load', () => paint(), { once: true });
       // the sharp version (same framing, more pixels) takes over once it has loaded
       if (f.hd) { const hi = new Image(); hi.onload = () => { if (img && img.isConnected && list[idx] === f) { img.src = f.hd; paint(); } }; hi.src = f.hd; }
@@ -323,6 +345,38 @@ function casestudy(body, { p }, ctx) {
     else if (u.pathname !== '/') location.href = u.href;
   };
   addEventListener('message', onMsg);
+  ctx.focusTarget = frame;
+}
+
+// DOOM.exe: the 1993 shareware episode, unmodified, running in a DOS emulator (js-dos) inside a window.
+// It needs a keyboard, so on the phone it only says where to play it.
+function doom(body, _o, ctx) {
+  if (ctx.mode !== 'desk') {
+    body.innerHTML = `<div class="doom-note">${flame()}<h2>DOOM needs a keyboard.</h2><p>Open this site on a computer and DOOM.exe runs the 1993 shareware episode right inside Angel OS, music and all.</p></div>`;
+    return;
+  }
+  const keys = [['Arrows', 'move'], ['Ctrl', 'fire'], ['Space', 'open'], ['Shift', 'run'], ['1 to 7', 'weapons'], ['Esc', 'menu']];
+  body.innerHTML = `<div class="doom">
+    <div class="doom__screen"><iframe src="/os/doom/index.html" title="DOOM, the 1993 shareware episode" allow="autoplay; fullscreen"></iframe></div>
+    <div class="doom__bar"><ul class="doom__keys" aria-label="Controls">${keys.map(([k, v]) => `<li><kbd>${k}</kbd> ${v}</li>`).join('')}</ul>
+      <a class="doom__credit" href="https://github.com/caiiiycuk/js-dos" target="_blank" rel="noopener">Shareware DOOM by id Software, on js-dos</a></div>
+  </div>`;
+  const frame = body.querySelector('iframe');
+  frame.addEventListener('load', () => {
+    try {
+      const w = frame.contentWindow;
+      // clicks inside the game don't reach the window, so pass them on (focus, closing menus)
+      w.addEventListener('pointerdown', () => frame.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
+      w.focus();
+    } catch (e) { /* not same origin */ }
+  });
+  // rest while the window is minimised
+  const win = body.closest('.win');
+  if (win) new MutationObserver(() => {
+    if (!frame.isConnected) return;
+    const cmd = win.classList.contains('is-min') ? 'pause' : 'resume';
+    if (cmd !== frame.dataset.state) { frame.dataset.state = cmd; frame.contentWindow && frame.contentWindow.postMessage({ aos: 'doom', cmd }, location.origin); }
+  }).observe(win, { attributes: true, attributeFilter: ['class'] });
   ctx.focusTarget = frame;
 }
 
@@ -586,7 +640,8 @@ export const APPS = {
   topped: { title: 'topped-out.txt', size: [500, 660], build: topped },
   info: { title: 'Info', size: [380, 360], build: info },
   gallery: { title: 'gallery.exe', size: [1120, 740], route: 'gallery', build: gallery },
-  case: { title: 'Case study', size: [1180, 800], build: casestudy, dark: true }
+  case: { title: 'Case study', size: [1180, 800], build: casestudy, dark: true },
+  doom: { title: 'DOOM.exe', size: [880, 744], route: 'doom', build: doom, dark: true }
 };
 // folder windows share one slot on the desktop, so opening Atlas Pay reuses an open Topout window
 export const SLOT = { work: 'folder', topout: 'folder', atlas: 'folder', pog: 'folder' };

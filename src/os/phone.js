@@ -168,6 +168,7 @@ const APPS_HOME = {
   about: { label: 'About', html: glyph('file', { ext: 'TXT' }), app: 'about' },
   contact: { label: 'Contact', html: glyph('file', { ext: 'VCF' }), app: 'contact' },
   term: { label: 'Terminal', html: '<span class="tile tile--dark" aria-hidden="true">&gt;_</span>', app: 'term' },
+  doom: { label: 'DOOM.exe', html: '<span class="tile tile--doom" aria-hidden="true">' + glyph('doom') + '</span>', app: 'doom' },
   topped: { label: 'Topped out', html: glyph('file', { ext: 'TXT' }), app: 'topped', secret: true }
 };
 const DEFAULT_ORDER = Object.keys(APPS_HOME);

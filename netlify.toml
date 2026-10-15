@@ -34,6 +34,8 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
+    # the rest of the policy is a meta tag in each page (Base.astro, os/doom/index.html)
+    Content-Security-Policy = "frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
 

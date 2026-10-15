@@ -24,7 +24,7 @@ function ctxFor(win) {
   };
 }
 
-export function open(id, opts = {}, from) {
+export function open(id, opts = {}, from, { push = true } = {}) {
   const app = APPS[id];
   if (!app) return null;
   const key = SLOT[id] || id;
@@ -37,9 +37,24 @@ export function open(id, opts = {}, from) {
   }
   win = createWin(id, key, app, from);
   build(win, id, opts);
+  if (push) step(win);
   focusWin(win, true);
   return win;
 }
+
+// ---------------------------------------------------------------- history
+// Every window you open is a step in the browser's history, so Back closes the newest one
+// instead of leaving the site. Steps whose window you already closed by hand are skipped.
+const steps = [];
+history.replaceState({ aos: 0 }, '', location.href);
+function step(win) { steps.push(win.key); history.pushState({ aos: steps.length }, '', location.href); }
+window.addEventListener('popstate', (e) => {
+  if (!e.state || typeof e.state.aos !== 'number') return; // a hash typed by hand: hashchange opens it
+  const n = e.state.aos;
+  let closed = false;
+  while (steps.length > n) { const w = wins.get(steps.pop()); if (w) { closeWin(w); closed = true; } }
+  if (!closed && n > 0) history.back();
+});
 
 function build(win, id, opts) {
   const app = APPS[id];
@@ -51,7 +66,7 @@ function build(win, id, opts) {
   win.ctx = ctxFor(win);
   setTitle(win, app.title);
   app.build(win.body, opts, win.ctx);
-  win.body.classList.toggle('win__body--fixed', id === 'viewer' || id === 'case');
+  win.body.classList.toggle('win__body--fixed', ['viewer', 'case', 'doom'].includes(id));
 }
 
 function createWin(id, key, app, from) {
@@ -138,14 +153,25 @@ function minimise(win) {
   const d = $('#dock').getBoundingClientRect(), r = win.el.getBoundingClientRect();
   win.el.style.transformOrigin = `${d.left + d.width / 2 - r.left}px ${d.top - r.top}px`;
   win.el.classList.add('is-min');
+  // out of the tab order and hidden from screen readers until it comes back
+  win.el.inert = true;
+  win.el.setAttribute('aria-hidden', 'true');
   win.el.querySelectorAll('video').forEach((v) => { v.setAttribute('data-hold', ''); v.pause(); });
-  if (active === win) { active = null; const next = topWin(); if (next) focusWin(next, true); else setRoute(null); }
+  const wasActive = active === win;
+  if (wasActive) active = null;
   updateDock();
+  if (wasActive) {
+    const next = topWin();
+    if (next) focusWin(next, true);
+    else { setRoute(null); docTitle(null); if (win.miniBtn) win.miniBtn.focus({ preventScroll: true }); }
+  }
 }
 function restore(win) {
   if (!win.min) return;
   win.min = false;
   win.el.classList.remove('is-min');
+  win.el.inert = false;
+  win.el.removeAttribute('aria-hidden');
   win.el.querySelectorAll('video').forEach((v) => { v.removeAttribute('data-hold'); if (v.autoplay) v.play().catch(() => {}); });
   updateDock();
 }
@@ -248,6 +274,7 @@ const ICONS = [
   { id: 'contact', label: 'contact.vcf', html: glyph('file', { ext: 'VCF' }), app: 'contact' },
   { id: 'gallery', label: 'gallery.exe', html: glyph('capsule'), app: 'gallery' },
   { id: 'term', label: 'Terminal', html: '<span class="glyph glyph--term" aria-hidden="true">&gt;_</span>', app: 'term' },
+  { id: 'doom', label: 'DOOM.exe', html: glyph('doom'), app: 'doom' },
   { id: 'topped', label: 'topped-out.txt', html: glyph('file', { ext: 'TXT' }), app: 'topped', secret: true }
 ];
 const iconsEl = $('#icons');
@@ -429,6 +456,7 @@ function updateDock() {
     b.type = 'button'; b.className = 'mini-win'; b.textContent = w.title;
     b.setAttribute('aria-label', 'Restore ' + w.title);
     b.addEventListener('click', () => { restore(w); focusWin(w, true); });
+    w.miniBtn = b;
     minWrap.appendChild(b);
   });
 }
@@ -438,7 +466,7 @@ const link = (url) => () => window.open(url, '_blank', 'noopener');
 const MENUS = [
   ['Angel OS', [['Welcome', () => open('welcome')], ['About this site', () => open('about')], '-', ['Switch to normal website', goNormal], ['Restart', () => restart()]]],
   ['File', [['New Work window', () => open('work'), 'Alt N'], ['Close window', () => active && closeWin(active), 'Alt W'], ['Close all windows', closeAll]]],
-  ['Work', [['Topout', () => open('topout')], ['Atlas Pay', () => open('atlas')], ['POG', () => open('pog')], '-', ['gallery.exe', () => open('gallery')], ['Terminal', () => open('term')]]],
+  ['Work', [['Topout', () => open('topout')], ['Atlas Pay', () => open('atlas')], ['POG', () => open('pog')], '-', ['gallery.exe', () => open('gallery')], ['DOOM.exe', () => open('doom')], ['Terminal', () => open('term')]]],
   ['View', [['Clean up icons', cleanUp], ['Tidy windows', tidy], '-', ...Object.keys(WALLS).map((k) => [`Wallpaper: ${k}`, () => setWall($('#wall'), k)])]],
   ['Contact', [['Write an email…', () => open('mail')], ['Copy email address', () => copyEmail({ say })], ['Contact card', () => open('contact')], '-', ['Behance', link(PERSON.behance)], ['LinkedIn', link(PERSON.linkedin)]]]
 ];
@@ -543,7 +571,7 @@ function start() {
   booted = true;
   timers.forEach(clearTimeout); timers = [];
   $('#boot').classList.add('is-done');
-  setTimeout(() => open(routeApp() || 'welcome'), RM ? 0 : 280);
+  setTimeout(() => open(routeApp() || 'welcome', {}, undefined, { push: false }), RM ? 0 : 280);
 }
 function boot(force) {
   let seen = false;
@@ -561,6 +589,6 @@ function restart() { try { sessionStorage.removeItem('aos-boot'); } catch (e) {}
 const skip = () => { if (!booted) start(); };
 window.addEventListener('keydown', skip);
 $('#boot').addEventListener('pointerdown', skip);
-window.addEventListener('hashchange', () => { const id = routeApp(); if (id) open(id); });
+window.addEventListener('hashchange', () => { const id = routeApp(); if (id) open(id, {}, undefined, { push: false }); });
 
 boot(false);

@@ -28,6 +28,24 @@ const ld = {
   address: { '@type': 'PostalAddress', addressCountry: 'RO' },
   sameAs: [site.behance, site.linkedin],
 };
+// Content Security Policy for every page (frame-ancestors can't live in a meta tag, so netlify.toml sends that one).
+// Scripts and styles stay 'unsafe-inline' because Astro inlines small ones; everything else is this site only,
+// plus GIPHY for the GIFs in topped-out.txt.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.giphy.com",
+  "media-src 'self' blob: https://*.giphy.com",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-src 'self'",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'"
+].join('; ');
 // Inside Angel OS a case study opens in a window (an iframe): drop the site chrome there.
 // Case study links stay in the window; anything else is handed to the OS.
 const EMBED = `(function () {
@@ -50,6 +68,7 @@ const EMBED = `(function () {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content={CSP} />
     <meta name="viewport" content={bare ? "width=device-width, initial-scale=1, viewport-fit=cover" : "width=device-width, initial-scale=1"} />
     <title>{title}</title>
     <meta name="description" content={description} />

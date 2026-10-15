@@ -250,7 +250,9 @@ html[data-mode="phone"] .toast { top: calc(env(safe-area-inset-top, 0px) + 44px)
 .viewer__stage img.is-anim { transition: transform .26s cubic-bezier(.2, .7, .2, 1); }
 .viewer__tools { position: absolute; right: 14px; bottom: 14px; display: flex; align-items: center; padding: 3px; border-radius: 99px; background: rgba(24, 24, 24, .86); box-shadow: 0 0 0 1px rgba(255, 255, 255, .08), 0 6px 18px rgba(0, 0, 0, .35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .viewer__tools button { min-width: 32px; height: 32px; padding: 0 8px; border-radius: 99px; color: #e8e6e0; font-size: 17px; line-height: 1; transition: background-color .15s; }
-.viewer__tools button:hover { background: #333; }
+.viewer__tools button:hover:not(:disabled) { background: #333; }
+.viewer__tools button:disabled { opacity: .35; cursor: default; }
+.viewer__tools .viewer__pct:disabled { opacity: 1; }
 .viewer__tools .viewer__pct { min-width: 54px; font-size: 12px; font-variant-numeric: tabular-nums; color: #b9b7b0; }
 .viewer__sound { position: absolute; left: 14px; top: 14px; display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px 0 11px; border-radius: 99px; background: rgba(24, 24, 24, .86); color: #f4f3ef; font-size: 13px; font-weight: 500; box-shadow: 0 0 0 1px rgba(255, 255, 255, .1), 0 6px 18px rgba(0, 0, 0, .35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background-color .15s; }
 .viewer__sound:hover { background: #2c2c2c; }
@@ -281,6 +283,26 @@ html[data-mode="phone"] .toast { top: calc(env(safe-area-inset-top, 0px) + 44px)
 /* while a window is dragged or resized the page must not swallow the pointer */
 body.is-dragging .cs__frame iframe { pointer-events: none; }
 html[data-mode="phone"] .cs__bar { display: none; }
+
+/* DOOM.exe: a pixel flame for the icon, the game in a window, a note on the phone */
+.glyph--doom { width: 52px; height: 50px; margin: 0 6px; border-radius: 10px; background: radial-gradient(120% 90% at 50% 100%, #3a0b04, #0e0403 70%); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255, 110, 40, .2), 0 2px 8px rgba(0, 0, 0, .3); }
+.glyph--doom .flame { width: 34px; height: 34px; }
+.tile--doom { background: radial-gradient(120% 90% at 50% 100%, #3a0b04, #0e0403 70%); }
+.tile--doom .glyph--doom { width: auto; height: auto; margin: 0; background: none; box-shadow: none; }
+.tile--doom .flame { width: 40px; height: 40px; }
+.doom { position: absolute; inset: 0; display: flex; flex-direction: column; background: #000; }
+.doom__screen { position: relative; flex: 1; min-height: 0; }
+.doom__screen iframe { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; background: #000; }
+body.is-dragging .doom__screen iframe { pointer-events: none; }
+.doom__bar { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; padding: 8px 12px; background: #141414; border-top: 1px solid #222; font-size: 12px; color: #8d8b85; }
+.doom__keys { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.doom__keys kbd { font-family: var(--os-mono); font-size: 11px; color: #e8e6e0; background: #262626; border-radius: 4px; padding: 1px 6px; box-shadow: inset 0 -1px 0 #0a0a0a; }
+.doom__credit { color: #6f6d68; text-decoration: none; white-space: nowrap; transition: color .15s; }
+.doom__credit:hover { color: #b9b7b0; }
+.doom-note { padding: 56px 28px; display: grid; justify-items: center; text-align: center; gap: 12px; }
+.doom-note .flame { width: 76px; height: 76px; margin-bottom: 6px; }
+.doom-note h2 { font-size: 24px; font-weight: 500; letter-spacing: -.02em; }
+.doom-note p { color: var(--os-mut); max-width: 32ch; line-height: 1.5; }
 
 /* about, contact, mail, terminal */
 .doc { padding: 30px 32px; display: flex; flex-direction: column; gap: 14px; font-size: 16px; line-height: 1.6; user-select: text; max-width: 62ch; }

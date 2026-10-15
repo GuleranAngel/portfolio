@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob: data:; worker-src 'self' blob:; font-src 'self' data:; form-action 'none'; base-uri 'self'; object-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DOOM</title>
+<!-- DOOM shareware v1.9 (id Software, 1993), unmodified, running in js-dos 8.3.20 (GPL-2.0, https://github.com/caiiiycuk/js-dos).
+     js-dos evaluates its emulator modules from strings, so this page (only) allows unsafe-eval.
+     Opened from DOOM.exe in Angel OS. -->
+<link rel="stylesheet" href="/os/doom/js-dos.css">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; color: #e8e6e0; font: 14px/1.4 ui-monospace, "Fragment Mono", Menlo, Consolas, monospace; }
+  #dos { position: fixed; inset: 0; }
+  .start { position: fixed; inset: 0; z-index: 10; display: grid; place-content: center; justify-items: center; gap: 18px; background: #000; border: 0; color: inherit; font: inherit; cursor: pointer; width: 100%; }
+  .start svg { width: 84px; height: 84px; image-rendering: pixelated; }
+  .start b { font-size: 15px; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; color: #fff; padding: 10px 18px; border: 1px solid #5a1a10; background: #1a0705; }
+  .start:hover b, .start:focus-visible b { background: #3a0d07; border-color: #c2361b; }
+  .start:focus-visible { outline: none; }
+  .start small { color: #8d8b85; font-size: 12px; }
+  .start[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div id="dos"></div>
+<button type="button" class="start" id="start" autofocus>
+  <svg viewBox="0 0 15 15" aria-hidden="true" shape-rendering="crispEdges"><g id="flame"></g></svg>
+  <b>Click to play</b>
+  <small>Sound on. Arrows move, Ctrl fires, Space opens doors.</small>
+</button>
+<script>
+  // inside a frame the browser refuses keyboard lock (a fullscreen nicety js-dos asks for); say yes and carry on
+  try { if (navigator.keyboard) navigator.keyboard.lock = () => Promise.resolve(); } catch (e) {}
+</script>
+<script src="/os/doom/js-dos.js"></script>
+<script>
+(() => {
+  // the same pixel flame as the icon on the desktop
+  const F = ['......1.....', '.....11.....', '.....121..1.', '....1221..1.', '...12321.121', '...1233211221', '..12333212321', '..123433223321', '.1234443323321', '.12344443433321', '.1234444443321.', '..12344444321..', '..1233444321...', '...12333321....', '....112211.....'];
+  const C = { 1: '#5a1206', 2: '#b3260c', 3: '#ec5a12', 4: '#ffc23a' };
+  document.getElementById('flame').innerHTML = F.map((r, y) => [...r].map((c, x) => C[c] ? `<rect x="${x}" y="${y}" width="1" height="1" fill="${C[c]}"/>` : '').join('')).join('');
+
+  let ci = null, started = false;
+  const post = (msg) => { try { parent.postMessage(Object.assign({ aos: 'doom' }, msg), location.origin); } catch (e) {} };
+  // start on a click or a key inside this frame, so the browser lets the sound play and the keys land here
+  function start() {
+    if (started) return;
+    started = true;
+    document.getElementById('start').hidden = true;
+    Dos(document.getElementById('dos'), {
+      url: '/os/doom/doom.jsdos',
+      pathPrefix: '/os/doom/emulators/',
+      kiosk: true,
+      autoStart: true,
+      noCloud: true,
+      noNetworking: true,
+      mouseCapture: false,
+      imageRendering: 'pixelated',
+      renderAspect: '4/3',
+      theme: 'dark',
+      volume: 0.7,
+      onEvent: (e, arg) => { if (e === 'ci-ready') { ci = arg; post({ ready: true }); } }
+    });
+    post({ started: true });
+  }
+  document.getElementById('start').addEventListener('click', start);
+  addEventListener('keydown', (e) => { if (!started && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); start(); } });
+  // the window pauses the game while it's minimised
+  addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !e.data || e.data.aos !== 'doom') return;
+    if (e.data.cmd === 'pause' && ci) { ci.pause(); ci.mute && ci.mute(); }
+    if (e.data.cmd === 'resume' && ci) { ci.resume(); ci.unmute && ci.unmute(); }
+    if (e.data.cmd === 'focus') { const c = document.querySelector('#dos canvas') || document.getElementById('start'); c && c.focus && c.focus({ preventScroll: true }); }
+  });
+})();
+</script>
+</body>
+</html>
