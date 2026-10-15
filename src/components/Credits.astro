@@ -12,7 +12,7 @@ const { lines, rows, deck } = Astro.props;
       <p class="statement">{lines.map((l, i) => <>{l}{i < lines.length - 1 && <br />}</>)}</p>
       <div class="cr-buttons">
         <Button href={site.mailto} label="Start a project" />
-        <Button href="/#work" label="Back to all work" variant="secondary" />
+        <Button href="/site#work" label="Back to all work" variant="secondary" />
       </div>
       <a class="label c-accent link cr-deck" href={deck} target="_blank" rel="noopener">Full deck on Behance <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>

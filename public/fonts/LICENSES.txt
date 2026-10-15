@@ -1,4 +1,7 @@
-Instrument Sans, Fragment Mono and Poppins are licensed under the SIL Open Font License 1.1.
+Instrument Sans, Fragment Mono, Poppins and Caveat (used on the Angel OS sticky note) are licensed under the SIL Open Font License 1.1.
+
+=== Caveat ===
+Copyright 2014 The Caveat Project Authors (https://github.com/googlefonts/caveat)
 
 === Instrument Sans ===
 Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans)

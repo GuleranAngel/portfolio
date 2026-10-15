@@ -1,236 +1,136 @@
 ---
+// Angel OS: the homepage. The portfolio as a small operating system.
+// Desktop browsers get windows, menus and a dock; phones get a home screen with full-screen apps.
+// The normal website lives at /site; "Switch to normal website" remembers the choice for the next visit.
 import Base from '../layouts/Base.astro';
-import Divider from '../components/Divider.astro';
-import Picture from '../components/Picture.astro';
-import LoopVideo from '../components/LoopVideo.astro';
-import Contact from '../components/Contact.astro';
+import images from '../data/images.json';
+import { site } from '../data/site';
+import { versioned } from '../data/asset-version';
+import '../styles/os.css';
 
-const services = [
-  ['Experience', '10 years'],
-  ['Services', 'Brand identity & guidelines, logo design, visual systems, 3D objects & renders, motion'],
-  ['Works with', 'Brands directly, studios<br /> & agencies as an embedded designer'],
-  ['Handoff', 'Editable source files, brand guidelines, 3D scenes, specs for developers and animators'],
-  ['Clients', 'UK and Western Europe'],
-  ['Languages', 'English, Romanian'],
-  ['Billing', 'Hourly, in EUR'],
-  ['Revisions', 'As many rounds as it takes.<br /> You pay for time, not rounds.'],
-];
+type Img = { width: number; height: number; widths: number[]; alpha: boolean; color: string; v: string };
+const IMG = images as Record<string, Img>;
+
+// Every picture and film from each case study, in the order the case study tells it
+const pages = import.meta.glob('./work/*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const attr = (s: string, k: string) => (s.match(new RegExp(`\\b${k}="([^"]*)"`)) || [])[1] || '';
+const safe = (path: string) => { try { return versioned(path); } catch { return null; } };
+
+function filesOf(src: string) {
+  const seen = new Set<string>();
+  const out: Record<string, unknown>[] = [];
+  for (const m of src.matchAll(/<(Picture|LoopVideo)\b([\s\S]*?)\/?>/g)) {
+    const [, tag, a] = m;
+    const name = attr(a, 'name');
+    if (!name || seen.has(name)) continue;
+    seen.add(name);
+    const short = name.replace(/^(topout|atlas|pog)-/, '');
+    if (tag === 'Picture') {
+      const im = IMG[name];
+      if (!im) continue;
+      const tw = im.widths.find((w) => w >= 400) ?? im.widths[0];
+      const big = [...im.widths].reverse().find((w) => w <= 1920) ?? im.widths[im.widths.length - 1];
+      out.push({
+        type: 'image', name: `${short}.jpg`, cap: attr(a, 'alt') || short,
+        thumb: `/img/${name}-${tw}.webp?v=${im.v}`, src: `/img/${name}-${big}.webp?v=${im.v}`,
+        w: im.width, h: im.height, tw, th: Math.round((tw * im.height) / im.width), bg: im.color
+      });
+    } else {
+      const src1080 = safe(`/video/${name}-1080.mp4`), poster = safe(`/video/poster/${name}.webp`);
+      if (!src1080 || !poster) continue;
+      out.push({ type: 'video', name: `${short}.mp4`, cap: attr(a, 'label') || short, src: src1080, poster, bg: '#0e0e0e' });
+    }
+  }
+  return out;
+}
+
+const PROJECTS = [
+  { id: 'topout', page: './work/topout.astro', name: 'Topout', sector: 'Bouldering gym', color: '#ff4b1f', url: '/work/topout',
+    desc: 'A brand for a bouldering gym built around Board B, a wall with a light under every hold. The mark, a dot typeface, the app and the screens all come from that one lit hold.' },
+  { id: 'atlas', page: './work/atlas-pay.astro', name: 'Atlas Pay', sector: 'Cross-border payments', color: '#3d63ff', url: '/work/atlas-pay',
+    desc: 'A payments brand for businesses that move money across borders. The mark is a set of rays from a single origin inside a circle, built to work flat, embossed and lit.' },
+  { id: 'pog', page: './work/pog.astro', name: 'POG', sector: 'Streaming and gaming', color: '#ff005d', url: '/work/pog',
+    desc: 'An identity for a streamer and content creator, built around a character with a whole range of reactions, so the brand can react as fast as chat does.' }
+].map(({ page, ...p }) => ({ ...p, files: filesOf(pages[page] || '') }));
+
+const data = {
+  person: { name: site.name, role: site.role, base: 'Based in Romania', email: site.email, behance: site.behance, linkedin: site.linkedin },
+  normal: '/site',
+  projects: PROJECTS,
+  walls: {
+    'Dot field': { video: '/os/wall-dots.mp4', poster: '/os/wall-dots.webp' },
+    'Atlas light': { video: versioned('/video/atlas-light-reveal-1080.mp4'), poster: versioned('/video/poster/atlas-light-reveal.webp') },
+    'POG pattern': { video: versioned('/video/pog-3d-pattern-1080.mp4'), poster: versioned('/video/poster/pog-3d-pattern.webp') }
+  }
+};
 ---
 <Base
-  title="Angel Guleran | Brand identity designer"
-  description="Angel Guleran is a brand identity designer in Romania. Identities that work flat, in 3D and in motion, for founders and for studios."
-  center="Brand identity designer · Romania"
-  home
+  title="Angel OS | Angel Guleran, brand identity designer"
+  description="Angel Guleran is a brand identity designer in Romania. Browse the work as a small desktop, or switch to the normal website."
+  center=""
+  bare
 >
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-media media">
-      <LoopVideo name="atlas-card-push" label="Atlas Pay card, 3D loop" eager />
-    </div>
-    <div class="fade-top" aria-hidden="true"></div>
-    <div class="fade-bottom" aria-hidden="true"></div>
-    <div class="hero-content wrap">
-      <h1 id="hero-title" class="hero-title">I design identities<br /> that work flat,<br class="m-br" /> in 3D<br class="d-br" /> and in motion.</h1>
-      <p class="hero-intro c-grey-2">I work directly with founders, and with studios as an embedded designer. From the first sketch of a mark to the system,<br class="d-br" /> 3D and motion around it.</p>
-    </div>
-  </section>
+  <Fragment slot="head">
+    <script is:inline>
+      // Pick the shell before first paint so phones never flash the desktop.
+      // People who chose the normal website last time go straight there (/?os brings Angel OS back).
+      (function () {
+        var d = document.documentElement;
+        d.dataset.mode = matchMedia('(max-width: 759px)').matches ? 'phone' : 'desk';
+        try {
+          var q = new URLSearchParams(location.search);
+          if (q.has('os')) localStorage.setItem('aos-pref', 'os');
+          else if (localStorage.getItem('aos-pref') === 'site' && !location.hash) location.replace('/site');
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preload" href="/fonts/caveat-700.woff2" as="font" type="font/woff2" crossorigin media="(min-width: 1181px) and (min-height: 701px)" />
+  </Fragment>
 
-  <section class="work" id="work" aria-labelledby="work-title">
-    <div class="wrap stack-40">
-      <Divider tag="Selected work" id="work-title" />
-      <div class="projects">
-        <article class="project" aria-labelledby="p1-title">
-          <div class="p-head">
-            <div class="p-title">
-              <span class="label c-accent">01</span>
-              <h3 class="p-name" id="p1-title">Topout</h3>
-            </div>
-            <span class="label c-grey-3 p-sector">Bouldering gym</span>
-          </div>
-          <a class="btn btn-primary p-cta" href="/work/topout" aria-label="View case study: Topout"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
-          <div class="p-media p-media-16x10">
-            <div class="media m-main" style="background:#0e0e0e"><LoopVideo name="topout-hold-film" label="3D film: one orange climbing hold on a grey wall, then the camera pulls back to all 21 holds of the mark, with only that one lit" /></div>
-            <div class="media m-second" style="background:#0e0e0e"><LoopVideo name="topout-cover-loop" label="The Topout wordmark over a field of dots that light up orange in waves, loop" /></div>
-            <div class="media m-third d-only" style="background:#0e0e0e"><Picture name="topout-photo-entrance" alt="The Topout entrance at night: a brick building with warm windows and the lit Topout sign over the glass doors" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 0px" /></div>
-          </div>
-          <div class="p-foot">
-            <p class="p-desc c-grey-2">
-              <span class="d-only">A brand for a bouldering gym built around Board B, a wall with a light under every hold. The mark, a dot typeface, the app and the screens all come from that one lit hold.</span>
-              <span class="m-only">A brand for a bouldering gym built around Board B, a wall with a light under every hold. The mark, the type and the app all come from that one lit hold.</span>
-            </p>
-            <p class="label c-grey-2 p-tags">Identity · Dot type · App · Web</p>
-          </div>
-        </article>
+  <a class="skip" href="#start">Skip to content</a>
+  <noscript><p class="noscript">Angel OS needs JavaScript. <a href="/site">Open the normal website</a>.</p></noscript>
 
-        <article class="project" aria-labelledby="p2-title">
-          <div class="p-head">
-            <div class="p-title">
-              <span class="label c-accent">02</span>
-              <h3 class="p-name" id="p2-title">Atlas Pay</h3>
-            </div>
-            <span class="label c-grey-3 p-sector">Cross-border payments</span>
-          </div>
-          <a class="btn btn-primary p-cta" href="/work/atlas-pay" aria-label="View case study: Atlas Pay"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
-          <div class="p-media">
-            <div class="media m-main"><LoopVideo name="atlas-mark-closeup" label="The Atlas Pay chip lighting up in blue, 3D loop" /></div>
-            <div class="media m-second"><LoopVideo name="atlas-card-push" label="The Atlas Pay card pushed through a beam of light, 3D loop" /></div>
-            <div class="media m-third fit" style="background:#161618"><Picture name="atlas-construction-tile" alt="Construction drawing of the Atlas Pay mark: rays from one origin, a 7.5 degree step and the diameter marked x" sizes="(min-width: 1440px) 300px, (min-width: 768px) 22vw, 60vw" /></div>
-          </div>
-          <div class="p-foot">
-            <p class="p-desc c-grey-2">
-              <span class="d-only">A payments brand for businesses that move money across borders. The mark is a set of rays from a single origin inside a circle. It had to work flat, embossed and lit, so I designed the chip it lives in and built the card around it in 3D.</span>
-              <span class="m-only">A payments brand for businesses that move money across borders. One mark, drawn flat, milled into a chip and lit in 3D.</span>
-            </p>
-            <p class="label c-grey-2 p-tags">Identity · Custom chip · 3D · App</p>
-          </div>
-        </article>
+  <div class="boot" id="boot" aria-hidden="true">
+    <div class="boot__log" id="boot-log"></div>
+    <div class="boot__bar" id="boot-bar"></div>
+    <p class="boot__skip">Press any key to skip</p>
+  </div>
 
-        <article class="project" aria-labelledby="p3-title">
-          <div class="p-head">
-            <div class="p-title">
-              <span class="label c-accent">03</span>
-              <h3 class="p-name" id="p3-title">POG</h3>
-            </div>
-            <span class="label c-grey-3 p-sector">Streaming and gaming</span>
-          </div>
-          <a class="btn btn-primary p-cta" href="/work/pog" aria-label="View case study: POG"><span>View case study</span><span class="arrow" aria-hidden="true">→</span></a>
-          <div class="p-media">
-            <div class="media m-main" style="background:#870037"><LoopVideo name="pog-hero-3d-logo" label="The POG logo bouncing in 3D, loop" /></div>
-            <div class="media m-second" style="background:#ff00e0"><Picture name="home-pog-social" alt="Three POG story templates on phones: Live now, You're never just one vibe, Don't blink" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 92vw" /></div>
-            <div class="media m-third"><Picture name="pog-street-posters" alt="Five POG posters wild-posted on a street wall: Mood: unknown, Stare back, Live now, Lookin' good and All the feels" sizes="(min-width: 1440px) 416px, (min-width: 768px) 31vw, 92vw" position="50% 44%" /></div>
-          </div>
-          <div class="p-foot">
-            <p class="p-desc c-grey-2">
-              <span class="d-only">An identity for a streamer and content creator, built around a character with a whole range of reactions, so the brand can react as fast as chat does.</span>
-              <span class="m-only">An identity for a streamer, built around a character with a whole range of reactions, so the brand can react as fast as chat does.</span>
-            </p>
-            <p class="label c-grey-2 p-tags">Identity · Character · Social</p>
-          </div>
-        </article>
+  <div class="desk" id="desk">
+    <div class="wall" id="wall" aria-hidden="true"></div>
+    <header class="menubar">
+      <nav class="menubar__left" aria-label="Menu" id="menubar"></nav>
+      <div class="menubar__right">
+        <span class="menubar__status"><i aria-hidden="true"></i>Open for projects</span>
+        <a class="menubar__switch" href="/site" data-switch>Switch to normal website</a>
+        <time class="menubar__clock" id="clock"></time>
       </div>
-    </div>
-  </section>
+    </header>
+    <div class="menu" id="menu" role="menu" hidden></div>
+    <main class="windows" id="windows" aria-label="Windows"><span id="start" tabindex="-1"></span></main>
+    <nav class="icons" id="icons" aria-label="Desktop"></nav>
+    <div class="sticky" id="sticky" aria-hidden="true">hi! click anything, drag the windows around :)</div>
+    <nav class="dock" id="dock" aria-label="Dock"></nav>
+  </div>
 
-  <section class="services" id="services" aria-labelledby="services-title">
-    <div class="wrap">
-      <Divider tag="Services" id="services-title" />
-      <div class="services-body">
-        <div class="statement-col">
-          <p class="label c-accent">Approach</p>
-          <p class="statement">Every mark, render and file comes from the same pair of hands.</p>
-        </div>
-        <dl class="datasheet">
-          {services.map(([k, v]) => (
-            <div class="ds-row">
-              <dt class="label">{k}</dt>
-              <dd set:html={v} />
-            </div>
-          ))}
-        </dl>
-      </div>
-    </div>
-  </section>
+  <div class="phone" id="phone">
+    <div class="phone__wall" id="phone-wall" aria-hidden="true"></div>
+    <header class="status"><time id="phone-clock"></time><span>Open for projects</span></header>
+    <main class="home" id="home">
+      <section class="widget" aria-labelledby="widget-name">
+        <h1 id="widget-name">Angel Guleran</h1>
+        <p>Brand identity designer. Identities that work flat, in 3D and in motion. Based in Romania.</p>
+        <a class="os-btn os-btn--hot widget__switch" href="/site" data-switch>Switch to normal website</a>
+      </section>
+      <ul class="springboard" id="springboard" role="list" aria-label="Apps"></ul>
+    </main>
+    <nav class="phone-dock" id="phone-dock" aria-label="Dock"></nav>
+    <div class="sheets" id="sheets"></div>
+  </div>
 
-  <Contact />
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="application/json" id="aos-data" set:html={JSON.stringify(data)} />
+  <script>
+    import '../os/os.js';
+  </script>
 </Base>
-
-<style>
-  /* Hero */
-  .hero { position: relative; height: 829px; overflow: hidden; background: var(--black); }
-  .hero-media { position: absolute; inset: 0; background: var(--black); }
-  .hero-media :global(video) { opacity: 0.32; }
-  /* Video control: top-right, just under the header, lined up with the content edge. Never near the headline. */
-  .hero-media :global(.vid-toggle) { z-index: 5; top: 20px; bottom: auto; right: max(var(--pad), calc((100% - var(--maxw)) / 2 + var(--pad))); }
-  .fade-top { position: absolute; inset: 0 0 auto; height: 160px; background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0)); pointer-events: none; }
-  .fade-bottom { position: absolute; inset: auto 0 0; height: 64%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.8)); pointer-events: none; }
-  .hero-content { position: relative; height: 100%; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; padding-bottom: 88px; pointer-events: none; }
-  .hero-title { font-weight: 500; font-size: 112px; line-height: 0.92; letter-spacing: -4.48px; color: var(--white); }
-  .hero-intro { width: 320px; flex: none; text-align: right; margin-bottom: 6px; }
-  @media (max-width: 1199px) {
-    .hero { height: 720px; }
-    .hero-content { flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 28px; padding-bottom: 64px; }
-    .hero-title { font-size: clamp(56px, 8.4vw, 96px); letter-spacing: -0.04em; }
-    .hero-intro { width: auto; max-width: 420px; text-align: left; margin: 0; }
-    .hero-intro br { display: none; }
-  }
-  @media (max-width: 767px) {
-    .hero { height: 640px; }
-    .hero-media :global(video) { object-position: 46% 50%; }
-    .hero-media :global(.vid-toggle) { top: 16px; }
-    .fade-top { height: 130px; }
-    .fade-bottom { height: 69%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.85)); }
-    .hero-content { gap: 20px; padding-bottom: 16px; }
-    .hero-title { font-size: 40px; line-height: 0.98; letter-spacing: -1.2px; }
-    .hero-intro { max-width: 350px; letter-spacing: -0.08px; }
-  }
-
-  /* Work */
-  .work { padding: 104px 0 144px; }
-  .stack-40 { display: flex; flex-direction: column; gap: 40px; }
-  .projects { display: flex; flex-direction: column; gap: 24px; }
-  .project {
-    position: relative; background: var(--surface); padding: 24px 24px 28px;
-    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px;
-  }
-  .p-head { display: flex; align-items: baseline; gap: 24px; min-width: 0; flex-wrap: wrap; }
-  .p-title { display: flex; align-items: baseline; gap: 24px; }
-  .p-name { font-weight: 500; font-size: 44px; line-height: 1.12; letter-spacing: -0.88px; }
-  .p-cta { justify-self: end; }
-  /* Media: big tile left, two stacked tiles right (832 + 416, 520 high) */
-  .p-media { grid-column: 1 / -1; display: grid; gap: 16px; aspect-ratio: 1264 / 520; grid-template-columns: 832fr 416fr; grid-template-rows: 1fr 1fr; }
-  .p-media .m-main { grid-row: 1 / span 2; }
-  /* Tiles that show the whole artwork instead of a crop */
-  .p-media .fit :global(img) { object-fit: contain; }
-  .p-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
-  .p-desc { max-width: 700px; font-size: 20px; line-height: 1.5; letter-spacing: -0.1px; }
-  .p-tags { white-space: nowrap; text-align: right; line-height: 1.5; padding-top: 4px; }
-  @media (max-width: 1199px) {
-    .work { padding: 88px 0 120px; }
-    .p-name { font-size: 36px; letter-spacing: -0.72px; }
-    .p-foot { flex-direction: column; gap: 12px; }
-    .p-tags { text-align: left; white-space: normal; }
-    .p-desc { font-size: 18px; }
-  }
-  @media (max-width: 767px) {
-    .work { padding: 56px 0 96px; }
-    .stack-40 { gap: 24px; }
-    .projects { gap: 16px; }
-    .project { display: flex; flex-direction: column; align-items: stretch; gap: 16px; padding: 16px 16px 20px; }
-    .p-head { flex-direction: column; align-items: flex-start; gap: 4px; }
-    .p-title { gap: 12px; }
-    .p-name { font-size: 28px; line-height: 1.18; letter-spacing: -0.42px; }
-    .p-cta { order: 5; align-self: flex-start; }
-    /* Phones: all three tiles full width, the small ones keep their desktop shape so nothing gets cut off */
-    .p-media { grid-template-columns: 1fr; grid-template-rows: none; gap: 16px; aspect-ratio: auto; }
-    .p-media .m-main { grid-row: auto; height: 240px; }
-    .p-media .m-second, .p-media .m-third { aspect-ratio: 416 / 252; }
-    /* Topout: two 16:10 tiles on phones, as in the mobile Figma frame */
-    .p-media-16x10 .m-main { height: auto; aspect-ratio: 318 / 199; }
-    .p-media-16x10 .m-second { aspect-ratio: 318 / 199; }
-    .p-foot { gap: 16px; }
-    .p-desc { font-size: 16px; line-height: 1.55; letter-spacing: -0.032px; }
-  }
-
-  /* Services */
-  .services { background: var(--surface); padding: 96px 0 144px; }
-  .services-body { display: flex; justify-content: space-between; gap: 48px; padding-top: 80px; }
-  .statement-col { display: flex; flex-direction: column; gap: 28px; max-width: 700px; }
-  .datasheet { width: 532px; flex: none; background: var(--surface-raised); padding: 12px 28px 20px; }
-  .ds-row { display: flex; gap: 24px; padding: 16px 0 18px; border-top: 1px solid var(--rule); }
-  .ds-row:first-child { border-top: 0; }
-  .ds-row dt { width: 120px; flex: none; color: var(--grey-3); padding-top: 3px; }
-  .ds-row dd { flex: 1 1 auto; color: var(--white); }
-  @media (max-width: 1199px) {
-    .services { padding: 88px 0 120px; }
-    .services-body { flex-direction: column; gap: 48px; padding-top: 64px; }
-    .datasheet { width: 100%; max-width: 640px; }
-  }
-  @media (max-width: 767px) {
-    .services { padding: 56px 0 80px; }
-    .services-body { gap: 32px; padding-top: 32px; }
-    .statement-col { gap: 32px; }
-    .datasheet { padding: 4px 16px 16px; }
-    .ds-row { flex-direction: column; gap: 6px; padding: 12px 0 14px; }
-    .ds-row dt { width: auto; padding-top: 0; }
-    .ds-row dd { font-size: 15px; letter-spacing: -0.03px; }
-  }
-</style>

@@ -3,11 +3,12 @@ import RegMark from './RegMark.astro';
 import { site } from '../data/site';
 interface Props { center: string; home?: boolean }
 const { center, home = false } = Astro.props;
-const base = home ? '' : '/';
+// The normal website's home is /site; / is Angel OS
+const base = home ? '' : '/site';
 ---
 <header class="site-header">
   <div class="hdr wrap">
-    <a class="brand" href="/" aria-label="Angel Guleran, home">
+    <a class="brand" href="/site" aria-label="Angel Guleran, home">
       <RegMark />
       <span>Angel Guleran</span>
     </a>
@@ -15,6 +16,7 @@ const base = home ? '' : '/';
     <nav class="hdr-nav label" aria-label="Main">
       <a class="link c-grey-2" href={`${base}#work`}>Work</a>
       <a class="link c-grey-2" href={`${base}#services`}>Services</a>
+      <a class="link c-grey-2" href="/?os">Angel OS</a>
       <a class="link c-accent" href={site.mailto}>Contact <span aria-hidden="true">↗</span></a>
     </nav>
     <button class="menu-btn label" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn>
@@ -24,6 +26,7 @@ const base = home ? '' : '/';
   <nav class="mobile-menu" id="mobile-menu" aria-label="Main" hidden data-menu>
     <a href={`${base}#work`} data-menu-link>Work</a>
     <a href={`${base}#services`} data-menu-link>Services</a>
+    <a href="/?os">Switch to Angel OS</a>
     <a class="c-accent" href={site.mailto}>Contact <span aria-hidden="true">↗</span></a>
     <p class="label c-grey-3">Brand identity designer · Romania</p>
   </nav>

@@ -11,8 +11,10 @@ interface Props {
   home?: boolean;
   ogImage?: string;
   extraFonts?: boolean;
+  /** Angel OS: no site header, footer or site script; the page brings its own shell */
+  bare?: boolean;
 }
-const { title, description, center, home = false, ogImage = '/og.jpg', extraFonts = false } = Astro.props;
+const { title, description, center, home = false, ogImage = '/og.jpg', extraFonts = false, bare = false } = Astro.props;
 // Clean URLs: /work/pog, not /work/pog.html (Netlify serves both)
 const cleanPath = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/(.)\/$/, '$1') || '/';
 const canonical = new URL(cleanPath, site.url).href;
@@ -31,7 +33,7 @@ const ld = {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content={bare ? "width=device-width, initial-scale=1, viewport-fit=cover" : "width=device-width, initial-scale=1"} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -55,13 +57,11 @@ const ld = {
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <slot name="head" />
   </head>
-  <body id="top">
-    <a class="skip-link" href="#main">Skip to content</a>
-    <Header center={center} home={home} />
-    <main id="main" tabindex="-1">
-      <slot />
-    </main>
-    <Footer />
+  <body id="top" class:list={[bare && 'aos']}>
+    {!bare && <a class="skip-link" href="#main">Skip to content</a>}
+    {!bare && <Header center={center} home={home} />}
+    {bare ? <slot /> : <main id="main" tabindex="-1"><slot /></main>}
+    {!bare && <Footer />}
     <script>
       import '../scripts/site.ts';
     </script>
