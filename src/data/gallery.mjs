@@ -19,7 +19,7 @@ export const RARITY = {
 export const CASES = [
   { id: 'coins', title: 'The XM coins', note: 'Coin renders for EURXM, RONXM and USDXM, and the EURXM coin flip.', items: ['105', '142', '143', '144', '145', '146', '147', '202'] },
   { id: 'xmoney3d', title: 'xMoney in 3D and motion', note: '3D loops, icons and motion pieces for xMoney.', items: ['106', '107', '108', '112', '213', '239', '240', '203', '204'] },
-  { id: 'xmv', title: 'xMoney visuals', where: 'xMoney, in-house', note: 'Marketing visuals for xMoney.', items: ['801', '802', '803', '804', '805', '806', '807', '808', '809', '810'] },
+  { id: 'xmv', title: 'xMoney visuals', where: 'xMoney, in-house', note: 'Marketing visuals for xMoney.', items: ['801', '803', '804', '805', '806', '807', '808', '809', '810'] },
   { id: 'xportal', title: 'xPortal frosted cards', note: 'Frosted glass cards for xPortal.', items: ['111', '140', '141'] },
   { id: 'films', title: 'Films and explainers', note: 'Short films and an explainer.', items: ['103', '214', '219'] },
   { id: 'growth', title: 'Growth Games', where: 'MultiversX Foundation grants program', role: 'Brand identity, lead designer', year: '2025', note: 'Brand identity for the MultiversX Foundation grants program: the logo, a 3D key visual, a YouTube cover and patterns.', items: ['701', '702', '703', '704', '705', '706'] },
@@ -30,7 +30,7 @@ export const CASES = [
   { id: 'fizz', title: 'Fizz', note: 'The Fizz mark, the wordmark and the colour version.', items: ['350', '351', '352'] },
   { id: 'bored', title: 'Bored', note: 'Bored Buyer: the logo and its animation, plus Bored esports merch.', items: ['355', '232', '354'] },
   { id: 'marks', title: 'More logos', note: 'Logos from freelance work over the years.', items: ['X2', '320', '328', '362', '377', '234'] },
-  { id: 'archive', title: 'Archive sheets', note: 'Overview sheets of older work: a 2021 showcase, a logofolio and animal marks.', items: ['502', '503', '504'] }
+  { id: 'archive', title: 'Archive sheets', note: 'Overview sheets of older work: a logofolio and animal marks.', items: ['503', '504'] }
 ];
 
 // red string between cases that share something (same company, same kind of work)

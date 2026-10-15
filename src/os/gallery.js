@@ -1,6 +1,6 @@
 // gallery.exe: 72 more pieces of work (3D, motion, branding, logos), two ways in.
 // The capsule machine hands them out one pull at a time and keeps an album of what you found.
-// The case board pins them to a corkboard like evidence: cases, red string, an inspector for every print.
+// The case board pins them to a corkboard like evidence: cases, red string, and every print opens big.
 import { DATA, esc, store } from './content.js';
 
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -234,7 +234,7 @@ function board(pane, ctx, count) {
   Object.values(L.nodes).forEach((n) => { if (saved[n.id]) { n.x = saved[n.id][0]; n.y = saved[n.id][1]; } });
   const seen = new Set((store.get('board-seen') || []).filter((id) => g.byId[id]));
   pane.innerHTML = `<div class="cb">
-    <div class="cb__view" tabindex="0" aria-label="Case board. Drag to look around, scroll or pinch to zoom, click a print to inspect it.">
+    <div class="cb__view" tabindex="0" aria-label="Case board. Drag to look around, scroll or pinch to zoom, click a print to open it.">
       <div class="cb__world" style="width:${L.W}px;height:${L.H}px">
         <h2 class="cb__title">Case file: ten years of work<small>${g.items.length} exhibits · ${g.cases.length} cases · follow the red string</small></h2>
         <svg class="cb__strings" width="${L.W}" height="${L.H}" aria-hidden="true"></svg>
@@ -243,16 +243,15 @@ function board(pane, ctx, count) {
         ${L.prints.map((p) => `<button type="button" class="cb__print${seen.has(p.it.id) ? ' is-seen' : ''}" data-node="${p.id}" data-id="${p.it.id}" style="left:${p.x}px;top:${p.y}px;--rot:${p.rot}deg" aria-label="Exhibit ${esc(p.it.id)}: ${esc(p.it.title)}">
           <span class="cb__pin" aria-hidden="true"></span><img src="${p.it.thumb}" alt="" width="${p.w}" height="${p.h}" loading="lazy" decoding="async" draggable="false">
           <span class="cb__label">${esc(p.it.id)} · ${esc(p.it.title)}</span>${p.it.video ? '<span class="cb__vid" aria-hidden="true">Motion</span>' : ''}<span class="cb__stamp" aria-hidden="true">Reviewed</span></button>`).join('')}
-        <p class="cb__sticky" style="left:${phone ? 160 : 960}px;top:${phone ? 190 : 46}px">${phone ? 'tap a print to inspect it. pinch to zoom' : 'click a print to inspect it. drag to look around, scroll to zoom'}</p>
+        <p class="cb__sticky" style="left:${phone ? 160 : 960}px;top:${phone ? 190 : 46}px">${phone ? 'tap a print to open it. pinch to zoom' : 'click a print to open it. drag to look around, scroll to zoom'}</p>
       </div>
     </div>
     <div class="cb__tools" role="toolbar" aria-label="Board">
       <button type="button" data-z="out" aria-label="Zoom out">−</button><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="fit">Fit</button><button type="button" data-z="tidy">Tidy</button>
     </div>
-    <aside class="cb__insp" hidden aria-live="polite"></aside>
     <div class="cb__closed" hidden><b>Case closed</b><span>You reviewed every exhibit.</span></div>
   </div>`;
-  const view = pane.querySelector('.cb__view'), world = pane.querySelector('.cb__world'), svg = pane.querySelector('.cb__strings'), insp = pane.querySelector('.cb__insp');
+  const view = pane.querySelector('.cb__view'), world = pane.querySelector('.cb__world'), svg = pane.querySelector('.cb__strings');
   const el = (id) => world.querySelector(`[data-node="${id}"]`);
 
   // ---- red string
@@ -271,8 +270,32 @@ function board(pane, ctx, count) {
 
   // ---- pan and zoom
   const v = { x: 0, y: 0, s: 1 };
-  const apply = () => { world.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s})`; };
-  const clampS = (s) => Math.min(2.4, Math.max(0.16, s));
+  // While the board moves it is one GPU layer (smooth), but a layer keeps the resolution it was drawn at,
+  // so zooming in would blur text and prints. Once it settles, the layer is dropped and redrawn sharp at the
+  // new zoom, and the prints on screen swap their thumbnail for the full-size image when they need it.
+  let settleT = 0;
+  const sharpen = () => {
+    world.classList.remove('is-moving');
+    const r = view.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+    L.prints.forEach((p) => {
+      const img = el(p.id).querySelector('img');
+      const thumbW = p.it.w >= p.it.h ? 560 : (560 * p.it.w) / p.it.h;
+      if (img.dataset.hi || p.w * v.s * dpr < thumbW * 0.85) return;
+      const x = v.x + p.x * v.s, y = v.y + p.y * v.s, w = p.w * v.s, h = p.h * v.s;
+      if (x > r.width + 200 || y > r.height + 200 || x + w < -200 || y + h < -200) return;
+      const hi = new Image();
+      hi.decoding = 'async';
+      hi.onload = () => { img.src = p.it.src; };
+      hi.src = p.it.src;
+      img.dataset.hi = '1';
+    });
+  };
+  const apply = () => {
+    world.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s})`;
+    world.classList.add('is-moving');
+    clearTimeout(settleT); settleT = setTimeout(sharpen, world.classList.contains('is-gliding') ? 460 : 160);
+  };
+  const clampS = (s) => Math.min(3.2, Math.max(0.16, s));
   const zoomAt = (cx, cy, f) => { const r = view.getBoundingClientRect(); const px = cx - r.left, py = cy - r.top; const ns = clampS(v.s * f); v.x = px - (px - v.x) * (ns / v.s); v.y = py - (py - v.y) * (ns / v.s); v.s = ns; apply(); };
   const fit = (animate) => {
     const r = view.getBoundingClientRect();
@@ -366,52 +389,22 @@ function board(pane, ctx, count) {
     }
   }));
 
-  // ---- the inspector
-  let current = null, openedAt = 0;
-  // the tap that opens the inspector must not also land on the inspector that just appeared under the finger
-  const fresh = () => performance.now() - openedAt < 450;
+  // ---- opening a print: it opens big in the viewer, gets its Reviewed stamp and its string lights up
   function paintCount() {
     count.textContent = `Reviewed ${seen.size} / ${g.items.length}`;
     if (seen.size === g.items.length) pane.querySelector('.cb__closed').hidden = false;
   }
   function inspect(it, from) {
-    current = it; openedAt = performance.now();
     const c = caseOf(it);
-    const linked = c.items.filter((id) => id !== it.id).map((id) => g.byId[id]);
-    const rows = [['Case', `${String(g.cases.indexOf(c) + 1).padStart(2, '0')} · ${c.title}`], ['Type', it.kind], ['Year', it.year], ['For', it.where], ['Role', it.role]].filter((r) => r[1]);
-    insp.innerHTML = `<div class="ins">
-      <header class="ins__head"><span class="ins__no">Exhibit ${esc(it.id)}</span><button type="button" class="ins__x" aria-label="Close the inspector">×</button></header>
-      <button type="button" class="ins__media" style="aspect-ratio:${it.w}/${it.h}" aria-label="See ${esc(it.title)} big">${media(it)}</button>
-      <h3>${esc(it.title)}</h3>
-      <dl>${rows.map(([k, val]) => `<div><dt>${esc(k)}</dt><dd>${esc(val)}</dd></div>`).join('')}</dl>
-      <p class="ins__note">${esc(c.note)}</p>
-      ${linked.length ? `<p class="ins__lbl">Linked evidence</p><ul class="ins__linked" role="list">${linked.map((l) => `<li><button type="button" data-id="${l.id}" aria-label="${esc(l.title)}"><img src="${l.thumb}" alt="" loading="lazy"></button></li>`).join('')}</ul>` : ''}
-      <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-i="big">See it big</button><button type="button" class="os-btn" data-i="find">Show on the board</button></div>
-    </div>`;
-    insp.hidden = false;
-    pane.querySelector('.cb').classList.add('has-insp');
     world.querySelectorAll('.cb__print.is-current').forEach((p) => p.classList.remove('is-current'));
-    const pe = world.querySelector(`[data-node="p-${it.id}"]`); pe.classList.add('is-current', 'is-seen');
+    world.querySelector(`[data-node="p-${it.id}"]`).classList.add('is-current', 'is-seen');
     svg.querySelectorAll('.str.is-hot').forEach((p) => p.classList.remove('is-hot'));
     strings.forEach((s) => { if (s.b === 'p-' + it.id || (s.a === 'case-' + it.case && s.b.startsWith('p-'))) s.p.classList.add('is-hot'); });
     if (!seen.has(it.id)) { seen.add(it.id); store.set('board-seen', [...seen]); paintCount(); }
-    const caseList = c.items.map((id) => g.byId[id]);
-    insp.querySelector('.ins__x').addEventListener('click', () => { if (!fresh()) closeInsp(); });
-    insp.querySelector('.ins__media').addEventListener('click', (e) => { if (!fresh()) openIn(ctx, caseList, it, e.currentTarget); });
-    insp.querySelector('[data-i=big]').addEventListener('click', (e) => { if (!fresh()) openIn(ctx, caseList, it, e.currentTarget); });
-    insp.querySelector('[data-i=find]').addEventListener('click', () => { if (fresh()) return; focusOn(L.nodes['p-' + it.id], phone ? 1 : 1.3); if (phone) closeInsp(); });
-    insp.querySelectorAll('.ins__linked [data-id]').forEach((b) => b.addEventListener('click', () => { if (!fresh()) inspect(g.byId[b.dataset.id]); }));
-  }
-  function closeInsp() {
-    insp.querySelectorAll('video').forEach((x) => x.pause());
-    insp.hidden = true; insp.innerHTML = ''; current = null;
-    pane.querySelector('.cb').classList.remove('has-insp');
-    world.querySelectorAll('.cb__print.is-current').forEach((p) => p.classList.remove('is-current'));
-    svg.querySelectorAll('.str.is-hot').forEach((p) => p.classList.remove('is-hot'));
+    openIn(ctx, c.items.map((id) => g.byId[id]), it, from);
   }
   pane.querySelector('.cb__closed').addEventListener('click', (e) => { e.currentTarget.hidden = true; });
-  pane.addEventListener('keydown', (e) => { if (e.key === 'Escape' && current) { e.stopPropagation(); closeInsp(); } });
   paintCount();
   const ro = new ResizeObserver(() => apply()); ro.observe(view);
-  return () => { ro.disconnect(); closeInsp(); };
+  return () => { ro.disconnect(); };
 }

@@ -315,15 +315,6 @@
   "h": 746
  },
  {
-  "id": "502",
-  "key": "502-2021-showcase",
-  "name": "2021 showcase",
-  "year": "2021",
-  "video": false,
-  "w": 1600,
-  "h": 900
- },
- {
   "id": "503",
   "key": "503-logofolio",
   "name": "Logofolio",
@@ -540,15 +531,6 @@
   "h": 812
  },
  {
-  "id": "802",
-  "key": "802-xmoney-exchange-tiles",
-  "name": "xMoney exchange tiles",
-  "year": null,
-  "video": false,
-  "w": 1388,
-  "h": 812
- },
- {
   "id": "803",
   "key": "803-friction",
   "name": "Friction",
@@ -617,8 +599,8 @@
   "name": "xMoney landscape",
   "year": null,
   "video": false,
-  "w": 1236,
-  "h": 694
+  "w": 1600,
+  "h": 900
  },
  {
   "id": "X1",
