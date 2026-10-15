@@ -554,7 +554,10 @@ html[data-mode="phone"] .term { font-size: 13px; }
 .slot.is-new { animation: slot-pop .6s var(--os-ease); }
 @keyframes slot-pop { 0% { transform: scale(.6); box-shadow: 0 0 0 3px var(--c); } 60% { transform: scale(1.06); } 100% { transform: none; box-shadow: 0 0 0 0 transparent; } }
 
-.cm-reveal { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 18px; background: rgba(18, 18, 18, .55); animation: fade-in .2s; overflow: auto; }
+.cm-reveal { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; padding: 18px 16px calc(24px + env(safe-area-inset-bottom, 0px)); background: rgba(18, 18, 18, .55); animation: fade-in .2s; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+/* margin auto centres the card when it fits and lets it scroll from the top when it doesn't */
+.cm-reveal > .prize { margin: auto 0; }
+.is-locked { overflow: hidden !important; }
 .prize { position: relative; display: grid; place-items: center; width: 100%; }
 .prize__cap { position: absolute; top: 40%; width: 120px; height: 120px; pointer-events: none; }
 .prize__cap i { position: absolute; left: 0; width: 120px; height: 60px; animation: half-up .55s var(--os-ease) forwards; }

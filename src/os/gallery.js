@@ -144,7 +144,10 @@ function machine(pane, ctx, count) {
     picks.forEach((it) => paintSlot(pane.querySelector(`.slot[data-id="${it.id}"]`), true)); paintCounts();
     busy = false;
   }
-  function closeReveal() { reveal.querySelectorAll('video').forEach((v) => v.pause()); reveal.hidden = true; reveal.innerHTML = ''; mach.classList.remove('is-turning', 'is-dropping'); }
+  // while a card is up, the album behind it must not scroll (on the phone a swipe on the card used to move the album)
+  const lock = (on) => [pane.querySelector('.cm'), pane.closest('.sheet__body'), pane.closest('.win__body')].forEach((el) => el && el.classList.toggle('is-locked', on));
+  function openReveal() { reveal.hidden = false; reveal.scrollTop = 0; lock(true); }
+  function closeReveal() { reveal.querySelectorAll('video').forEach((v) => v.pause()); reveal.hidden = true; reveal.innerHTML = ''; lock(false); mach.classList.remove('is-turning', 'is-dropping'); }
   function wireReveal() {
     reveal.querySelector('[data-r=again]')?.addEventListener('click', () => { closeReveal(); pull(); });
     reveal.querySelector('[data-r=close]')?.addEventListener('click', closeReveal);
@@ -164,7 +167,7 @@ function machine(pane, ctx, count) {
         ${done ? '<p class="prize__done">That was the last one. Album complete.</p>' : ''}
         <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Pull again</button><button type="button" class="os-btn" data-r="big">See it big</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
       </div></div>`;
-    reveal.hidden = false;
+    openReveal();
     reveal.querySelector('[data-r=big]').addEventListener('click', (e) => { closeReveal(); openIn(ctx, albumOrder(), it, e.currentTarget); });
     wireReveal();
   }
@@ -174,7 +177,7 @@ function machine(pane, ctx, count) {
         <ul class="ten" role="list">${picks.map((it, i) => `<li style="--c:${rar(it).color};--d:${i * 60}ms"><button type="button" data-id="${it.id}"><img src="${it.thumb}" alt="" decoding="async"><span>${esc(it.title)}</span>${fresh.has(it.id) ? '<b>New</b>' : ''}</button></li>`).join('')}</ul>
         <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Pull once more</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
       </div></div>`;
-    reveal.hidden = false;
+    openReveal();
     reveal.querySelectorAll('.ten [data-id]').forEach((b) => b.addEventListener('click', () => { const it = g.byId[b.dataset.id]; closeReveal(); openIn(ctx, albumOrder(), it, b); }));
     wireReveal();
   }
