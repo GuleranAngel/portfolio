@@ -3,62 +3,41 @@
 // Desktop browsers get windows, menus and a dock; phones get a home screen with full-screen apps.
 // The normal website lives at /site; "Switch to normal website" remembers the choice for the next visit.
 import Base from '../layouts/Base.astro';
-import images from '../data/images.json';
 import { site } from '../data/site';
 import { versioned } from '../data/asset-version';
 import '../styles/os.css';
+import manifest from '../../public/os/work/manifest.json';
 
-type Img = { width: number; height: number; widths: number[]; alpha: boolean; color: string; v: string };
-const IMG = images as Record<string, Img>;
-
-// Every picture and film from each case study, in the order the case study tells it
-const pages = import.meta.glob('./work/*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-const attr = (s: string, k: string) => (s.match(new RegExp(`\\b${k}="([^"]*)"`)) || [])[1] || '';
-const safe = (path: string) => { try { return versioned(path); } catch { return null; } };
-
-function filesOf(src: string) {
-  const seen = new Set<string>();
-  const out: Record<string, unknown>[] = [];
-  for (const m of src.matchAll(/<(Picture|LoopVideo)\b([\s\S]*?)\/?>/g)) {
-    const [, tag, a] = m;
-    const name = attr(a, 'name');
-    if (!name || seen.has(name)) continue;
-    seen.add(name);
-    const short = name.replace(/^(topout|atlas|pog)-/, '');
-    if (tag === 'Picture') {
-      const im = IMG[name];
-      if (!im) continue;
-      const tw = im.widths.find((w) => w >= 400) ?? im.widths[0];
-      const big = [...im.widths].reverse().find((w) => w <= 1920) ?? im.widths[im.widths.length - 1];
-      out.push({
-        type: 'image', name: `${short}.jpg`, cap: attr(a, 'alt') || short,
-        thumb: `/img/${name}-${tw}.webp?v=${im.v}`, src: `/img/${name}-${big}.webp?v=${im.v}`,
-        w: im.width, h: im.height, tw, th: Math.round((tw * im.height) / im.width), bg: im.color
-      });
-    } else {
-      const src1080 = safe(`/video/${name}-1080.mp4`), poster = safe(`/video/poster/${name}.webp`);
-      if (!src1080 || !poster) continue;
-      out.push({ type: 'video', name: `${short}.mp4`, cap: attr(a, 'label') || short, src: src1080, poster, bg: '#0e0e0e' });
-    }
-  }
-  return out;
+// Every module of each Behance presentation, in Behance order (built by the media script into public/os/work)
+type Mod = { p: string; n: string; slug: string; title: string; type: 'image' | 'video'; w: number; h: number };
+const MODS = manifest as Record<string, Mod>;
+function filesOf(id: string) {
+  return Object.entries(MODS).filter(([, m]) => m.p === id).sort(([a], [b]) => a.localeCompare(b)).map(([key, m]) => {
+    const base = `/os/work/${key}`;
+    const th = Math.round((480 * m.h) / m.w);
+    return {
+      type: m.type, n: m.n, name: `${m.n}-${m.slug}.${m.type === 'video' ? 'mp4' : 'jpg'}`, cap: m.title, w: m.w, h: m.h,
+      thumb: versioned(`${base}-t.webp`), tw: 480, th,
+      src: versioned(m.type === 'video' ? `${base}.mp4` : `${base}.webp`), poster: versioned(`${base}.webp`)
+    };
+  });
 }
 
 const PROJECTS = [
-  { id: 'topout', page: './work/topout.astro', name: 'Topout', sector: 'Bouldering gym', color: '#ff4b1f', url: '/work/topout',
+  { id: 'topout', name: 'Topout', sector: 'Bouldering gym', color: '#ff4b1f', url: '/work/topout',
     desc: 'A brand for a bouldering gym built around Board B, a wall with a light under every hold. The mark, a dot typeface, the app and the screens all come from that one lit hold.' },
-  { id: 'atlas', page: './work/atlas-pay.astro', name: 'Atlas Pay', sector: 'Cross-border payments', color: '#3d63ff', url: '/work/atlas-pay',
+  { id: 'atlas', name: 'Atlas Pay', sector: 'Cross-border payments', color: '#3d63ff', url: '/work/atlas-pay',
     desc: 'A payments brand for businesses that move money across borders. The mark is a set of rays from a single origin inside a circle, built to work flat, embossed and lit.' },
-  { id: 'pog', page: './work/pog.astro', name: 'POG', sector: 'Streaming and gaming', color: '#ff005d', url: '/work/pog',
+  { id: 'pog', name: 'POG', sector: 'Streaming and gaming', color: '#ff005d', url: '/work/pog',
     desc: 'An identity for a streamer and content creator, built around a character with a whole range of reactions, so the brand can react as fast as chat does.' }
-].map(({ page, ...p }) => ({ ...p, files: filesOf(pages[page] || '') }));
+].map((p) => ({ ...p, files: filesOf(p.id) }));
 
 const data = {
   person: { name: site.name, role: site.role, base: 'Based in Romania', email: site.email, behance: site.behance, linkedin: site.linkedin },
   normal: '/site',
   projects: PROJECTS,
   walls: {
-    'Dot field': { video: '/os/wall-dots.mp4', poster: '/os/wall-dots.webp' },
+    'Dot field': { live: true },
     'Atlas light': { video: versioned('/video/atlas-light-reveal-1080.mp4'), poster: versioned('/video/poster/atlas-light-reveal.webp') },
     'POG pattern': { video: versioned('/video/pog-3d-pattern-1080.mp4'), poster: versioned('/video/poster/pog-3d-pattern.webp') }
   }
@@ -101,8 +80,6 @@ const data = {
     <header class="menubar">
       <nav class="menubar__left" aria-label="Menu" id="menubar"></nav>
       <div class="menubar__right">
-        <span class="menubar__status"><i aria-hidden="true"></i>Open for projects</span>
-        <a class="menubar__switch" href="/site" data-switch>Switch to normal website</a>
         <time class="menubar__clock" id="clock"></time>
       </div>
     </header>
@@ -115,17 +92,20 @@ const data = {
 
   <div class="phone" id="phone">
     <div class="phone__wall" id="phone-wall" aria-hidden="true"></div>
-    <header class="status"><time id="phone-clock"></time><span>Open for projects</span></header>
+    <button type="button" class="status" id="status-btn" aria-expanded="false" aria-controls="control" aria-label="Control centre"><time id="phone-clock"></time><span class="status__icons" aria-hidden="true"><i></i><i></i><i></i></span></button>
     <main class="home" id="home">
-      <section class="widget" aria-labelledby="widget-name">
-        <h1 id="widget-name">Angel Guleran</h1>
-        <p>Brand identity designer. Identities that work flat, in 3D and in motion. Based in Romania.</p>
-        <a class="os-btn os-btn--hot widget__switch" href="/site" data-switch>Switch to normal website</a>
-      </section>
+      <h1 class="sr-only">Angel Guleran, brand identity designer</h1>
       <ul class="springboard" id="springboard" role="list" aria-label="Apps"></ul>
     </main>
     <nav class="phone-dock" id="phone-dock" aria-label="Dock"></nav>
     <div class="sheets" id="sheets"></div>
+    <div class="control" id="control" hidden></div>
+    <section class="lock" id="lock" aria-label="Lock screen" hidden>
+      <p class="lock__date" id="lock-date"></p>
+      <p class="lock__time" id="lock-time"></p>
+      <div class="lock__notes"></div>
+      <button type="button" class="lock__hint" id="lock-hint">Swipe up to open</button>
+    </section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
