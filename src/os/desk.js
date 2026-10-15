@@ -246,6 +246,7 @@ const ICONS = [
   { id: 'pog', label: 'POG', html: glyph('folder', { p: P.pog }), app: 'pog', p: P.pog },
   { id: 'about', label: 'about.txt', html: glyph('file', { ext: 'TXT' }), app: 'about' },
   { id: 'contact', label: 'contact.vcf', html: glyph('file', { ext: 'VCF' }), app: 'contact' },
+  { id: 'gallery', label: 'gallery.exe', html: glyph('capsule'), app: 'gallery' },
   { id: 'term', label: 'Terminal', html: '<span class="glyph glyph--term" aria-hidden="true">&gt;_</span>', app: 'term' },
   { id: 'trash', label: 'Old logos', html: glyph('trash'), app: 'trash' },
   { id: 'topped', label: 'topped-out.txt', html: glyph('file', { ext: 'TXT' }), app: 'topped', secret: true }
@@ -254,8 +255,14 @@ const iconsEl = $('#icons');
 const icons = [];
 const slot = (i) => { const perCol = Math.max(1, Math.floor((vh() - MENU_H - DOCK_SPACE - 16) / ICON_H)); return { x: 14 + Math.floor(i / perCol) * (ICON_W + 8), y: MENU_H + 14 + (i % perCol) * ICON_H }; };
 const saved = store.get('icons') || {};
+// an icon without a saved spot (a new app, say) takes the first free slot, so it never lands on top of another
+const freeSlot = (i) => {
+  const taken = Object.values(saved);
+  for (let k = i; k < i + 40; k++) { const p = slot(k); if (!taken.some((t) => Math.abs(t.x - p.x) < 40 && Math.abs(t.y - p.y) < 40)) return p; }
+  return slot(i);
+};
 function placeIcon(ic, i) {
-  const pos = saved[ic.id] && saved[ic.id].x < vw() - 40 && saved[ic.id].y < vh() - 60 ? saved[ic.id] : slot(i);
+  const pos = saved[ic.id] && saved[ic.id].x < vw() - 40 && saved[ic.id].y < vh() - 60 ? saved[ic.id] : (Object.keys(saved).length ? freeSlot(i) : slot(i));
   ic.x = pos.x; ic.y = pos.y;
   ic.el.style.transform = `translate(${ic.x}px, ${ic.y}px)`;
 }
@@ -382,6 +389,7 @@ sticky.addEventListener('pointerdown', (e) => {
 const DOCK = [
   { id: 'welcome', tip: 'Welcome', g: 'Hi', hot: true },
   { id: 'work', tip: 'Work', g: '<span class="dock-folder" aria-hidden="true"></span>' },
+  { id: 'gallery', tip: 'gallery.exe', g: '<span class="dock-capsule" aria-hidden="true"><i></i><i></i></span>', paper: true },
   { id: 'mail', tip: 'Write an email', g: '@' },
   { id: 'term', tip: 'Terminal', g: '&gt;_', dark: true },
   'sep',
@@ -432,7 +440,7 @@ const link = (url) => () => window.open(url, '_blank', 'noopener');
 const MENUS = [
   ['Angel OS', [['Welcome', () => open('welcome')], ['About this site', () => open('about')], '-', ['Switch to normal website', goNormal], ['Restart', () => restart()]]],
   ['File', [['New Work window', () => open('work'), 'Alt N'], ['Close window', () => active && closeWin(active), 'Alt W'], ['Close all windows', closeAll]]],
-  ['Work', [['Topout', () => open('topout')], ['Atlas Pay', () => open('atlas')], ['POG', () => open('pog')], '-', ['Old logos', () => open('trash')], ['Terminal', () => open('term')]]],
+  ['Work', [['Topout', () => open('topout')], ['Atlas Pay', () => open('atlas')], ['POG', () => open('pog')], '-', ['gallery.exe', () => open('gallery')], ['Old logos', () => open('trash')], ['Terminal', () => open('term')]]],
   ['View', [['Clean up icons', cleanUp], ['Tidy windows', tidy], '-', ...Object.keys(WALLS).map((k) => [`Wallpaper: ${k}`, () => setWall($('#wall'), k)])]],
   ['Contact', [['Write an email…', () => open('mail')], ['Copy email address', () => copyEmail({ say })], ['Contact card', () => open('contact')], '-', ['Behance', link(PERSON.behance)], ['LinkedIn', link(PERSON.linkedin)]]]
 ];

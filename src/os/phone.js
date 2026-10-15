@@ -163,6 +163,7 @@ const APPS_HOME = {
   atlas: { label: 'Atlas Pay', html: glyph('folder', { p: P.atlas }), app: 'atlas', p: P.atlas },
   pog: { label: 'POG', html: glyph('folder', { p: P.pog }), app: 'pog', p: P.pog },
   work: { label: 'Work', html: '<span class="tile tile--hot" aria-hidden="true"><span class="dock-folder"></span></span>', app: 'work' },
+  gallery: { label: 'gallery.exe', html: '<span class="tile tile--gallery" aria-hidden="true"><span class="dock-capsule"><i></i><i></i></span></span>', app: 'gallery' },
   hello: { label: 'Hello', html: '<span class="tile tile--paper" aria-hidden="true">Hi</span>', app: 'welcome' },
   about: { label: 'About', html: glyph('file', { ext: 'TXT' }), app: 'about' },
   contact: { label: 'Contact', html: glyph('file', { ext: 'VCF' }), app: 'contact' },

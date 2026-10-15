@@ -7,6 +7,8 @@ import { site } from '../data/site';
 import { versioned } from '../data/asset-version';
 import '../styles/os.css';
 import manifest from '../../public/os/work/manifest.json';
+import stills from '../../public/os/gallery/stills.json';
+import { buildGallery } from '../data/gallery.mjs';
 
 // Every module of each Behance presentation, in Behance order (built by the media script into public/os/work)
 type Mod = { p: string; n: string; slug: string; title: string; type: 'image' | 'video'; w: number; h: number };
@@ -36,6 +38,7 @@ const data = {
   person: { name: site.name, role: site.role, base: 'Based in Romania', email: site.email, behance: site.behance, linkedin: site.linkedin },
   normal: '/site',
   projects: PROJECTS,
+  gallery: buildGallery(stills, versioned),
   walls: {
     'Dot field': { live: true },
     'Atlas light': { video: versioned('/video/atlas-light-reveal-1080.mp4'), poster: versioned('/video/poster/atlas-light-reveal.webp') },

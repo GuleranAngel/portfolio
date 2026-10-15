@@ -2,6 +2,7 @@
 // both render through these builders, so the content only lives in one place.
 // The data (projects and every module of each Behance presentation, in order) is written into the page at build time.
 import { onLongPress } from './press.js';
+import { gallery } from './gallery.js';
 export const DATA = JSON.parse(document.getElementById('aos-data').textContent);
 export const PERSON = DATA.person;
 export const PROJECTS = DATA.projects;
@@ -35,6 +36,7 @@ export function glyph(kind, opts = {}) {
   if (kind === 'folder') return `<span class="glyph glyph--folder" style="--g1:${opts.p ? opts.p.color : '#e4e1d9'}" aria-hidden="true"></span>`;
   if (kind === 'trash') return '<span class="glyph glyph--trash" aria-hidden="true"></span>';
   if (kind === 'site') return '<span class="glyph glyph--site" aria-hidden="true"><i></i></span>';
+  if (kind === 'capsule') return '<span class="glyph glyph--capsule" aria-hidden="true"><i></i><i></i></span>';
   return `<span class="glyph glyph--file" aria-hidden="true"><b>${esc(opts.ext || '')}</b></span>`;
 }
 
@@ -213,11 +215,11 @@ const HOLD = (lit) => {
 
 function terminal(body, _o, ctx) {
   body.innerHTML = `<div class="term"><p class="o">Angel OS terminal. Type <b>help</b> to see what you can do.${TOPPED() ? '' : `\n<span class="dim">${LOCKED}</span>`}</p><div class="out" aria-live="polite"></div>
-    <label class="in"><span aria-hidden="true">angel@os <i class="cwd">~</i> %</span><input aria-label="Command" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"></label></div>`;
+    <form class="in" autocomplete="off"><label><span aria-hidden="true">angel@os <i class="cwd">~</i> %</span><input aria-label="Command" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></label><button type="submit" class="term__go">Run</button></form></div>`;
   const out = body.querySelector('.out'), inp = body.querySelector('input'), term = body.querySelector('.term'), cwdEl = body.querySelector('.cwd');
   const print = (s) => { const d = document.createElement('p'); d.className = 'o'; d.innerHTML = s; out.appendChild(d); term.scrollTop = term.scrollHeight; };
   let cwd = '~', hintN = 0, seen = false;
-  const showNote = () => { seen = true; print(NOTE); };
+  const showNote = () => { seen = true; print(ctx.mode === 'desk' ? NOTE : NOTE.replace('folders on the desktop', 'folders on the home screen')); };
   // the lock takes the three numbers typed on their own (21-7.5-9, 21 7.5 9) or after "unlock"
   const tryCode = (raw) => {
     if (TOPPED()) return print('Already unlocked. You topped out :)\n<span class="dim">Want to play again? Type <b>relock</b>.</span>');
@@ -303,8 +305,7 @@ function terminal(body, _o, ctx) {
     print(`command not found: ${esc(c)}. Try <b>help</b>.`);
   };
   inp.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { const raw = inp.value.trim(); inp.value = ''; run(raw); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); if (hi > 0) inp.value = hist[--hi] || ''; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); if (hi > 0) inp.value = hist[--hi] || ''; }
     else if (e.key === 'ArrowDown') { e.preventDefault(); hi = Math.min(hist.length, hi + 1); inp.value = hist[hi] || ''; }
     else if (e.key === 'Tab') {
       e.preventDefault();
@@ -312,7 +313,14 @@ function terminal(body, _o, ctx) {
       if (!v.includes(' ')) { const m = NAMES.filter((n) => n.startsWith(v)); if (m.length === 1) inp.value = m[0] + ' '; else if (m.length) print(m.join('   ')); }
     }
   });
-  term.addEventListener('click', () => { if (!getSelection().toString()) inp.focus(); });
+  // a form, so Enter on a keyboard and Send/Go on a phone keyboard (or the Run button) all run the command
+  body.querySelector('form.in').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const raw = inp.value.trim(); inp.value = ''; run(raw);
+    inp.focus({ preventScroll: true });
+    requestAnimationFrame(() => inp.scrollIntoView({ block: 'nearest' }));
+  });
+  term.addEventListener('click', (e) => { if (!e.target.closest('button') && !getSelection().toString()) inp.focus(); });
   ctx.focusTarget = inp;
 }
 
@@ -363,7 +371,8 @@ function welcome(body, _o, ctx) {
   body.innerHTML = `<div class="hello">
     <h1 class="hello__title">Hi, I’m Angel.</h1>
     <p class="hello__lede">${esc(LEDE)}</p>
-    <ul class="hello__work" role="list">${PROJECTS.map((p) => `<li><button type="button" data-open="${p.id}" style="--accent:${p.color}">${glyph('folder', { p })}<span class="hello__name">${esc(p.name)}</span><span class="hello__sector">${esc(p.sector)}</span></button></li>`).join('')}</ul>
+    <ul class="hello__work" role="list">${PROJECTS.map((p) => `<li><button type="button" data-open="${p.id}" style="--accent:${p.color}">${glyph('folder', { p })}<span class="hello__name">${esc(p.name)}</span><span class="hello__sector">${esc(p.sector)}</span></button></li>`).join('')}
+      <li><button type="button" data-open="gallery" style="--accent:#7c5cff">${glyph('capsule')}<span class="hello__name">gallery.exe</span><span class="hello__sector">${DATA.gallery.items.length} more pieces, as a game</span></button></li></ul>
     <div class="os-row">
       <a class="os-btn os-btn--hot" href="mailto:${PERSON.email}">Write an email</a>
       <button class="os-btn" type="button" data-a="copy">Copy email</button>
@@ -377,7 +386,7 @@ function welcome(body, _o, ctx) {
 // ---------------------------------------------------------------- registry
 // size = desktop window size; route = the #hash that opens it
 export const APPS = {
-  welcome: { title: 'Welcome', size: [560, 540], route: '', build: welcome },
+  welcome: { title: 'Welcome', size: [560, 600], route: '', build: welcome },
   work: { title: 'Work', size: [880, 600], route: 'work', build: (b, o, c) => folder(b, { name: 'Work' }, c) },
   topout: { title: 'Work / Topout', size: [880, 620], route: 'topout', build: (b, o, c) => folder(b, { name: 'Topout' }, c) },
   atlas: { title: 'Work / Atlas Pay', size: [880, 620], route: 'atlas', build: (b, o, c) => folder(b, { name: 'Atlas Pay' }, c) },
@@ -389,7 +398,8 @@ export const APPS = {
   term: { title: 'Terminal', size: [660, 420], route: 'terminal', build: terminal, dark: true },
   trash: { title: 'Old logos', size: [440, 300], build: trash },
   topped: { title: 'topped-out.txt', size: [500, 660], build: topped },
-  info: { title: 'Info', size: [380, 360], build: info }
+  info: { title: 'Info', size: [380, 360], build: info },
+  gallery: { title: 'gallery.exe', size: [1120, 740], route: 'gallery', build: gallery }
 };
 // folder windows share one slot on the desktop, so opening Atlas Pay reuses an open Topout window
 export const SLOT = { work: 'folder', topout: 'folder', atlas: 'folder', pog: 'folder' };
