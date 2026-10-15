@@ -5,7 +5,7 @@
 
 export const CATS = ['3D', 'Motion', 'Branding', 'Logos', 'xMoney visuals', 'Overview'];
 
-// one capsule colour per category, used by the capsule machine and the album
+// one colour per category, used by the album and the prize cards (the labels are no longer shown)
 export const RARITY = {
   '3D': { label: 'Epic', color: '#ff005d' },
   Motion: { label: 'Legendary', color: '#ff4b1f' },
@@ -86,5 +86,7 @@ export function buildGallery(stills, versioned) {
     };
   });
   const order = (a, b) => CATS.indexOf(a.cat) - CATS.indexOf(b.cat) || a.id.localeCompare(b.id, 'en', { numeric: true });
-  return { items: items.sort(order), cases: CASES, links: LINKS, cats: CATS, rarity: RARITY };
+  // the capsule machine: a Blender render (still) and one clip of a turn (knob, capsule rolls out)
+  const machine = { still: versioned('/os/gallery/machine/still.webp'), pull: versioned('/os/gallery/machine/pull.mp4'), pullWebm: versioned('/os/gallery/machine/pull.webm') };
+  return { items: items.sort(order), cases: CASES, links: LINKS, cats: CATS, rarity: RARITY, machine };
 }

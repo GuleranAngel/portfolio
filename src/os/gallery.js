@@ -1,5 +1,6 @@
-// gallery.exe: 72 more pieces of work (3D, motion, branding, logos), two ways in.
-// The capsule machine hands them out one pull at a time and keeps an album of what you found.
+// gallery.exe: the rest of the work (3D, motion, branding, logos), two ways in.
+// The capsule machine (a Blender render: a still, and one clip of the knob turning and a capsule dropping out)
+// hands them out one turn at a time and keeps an album of what you found.
 // The case board pins them to a corkboard like evidence: cases, red string, and every print opens big.
 import { DATA, esc, store } from './content.js';
 
@@ -50,31 +51,16 @@ function machine(pane, ctx, count) {
   const g = gal();
   const found = new Set((store.get('capsules') || []).filter((id) => g.byId[id]));
   const save = () => store.set('capsules', [...found]);
-  const balls = Array.from({ length: 22 }, (_, i) => {
-    const pool = ['Logos', 'Logos', 'xMoney visuals', 'Branding', 'Branding', '3D', '3D', 'Motion', 'Overview'];
-    const col = g.rarity[pool[(i * 7 + 3) % pool.length]].color;
-    const row = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4][i];
-    const inRow = [5, 5, 5, 4, 3][row], k = i - [0, 5, 10, 15, 19][row];
-    const x = 50 + (k - (inRow - 1) / 2) * 17 + (row % 2 ? 4 : -2), y = 84 - row * 15.5;
-    return `<i style="--c:${col};left:${x}%;top:${y}%;--r:${(i * 47) % 360}deg"></i>`;
-  }).join('');
   pane.innerHTML = `<div class="cm">
     <div class="cm__left">
-      <div class="cm__machine" aria-hidden="true">
-        <div class="cm__globe"><div class="cm__balls">${balls}</div><span class="cm__shine"></span></div>
-        <div class="cm__neck"></div>
-        <div class="cm__body">
-          <span class="cm__plate">gallery.exe</span>
-          <span class="cm__price">1 pull · free</span>
-          <span class="cm__knob"><b></b></span>
-          <span class="cm__chute"><span class="cm__cap"><i></i><i></i></span></span>
-        </div>
-      </div>
+      <button type="button" class="cm__machine" data-a="knob" aria-label="Turn the knob">
+        <img class="cm__still" src="${g.machine.still}" width="800" height="1000" alt="" decoding="async">
+        <video class="cm__clip" muted playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="${g.machine.pull}" type="video/mp4"><source src="${g.machine.pullWebm}" type="video/webm"></video>
+      </button>
       <div class="cm__actions">
-        <button type="button" class="os-btn os-btn--hot cm__pull" data-a="pull">Pull the lever</button>
-        <button type="button" class="os-btn" data-a="ten">Pull 10</button>
+        <button type="button" class="os-btn os-btn--hot cm__pull" data-a="pull">Turn the knob</button>
+        <button type="button" class="os-btn" data-a="ten">Ten turns</button>
       </div>
-      <ul class="cm__legend" aria-label="Capsule colours">${g.cats.filter((c) => c !== 'Overview').map((c) => `<li><i style="--c:${g.rarity[c].color}"></i>${esc(c === 'xMoney visuals' ? 'xMoney' : c)} <span>${esc(g.rarity[c].label)}</span></li>`).join('')}</ul>
     </div>
     <section class="album" aria-label="Album">
       <header class="album__head"><h2>Album</h2><span class="album__count"></span><button type="button" class="album__skip" data-a="all">Skip the game, show me everything</button></header>
@@ -83,7 +69,7 @@ function machine(pane, ctx, count) {
     </section>
     <div class="cm-reveal" hidden></div>
   </div>`;
-  const reveal = pane.querySelector('.cm-reveal'), mach = pane.querySelector('.cm__machine'), cap = pane.querySelector('.cm__cap');
+  const reveal = pane.querySelector('.cm-reveal'), mach = pane.querySelector('.cm__machine'), clip = pane.querySelector('.cm__clip');
   const albumOrder = () => g.items.filter((it) => found.has(it.id));
   function paintSlot(b, flash) {
     const it = g.byId[b.dataset.id];
@@ -103,7 +89,7 @@ function machine(pane, ctx, count) {
     paintSlot(b);
     b.addEventListener('click', () => {
       const it = g.byId[b.dataset.id];
-      if (!found.has(it.id)) { ctx.say('Not found yet. Pull the lever'); mach.classList.remove('is-nudge'); void mach.offsetWidth; mach.classList.add('is-nudge'); return; }
+      if (!found.has(it.id)) { ctx.say('Not found yet. Turn the knob'); mach.classList.remove('is-nudge'); void mach.offsetWidth; mach.classList.add('is-nudge'); return; }
       openIn(ctx, albumOrder(), it, b);
     });
   });
@@ -115,17 +101,25 @@ function machine(pane, ctx, count) {
   };
   let busy = false;
   const wait = (ms) => new Promise((r) => setTimeout(r, RM ? 0 : ms));
+  // play the render: the knob turns, a capsule rolls out; the card comes up as it lands
   async function crank(fast) {
-    mach.classList.remove('is-turning', 'is-dropping'); void mach.offsetWidth;
-    mach.classList.add('is-turning');
-    await wait(fast ? 380 : 620);
-    mach.classList.add('is-dropping');
-    await wait(fast ? 300 : 650);
+    if (RM) return;
+    clip.playbackRate = fast ? 1.8 : 1;
+    try { clip.currentTime = 0; } catch (e) {}
+    mach.classList.add('is-playing');
+    try { await clip.play(); } catch (e) { mach.classList.remove('is-playing'); return; }
+    const land = 1.86; // seconds into the clip: the capsule has hit the floor
+    await new Promise((res) => {
+      let done = false;
+      const fin = () => { if (done) return; done = true; clip.removeEventListener('timeupdate', tick); clip.removeEventListener('ended', fin); res(); };
+      const tick = () => { if (clip.currentTime >= land) fin(); };
+      clip.addEventListener('timeupdate', tick); clip.addEventListener('ended', fin);
+      setTimeout(fin, (land / clip.playbackRate) * 1000 + 900);
+    });
   }
   async function pull() {
     if (busy) return; busy = true;
     const it = pickOne(), isNew = !found.has(it.id);
-    cap.style.setProperty('--c', rar(it).color);
     await crank(false);
     found.add(it.id); save();
     showPrize(it, isNew);
@@ -136,7 +130,6 @@ function machine(pane, ctx, count) {
     if (busy) return; busy = true;
     const left = shuffle(g.items.filter((it) => !found.has(it.id)));
     const picks = (left.length ? left : shuffle([...g.items])).slice(0, 10);
-    cap.style.setProperty('--c', rar(picks[0]).color);
     await crank(true);
     const fresh = picks.filter((it) => !found.has(it.id)).map((it) => it.id);
     picks.forEach((it) => found.add(it.id)); save();
@@ -144,10 +137,12 @@ function machine(pane, ctx, count) {
     picks.forEach((it) => paintSlot(pane.querySelector(`.slot[data-id="${it.id}"]`), true)); paintCounts();
     busy = false;
   }
+  // back to the still, ready for the next turn
+  const resetMachine = () => { clip.pause(); mach.classList.remove('is-playing'); try { clip.currentTime = 0; } catch (e) {} };
   // while a card is up, the album behind it must not scroll (on the phone a swipe on the card used to move the album)
   const lock = (on) => [pane.querySelector('.cm'), pane.closest('.sheet__body'), pane.closest('.win__body')].forEach((el) => el && el.classList.toggle('is-locked', on));
   function openReveal() { reveal.hidden = false; reveal.scrollTop = 0; lock(true); }
-  function closeReveal() { reveal.querySelectorAll('video').forEach((v) => v.pause()); reveal.hidden = true; reveal.innerHTML = ''; lock(false); mach.classList.remove('is-turning', 'is-dropping'); }
+  function closeReveal() { reveal.querySelectorAll('video').forEach((v) => v.pause()); reveal.hidden = true; reveal.innerHTML = ''; lock(false); resetMachine(); }
   function wireReveal() {
     reveal.querySelector('[data-r=again]')?.addEventListener('click', () => { closeReveal(); pull(); });
     reveal.querySelector('[data-r=close]')?.addEventListener('click', closeReveal);
@@ -161,11 +156,11 @@ function machine(pane, ctx, count) {
       <span class="prize__cap" aria-hidden="true"><i></i><i></i></span>
       <div class="prize__card">
         <div class="prize__media" style="aspect-ratio:${it.w}/${it.h}">${media(it)}</div>
-        <div class="prize__meta"><span class="prize__tag">${isNew ? 'New' : 'Already in your album'}</span><span class="prize__rar">${esc(r.label)} · ${esc(it.cat)}</span></div>
+        <div class="prize__meta"><span class="prize__tag">${isNew ? 'New' : 'Already in your album'}</span><span class="prize__rar">${esc(it.cat)} · ${esc(caseOf(it).title)}</span></div>
         <h3>${esc(it.title)}</h3>
         <p class="prize__sub">#${esc(it.id)} · ${esc(it.kind)}${it.year ? ' · ' + esc(it.year) : ''}</p>
         ${done ? '<p class="prize__done">That was the last one. Album complete.</p>' : ''}
-        <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Pull again</button><button type="button" class="os-btn" data-r="big">See it big</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
+        <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Turn again</button><button type="button" class="os-btn" data-r="big">See it big</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
       </div></div>`;
     openReveal();
     reveal.querySelector('[data-r=big]').addEventListener('click', (e) => { closeReveal(); openIn(ctx, albumOrder(), it, e.currentTarget); });
@@ -175,7 +170,7 @@ function machine(pane, ctx, count) {
     reveal.innerHTML = `<div class="prize prize--ten" role="dialog" aria-label="Ten capsules">
       <div class="prize__card"><h3>${fresh.size} new ${fresh.size === 1 ? 'piece' : 'pieces'}${fresh.size < picks.length ? `, ${picks.length - fresh.size} you had` : ''}</h3>
         <ul class="ten" role="list">${picks.map((it, i) => `<li style="--c:${rar(it).color};--d:${i * 60}ms"><button type="button" data-id="${it.id}"><img src="${it.thumb}" alt="" decoding="async"><span>${esc(it.title)}</span>${fresh.has(it.id) ? '<b>New</b>' : ''}</button></li>`).join('')}</ul>
-        <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Pull once more</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
+        <div class="os-row"><button type="button" class="os-btn os-btn--hot" data-r="again">Turn once more</button><button type="button" class="os-btn os-btn--quiet" data-r="close">Back to the album</button></div>
       </div></div>`;
     openReveal();
     reveal.querySelectorAll('.ten [data-id]').forEach((b) => b.addEventListener('click', () => { const it = g.byId[b.dataset.id]; closeReveal(); openIn(ctx, albumOrder(), it, b); }));
@@ -188,7 +183,7 @@ function machine(pane, ctx, count) {
     pane.querySelectorAll('.slot').forEach((b, i) => setTimeout(() => paintSlot(b, true), RM ? 0 : i * 12));
     paintCounts();
   });
-  // the knob turns when you grab it, too
+  // the machine itself is the big button
   mach.addEventListener('click', pull);
   const onKey = (e) => { if (e.key === 'Escape' && !reveal.hidden) { e.stopPropagation(); closeReveal(); } };
   pane.addEventListener('keydown', onKey);

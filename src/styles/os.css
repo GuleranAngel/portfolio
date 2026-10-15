@@ -507,33 +507,20 @@ html[data-mode="phone"] .term { font-size: 13px; }
 /* capsule machine */
 .cm { position: absolute; inset: 0; display: grid; grid-template-columns: 330px minmax(0, 1fr); }
 .cm__left { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 26px 20px; background: var(--os-paper-2); box-shadow: inset -1px 0 0 var(--os-line); overflow: auto; }
-.cm__machine { position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer; user-select: none; }
-.cm__globe { position: relative; z-index: 1; width: 226px; height: 226px; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 115%, rgba(0, 0, 0, .1), transparent 55%), #fbfaf7; box-shadow: inset 0 0 0 7px #e2ddd3, inset 0 -16px 26px rgba(0, 0, 0, .07), 0 6px 14px rgba(0, 0, 0, .08); }
-.cm__balls { position: absolute; inset: 0; }
-.cm__balls i { position: absolute; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; background: linear-gradient(var(--c) 50%, #f4f3ef 50%); transform: rotate(var(--r)); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1), inset -4px -6px 9px rgba(0, 0, 0, .14); }
-.cm__shine { position: absolute; left: 17%; top: 9%; width: 30%; height: 20%; border-radius: 50%; background: rgba(255, 255, 255, .75); filter: blur(5px); transform: rotate(-28deg); }
-.cm__neck { width: 118px; height: 18px; margin-top: -8px; background: #d6d0c4; border-radius: 4px; }
-.cm__body { position: relative; width: 208px; height: 172px; border-radius: 16px 16px 26px 26px; background: var(--os-accent); box-shadow: inset 0 -10px 0 rgba(0, 0, 0, .14), 0 8px 18px rgba(255, 79, 31, .25); }
-.cm__plate { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); padding: 3px 10px; border-radius: 6px; background: rgba(0, 0, 0, .22); color: #fff; font-family: var(--os-mono); font-size: 13px; white-space: nowrap; }
-.cm__price { position: absolute; left: 0; right: 0; top: 42px; text-align: center; font-size: 11px; color: rgba(255, 255, 255, .86); }
-.cm__knob { position: absolute; left: 50%; top: 62px; width: 58px; height: 58px; margin-left: -29px; border-radius: 50%; background: #f4f3ef; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .12), 0 3px 6px rgba(0, 0, 0, .22); transition: transform .62s var(--os-ease); }
-.cm__knob b { position: absolute; left: 50%; top: 7px; bottom: 7px; width: 12px; margin-left: -6px; border-radius: 6px; background: #cbc5b9; }
-.cm__machine:hover .cm__knob { transform: rotate(-24deg); }
-.cm__chute { position: absolute; left: 50%; bottom: 14px; width: 76px; height: 34px; margin-left: -38px; border-radius: 10px 10px 16px 16px; background: #191919; overflow: hidden; }
-.cm__cap { position: absolute; left: 50%; bottom: 3px; width: 28px; height: 28px; margin-left: -14px; border-radius: 50%; background: linear-gradient(var(--c, #ff4b1f) 50%, #f4f3ef 50%); opacity: 0; transform: translateY(-40px) rotate(-30deg); }
-.cm__machine.is-turning .cm__knob { transform: rotate(360deg); }
-.cm__machine.is-turning .cm__balls { animation: balls .55s ease-in-out; }
-.cm__machine.is-dropping .cm__cap { animation: cap-drop .6s var(--os-ease) forwards; }
+/* the machine is a render: a still, and a clip that plays on top of it for each turn */
+.cm__machine { position: relative; display: block; width: 100%; max-width: 290px; aspect-ratio: 4 / 5; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #e3ddd2; cursor: pointer; box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 10px 30px rgba(60, 45, 25, .12); -webkit-tap-highlight-color: transparent; }
+.cm__machine img, .cm__machine video { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.cm__clip { opacity: 0; }
+.cm__machine.is-playing .cm__clip { opacity: 1; }
+.cm__machine { transition: box-shadow .25s, transform .25s var(--os-ease); }
+.cm__machine:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 16px 36px rgba(60, 45, 25, .16); }
+.cm__machine:active { transform: translateY(0); }
+.cm__machine:focus-visible { outline: 3px solid var(--os-accent); outline-offset: 3px; }
 .cm__machine.is-nudge { animation: nudge .45s; }
-@keyframes balls { 25% { transform: translate(-4px, 2px) rotate(-3deg); } 50% { transform: translate(5px, -3px) rotate(4deg); } 75% { transform: translate(-3px, 1px) rotate(-2deg); } }
-@keyframes cap-drop { 0% { opacity: 1; transform: translateY(-40px) rotate(-30deg); } 60% { opacity: 1; transform: translateY(0) rotate(40deg); } 80% { transform: translateY(-5px) rotate(55deg); } 100% { opacity: 1; transform: translateY(0) rotate(60deg); } }
-@keyframes nudge { 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+@keyframes nudge { 25% { transform: rotate(-1.5deg); } 75% { transform: rotate(1.5deg); } }
 .cm__actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .cm__pull { min-height: 46px; padding: 0 22px; font-size: 15px; }
-.cm__legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 12px; color: var(--os-ink); }
-.cm__legend li { display: flex; align-items: center; gap: 7px; }
-.cm__legend i, .album__cat i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
-.cm__legend span { color: var(--os-mut); }
+.album__cat i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
 
 .album { overflow: auto; padding: 22px 26px 30px; }
 .album__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; }
@@ -629,6 +616,7 @@ html[data-mode="phone"] .gx__tabs button { flex: 1; padding: 0 8px; }
 html[data-mode="phone"] .gx__count { display: none; }
 html[data-mode="phone"] .cm { display: block; overflow: auto; overscroll-behavior: contain; }
 html[data-mode="phone"] .cm__left { overflow: visible; box-shadow: inset 0 -1px 0 var(--os-line); }
+html[data-mode="phone"] .cm__machine { max-width: min(300px, 78vw); }
 html[data-mode="phone"] .album { overflow: visible; padding: 18px 16px 30px; }
 html[data-mode="phone"] .album__grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
 html[data-mode="phone"] .cm-reveal { position: fixed; z-index: 20; }
