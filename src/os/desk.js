@@ -189,25 +189,31 @@ function wire(win) {
   bar.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.lights') || e.button !== 0) return;
     bar.setPointerCapture(e.pointerId);
-    let sx = e.clientX - el.offsetLeft, sy = e.clientY - el.offsetTop, snap = null, moved = false;
+    // the window moves with a transform while dragging (no layout work per frame), then settles into left/top
+    let x0 = el.offsetLeft, y0 = el.offsetTop, w = el.offsetWidth, sx = e.clientX - x0, sy = e.clientY - y0, nx = x0, ny = y0, snap = null, moved = false;
+    const vW = vw(), vH = vh();
     const mv = (ev) => {
       if (!moved) {
         if (Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < 3) return;
         moved = true; el.classList.add('is-dragging'); document.body.classList.add('is-dragging');
         // dragging a zoomed window out of its slot shrinks it back under the pointer
-        if (win.prev) { const k = (e.clientX - el.offsetLeft) / el.offsetWidth; Object.assign(el.style, { width: win.prev.width, height: win.prev.height }); win.prev = null; sx = el.offsetWidth * k; }
+        if (win.prev) { const k = (e.clientX - x0) / w; Object.assign(el.style, { width: win.prev.width, height: win.prev.height }); win.prev = null; w = el.offsetWidth; sx = w * k; }
       }
-      el.style.left = clamp(ev.clientX - sx, -el.offsetWidth + 80, vw() - 80) + 'px';
-      el.style.top = clamp(ev.clientY - sy, MENU_H, vh() - 40) + 'px';
-      snap = snapFor(ev.clientX, ev.clientY);
-      snapEl.hidden = !snap;
-      if (snap) Object.assign(snapEl.style, snap);
+      nx = clamp(ev.clientX - sx, -w + 80, vW - 80);
+      ny = clamp(ev.clientY - sy, MENU_H, vH - 40);
+      el.style.transform = `translate3d(${nx - x0}px, ${ny - y0}px, 0)`;
+      const next = snapFor(ev.clientX, ev.clientY);
+      if (!!next !== !!snap || (next && next.left + next.width !== snap.left + snap.width)) { snapEl.hidden = !next; if (next) Object.assign(snapEl.style, next); }
+      snap = next;
     };
     const up = () => {
-      el.classList.remove('is-dragging'); document.body.classList.remove('is-dragging');
       bar.removeEventListener('pointermove', mv); bar.removeEventListener('pointerup', up); bar.removeEventListener('pointercancel', up);
       snapEl.hidden = true;
-      if (snap) { win.prev = { left: el.style.left, top: Math.max(MENU_H + 8, el.offsetTop) + 'px', width: el.style.width, height: el.style.height }; el.classList.add('is-animating'); Object.assign(el.style, snap); setTimeout(() => el.classList.remove('is-animating'), 320); }
+      if (!moved) return;
+      Object.assign(el.style, { transform: '', left: nx + 'px', top: ny + 'px' });
+      void el.offsetWidth; // settle before the transition comes back, so nothing animates from the old spot
+      el.classList.remove('is-dragging'); document.body.classList.remove('is-dragging');
+      if (snap) { win.prev = { left: el.style.left, top: Math.max(MENU_H + 8, ny) + 'px', width: el.style.width, height: el.style.height }; el.classList.add('is-animating'); Object.assign(el.style, snap); setTimeout(() => el.classList.remove('is-animating'), 320); }
     };
     bar.addEventListener('pointermove', mv); bar.addEventListener('pointerup', up); bar.addEventListener('pointercancel', up);
   });

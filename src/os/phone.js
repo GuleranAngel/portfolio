@@ -1,7 +1,7 @@
 // Angel OS, phone shell: a lock screen, a home screen of apps that open full screen and stack,
 // long-press menus, a jiggle mode to rearrange the icons and a control centre.
 import { APPS, PROJECTS, PERSON, glyph, copyText, copyEmail, goNormal, linkFor, store, caseUrl } from './content.js';
-import { $, RM, say, clock, timeBig, fmtDate, setWall, savedWall, WALLS, routeApp, onLongPress } from './shared.js';
+import { $, RM, say, clock, timeBig, fmtDate, setWall, savedWall, wallField, WALLS, routeApp, onLongPress } from './shared.js';
 
 const P = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
 const home = $('#home'), sheetsEl = $('#sheets'), phone = $('#phone');
@@ -71,7 +71,10 @@ window.addEventListener('popstate', (e) => {
 });
 function goHome() { if (stack.length) history.go(-stack.length); }
 
+// the wallpaper rests while something covers it (an app, a menu or the control centre)
+const syncWall = () => { const f = wallField($('#phone-wall')); if (f && f.pause) f.pause(stack.length > 0 || !overlay.hidden || !cc.hidden); };
 function setInert() {
+  syncWall();
   const top = stack[stack.length - 1];
   home.inert = !!top;
   $('#phone-dock').inert = !!top;
@@ -108,6 +111,7 @@ phone.appendChild(overlay);
 function closeOverlays() {
   overlay.hidden = true; overlay.innerHTML = '';
   phone.classList.remove('is-pressing');
+  syncWall();
 }
 overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlays(); });
 function menuButtons(items) {
@@ -127,6 +131,7 @@ function pressMenu(target, items) {
   overlay.prepend(clone);
   overlay.hidden = false;
   phone.classList.add('is-pressing');
+  syncWall();
   wireMenu(overlay, items);
   if (navigator.vibrate) navigator.vibrate(8);
   overlay.querySelector('[data-k]').focus({ preventScroll: true });
@@ -135,6 +140,7 @@ function actionSheet(items) {
   overlay.innerHTML = `<div class="press__sheet"><div class="press__group" role="menu">${menuButtons(items)}</div><button type="button" class="press__cancel">Cancel</button></div>`;
   overlay.hidden = false;
   phone.classList.add('is-pressing');
+  syncWall();
   wireMenu(overlay, items);
   overlay.querySelector('.press__cancel').addEventListener('click', closeOverlays);
   overlay.querySelector('[data-k]')?.focus({ preventScroll: true });
@@ -269,12 +275,13 @@ function renderControl() {
     </div>
     <a class="os-btn os-btn--hot cc__switch" href="/site" data-switch>Switch to normal website</a>
   </div>`;
-  cc.querySelectorAll('[data-wall]').forEach((b) => b.addEventListener('click', () => { setWall($('#phone-wall'), b.dataset.wall); renderControl(); }));
+  cc.querySelectorAll('[data-wall]').forEach((b) => b.addEventListener('click', () => { setWall($('#phone-wall'), b.dataset.wall); renderControl(); syncWall(); }));
   cc.querySelector('[data-a=copy]').addEventListener('click', () => copyEmail({ say }));
   cc.querySelector('[data-a=lock]').addEventListener('click', () => { toggleControl(false); lock(); });
 }
 function toggleControl(on) {
   cc.hidden = !on;
+  syncWall();
   $('#status-btn').setAttribute('aria-expanded', String(on));
   if (on) { renderControl(); cc.querySelector('button').focus(); }
 }

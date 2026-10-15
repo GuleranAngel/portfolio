@@ -1,6 +1,7 @@
 // Angel OS: what every app shows. The desktop (windows) and the phone (full-screen apps)
 // both render through these builders, so the content only lives in one place.
 // The data (projects and every module of each Behance presentation, in order) is written into the page at build time.
+import { onLongPress } from './press.js';
 export const DATA = JSON.parse(document.getElementById('aos-data').textContent);
 export const PERSON = DATA.person;
 export const PROJECTS = DATA.projects;
@@ -94,14 +95,16 @@ function folder(body, { name = 'Work' } = {}, ctx) {
       } else {
         b.addEventListener('click', () => openFile(f, b));
       }
-      b.addEventListener('contextmenu', (e) => {
+      const menu = (e) => {
         if (!ctx.menu) return;
-        e.preventDefault(); select();
+        select();
         const items = [['Open', () => openFile(f, b)]];
         if (f.p) items.push(['Get info', () => ctx.open('info', { file: f }, b)], '-', ['Read the case study', () => { location.href = caseUrl(f.p); }]);
         if (f.type === 'folder') items.push(['Copy link', () => copyText(linkFor(f.id), ctx, 'Link copied')]);
         ctx.menu(items, e);
-      });
+      };
+      b.addEventListener('contextmenu', (e) => { e.preventDefault(); if (ctx.mode === 'desk' || e.pointerType === 'mouse') menu(e); });
+      if (ctx.mode !== 'desk') onLongPress(b, menu);
     });
   };
   render(name);
@@ -185,18 +188,23 @@ function mail(body, { subject = '' } = {}, ctx) {
 }
 
 // ---------------------------------------------------------------- terminal, with a small puzzle in it
-// The code is three numbers hidden in the work itself: the holds in the Topout mark,
-// the angle of the Atlas Pay ray grid and the faces of POG.
+// A locked route sits in the board-b folder. The code is three numbers hidden in the work itself:
+// the holds in the Topout mark, the angle of the Atlas Pay ray grid and the faces of POG.
 const TOPPED = () => !!store.get('topped');
-const NOTE = `Board B has a hidden route. Its code has three parts.
+const NOTE = `There's a secret route on Board B, and it's locked.
+The code is three numbers, all hiding in the work:
 
   1. How many holds make the Topout mark?
-  2. Atlas Pay is built on a grid of rays. How many degrees apart?
+  2. Atlas Pay is built on a grid of rays. How many degrees apart are they?
   3. How many faces does POG have?
 
-Every answer is somewhere in the work folders.
-Then: unlock <1>-<2>-<3>     (stuck? type hint)`;
-const HINTS = ['Open the Topout folder and look at 07-the-mark.', 'In Atlas Pay, 08-icon-construction says it in the title.', 'In POG, count the faces in 09-all-the-faces.'];
+Find them in the folders on the desktop, then type the three
+numbers here with dashes between them, like this: <b>10-45-3</b>
+
+Stuck? Type <b>hint</b> for a clue.`;
+const HINTS = ['The Topout mark is in the Topout folder, file 07-the-mark. Count the dots.', 'In the Atlas Pay folder, 08-icon-construction gives the angle.', 'In the POG folder, count the faces in 09-all-the-faces.'];
+const LOCKED = 'Psst. Something on Board B is locked. Type <b>cd board-b</b> to take a look.';
+const EXAMPLE = 'like this: <b>10-45-3</b>';
 const HOLD = (lit) => {
   const rows = [3, 5, 5, 5, 3], out = [];
   rows.forEach((n, r) => { const pad = ' '.repeat((5 - n) * 2); out.push(pad + Array.from({ length: n }, (_, i) => (r === 0 && i === 1 && lit ? '<b>●</b>' : '●')).join(' ')); });
@@ -204,42 +212,53 @@ const HOLD = (lit) => {
 };
 
 function terminal(body, _o, ctx) {
-  body.innerHTML = `<div class="term"><p class="o">Angel OS terminal. Type <b>help</b> to see what you can do.</p><div class="out" aria-live="polite"></div>
+  body.innerHTML = `<div class="term"><p class="o">Angel OS terminal. Type <b>help</b> to see what you can do.${TOPPED() ? '' : `\n<span class="dim">${LOCKED}</span>`}</p><div class="out" aria-live="polite"></div>
     <label class="in"><span aria-hidden="true">angel@os <i class="cwd">~</i> %</span><input aria-label="Command" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"></label></div>`;
   const out = body.querySelector('.out'), inp = body.querySelector('input'), term = body.querySelector('.term'), cwdEl = body.querySelector('.cwd');
   const print = (s) => { const d = document.createElement('p'); d.className = 'o'; d.innerHTML = s; out.appendChild(d); term.scrollTop = term.scrollHeight; };
-  let cwd = '~', hintN = 0;
+  let cwd = '~', hintN = 0, seen = false;
+  const showNote = () => { seen = true; print(NOTE); };
+  // the lock takes the three numbers typed on their own (21-7.5-9, 21 7.5 9) or after "unlock"
+  const tryCode = (raw) => {
+    if (TOPPED()) return print('Already unlocked. You topped out :)\n<span class="dim">Want to play again? Type <b>relock</b>.</span>');
+    const parts = raw.replace(/,/g, '.').replace(/[°º]/g, '').split(/[-\s/]+/).filter(Boolean);
+    if (parts.length < 3) return print(`That's ${parts.length || 'none'} of the three numbers. Type all three with dashes between them, ${EXAMPLE}`);
+    const ok = [parts[0] === '21', ['7.5', '7.50'].includes(parts[1]), parts[2] === '9'];
+    const right = ok.filter(Boolean).length;
+    if (right < 3) return print(`<span class="dim">click.</span> ${ok.map((x) => (x ? '<b>●</b>' : '○')).join(' ')}   ${right} of 3 right.${right ? ' The lit ones are correct.' : ''} Type <b>hint</b> for a clue.`);
+    print(`\n${HOLD(true)}\n\n<b>You topped out.</b> Not many people find this.\nA file just appeared on your ${ctx.mode === 'desk' ? 'desktop' : 'home screen'}.`);
+    store.set('topped', true);
+    document.dispatchEvent(new CustomEvent('aos:topped'));
+  };
   const hist = store.get('history') || [];
   let hi = hist.length;
   const setCwd = (c) => { cwd = c; cwdEl.textContent = c; };
-  const FILES = { '~': ['work/', 'about.txt', 'contact.vcf'], '~/.board-b': ['note.txt', 'route.lock'], '~/work': ['topout/', 'atlas-pay/', 'pog/'] };
+  const FILES = { '~': ['work/', 'board-b/', 'about.txt', 'contact.vcf'], '~/board-b': ['note.txt', 'route.lock'], '~/work': ['topout/', 'atlas-pay/', 'pog/'] };
   const cmds = {
-    help: () => print('<b>ls</b>            list files (ls -a shows everything)\n<b>cd</b> <i>dir</i>        change folder\n<b>cat</b> <i>file</i>      read a file\n<b>open</b> <i>name</i>     topout | atlas | pog | about | contact\n<b>whoami</b>        who made this\n<b>email</b>         write to Angel\n<b>site</b>          switch to the normal website\n<b>history</b>, <b>date</b>, <b>clear</b>, <b>exit</b>\n\n<span class="dim">Not every command is on this list.</span>'),
+    help: () => print('<b>ls</b>            list the files here\n<b>cd</b> <i>dir</i>        change folder\n<b>cat</b> <i>file</i>      read a file\n<b>open</b> <i>name</i>     topout | atlas | pog | about | contact\n<b>whoami</b>        who made this\n<b>email</b>         write to Angel\n<b>site</b>          switch to the normal website\n<b>history</b>, <b>date</b>, <b>clear</b>, <b>exit</b>\n\n<span class="dim">Not every command is on this list.\nPsst. There\'s a secret route locked on Board B. Type <b>cd board-b</b> to start.</span>'),
     ls: (a) => {
-      const all = a.includes('-a');
       const here = FILES[cwd] || [];
-      const list = cwd === '~' && all ? ['.', '..', '.board-b/', ...here] : here;
-      print(list.join('   ') || '(empty)');
+      print(((a.includes('-a') ? ['.', '..'] : []).concat(here)).join('   ') || '(empty)');
     },
     cd: (a) => {
-      const t = (a || '~').replace(/\/$/, '');
+      const t = (a || '~').replace(/\/$/, '').replace(/^(~\/)?\.(?=board-b)/, '$1');
       if (t === '~' || t === '..' || t === '/') return setCwd('~');
       const full = t.startsWith('~') ? t : (cwd === '~' ? '~/' : cwd + '/') + t;
-      if (FILES[full]) return setCwd(full);
+      if (FILES[full]) { setCwd(full); if (full === '~/board-b') { print('note.txt   route.lock\n<span class="dim">opening note.txt</span>'); showNote(); } return; }
       if (['topout', 'atlas-pay', 'atlas', 'pog'].includes(t.replace('work/', ''))) { ctx.open(t.includes('pog') ? 'pog' : t.includes('atlas') ? 'atlas' : 'topout'); return print('opened it in a window'); }
       print(`cd: no such folder: ${esc(t)}`);
     },
     cat: (a) => {
-      const f = (a || '').replace(/^\.\/|^\.board-b\//, '');
-      if (cwd === '~/.board-b' || a.startsWith('.board-b/')) {
-        if (f === 'note.txt') return print(esc(NOTE));
-        if (f === 'route.lock') return print(TOPPED() ? 'unlocked. you topped out.' : 'binary file. it wants a code: unlock <1>-<2>-<3>');
+      const f = (a || '').replace(/^\.\/|^~?\/?board-b\//, '');
+      if (cwd === '~/board-b' || /board-b\//.test(a) || f === 'note.txt' || f === 'route.lock') {
+        if (f === 'note.txt') return showNote();
+        if (f === 'route.lock') return print(TOPPED() ? 'unlocked. you topped out.' : `locked. It wants the three numbers from note.txt, ${EXAMPLE}`);
       }
       if (f === 'about.txt') return print(`${esc(PERSON.name)}\n${esc(PERSON.role)}. ${esc(PERSON.base)}.\n\n${esc(LEDE)}`);
       if (f === 'contact.vcf') return print(`BEGIN:VCARD\nFN:${esc(PERSON.name)}\nEMAIL:${esc(PERSON.email)}\nURL:${esc(PERSON.behance)}\nEND:VCARD`);
       print(`cat: ${esc(a || '')}: no such file`);
     },
-    open: (a) => { const ok = ['topout', 'atlas', 'pog', 'about', 'contact', 'work'].includes(a); ok ? ctx.open(a) : print(`nothing called "${esc(a || '')}". Try: topout, atlas, pog, about, contact`); },
+    open: (a) => { if (/^\.?board-b\/?$/.test(a)) return cmds.cd('board-b'); const ok = ['topout', 'atlas', 'pog', 'about', 'contact', 'work'].includes(a); ok ? ctx.open(a) : print(`nothing called "${esc(a || '')}". Try: topout, atlas, pog, about, contact`); },
     whoami: () => print(`${esc(PERSON.name)}. ${esc(PERSON.role)}. ${esc(PERSON.base)}.`),
     email: () => { print(esc(PERSON.email)); ctx.open('mail'); },
     contact: () => cmds.email(),
@@ -250,22 +269,17 @@ function terminal(body, _o, ctx) {
     exit: () => ctx.close ? ctx.close() : print('bye'),
     pwd: () => print(cwd.replace('~', '/home/angel')),
     echo: (a, rest) => print(esc([a, rest].filter(Boolean).join(' '))),
-    hint: () => {
+    hint: (a) => {
       if (TOPPED()) return print('you already topped out.');
-      if (cwd !== '~/.board-b' && hintN === 0) return print('try <b>ls -a</b>');
-      print(`hint ${hintN + 1}/3: ${esc(HINTS[Math.min(hintN, 2)])}`); hintN++;
+      if (!seen && hintN === 0 && !a) return print('Start with <b>cd board-b</b>. There\'s a note in there.');
+      const pick = /^[123]$/.test(a) ? +a - 1 : null;
+      if (pick === null && hintN >= 3) return print(`No more hints, that was all three. See one again with <b>hint 1</b>, <b>hint 2</b> or <b>hint 3</b>.\n<span class="dim">Then type the three numbers with dashes, ${EXAMPLE}</span>`);
+      const k = pick ?? hintN;
+      print(`hint ${k + 1} of 3: ${esc(HINTS[k])}\n<span class="dim">${pick === null && k < 2 ? 'Type <b>hint</b> again for the next one.' : `Then type the three numbers with dashes, ${EXAMPLE}`}</span>`);
+      if (pick === null) hintN++;
     },
-    unlock: (a, rest) => {
-      const raw = [a, rest].filter(Boolean).join(' ').replace(',', '.');
-      const parts = raw.split(/[-\s]+/).filter(Boolean).map((x) => x.replace(/[°º]/g, ''));
-      if (parts.length < 3) return print('the lock wants three parts: unlock 1-2-3');
-      const ok = [parts[0] === '21', ['7.5', '7.50'].includes(parts[1]), parts[2] === '9'];
-      const right = ok.filter(Boolean).length;
-      if (right < 3) return print(`<span class="dim">click.</span> ${right} of 3 right. Keep looking.`);
-      print(`\n${HOLD(true)}\n\n<b>You topped out.</b> Not many people find this.\nA file just appeared on your desktop.`);
-      store.set('topped', true);
-      document.dispatchEvent(new CustomEvent('aos:topped'));
-    },
+    unlock: (a, rest) => tryCode([a, rest].filter(Boolean).join(' ')),
+    relock: () => { if (!TOPPED()) return print('It\'s already locked.'); store.set('topped', false); hintN = 0; print('Locked again. Reload the page to start over.'); },
     sudo: (a, rest) => { if ((a + ' ' + rest).includes('hire')) { print('Permission granted.'); ctx.open('mail', { subject: 'Project enquiry' }); } else print('nice try'); },
     hire: () => print('did you mean <b>sudo hire angel</b>?'),
     rm: () => print('Nice try. Everything here is load-bearing.'),
@@ -284,7 +298,9 @@ function terminal(body, _o, ctx) {
     hist.push(raw); store.set('history', hist.slice(-50)); hi = hist.length;
     const [c, a = '', ...rest] = raw.trim().split(/\s+/);
     const fn = cmds[c.toLowerCase()];
-    fn ? fn(a.toLowerCase(), rest.join(' ').toLowerCase()) : print(`command not found: ${esc(c)}. Try <b>help</b>.`);
+    if (fn) return fn(a.toLowerCase(), rest.join(' ').toLowerCase());
+    if (/^[\d\s.,°º/-]+$/.test(raw)) return tryCode(raw);
+    print(`command not found: ${esc(c)}. Try <b>help</b>.`);
   };
   inp.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { const raw = inp.value.trim(); inp.value = ''; run(raw); }
