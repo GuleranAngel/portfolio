@@ -534,12 +534,11 @@ html[data-mode="phone"] .term { font-size: 13px; }
 .slot:hover { transform: translateY(-2px); }
 .slot.is-found { border: 0; background: #e8e4db; }
 .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.slot__q { font-family: var(--os-mono); font-size: 12px; color: #aaa397; }
-.slot:not(.is-found)::after { content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -26px 0 0 -11px; border-radius: 50%; background: linear-gradient(var(--c) 50%, transparent 50%); opacity: .18; }
+.slot__q { font-family: var(--os-mono); font-size: 13px; color: #a39c90; }
 .slot__play { position: absolute; right: 6px; bottom: 6px; width: 18px; height: 18px; border-radius: 50%; background: rgba(10, 10, 10, .65); }
 .slot__play::after { content: ""; position: absolute; left: 7px; top: 5px; border-left: 6px solid #fff; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
 .slot.is-new { animation: slot-pop .6s var(--os-ease); }
-@keyframes slot-pop { 0% { transform: scale(.6); box-shadow: 0 0 0 3px var(--c); } 60% { transform: scale(1.06); } 100% { transform: none; box-shadow: 0 0 0 0 transparent; } }
+@keyframes slot-pop { 0% { transform: scale(.6); box-shadow: 0 0 0 3px var(--os-accent); } 60% { transform: scale(1.06); } 100% { transform: none; box-shadow: 0 0 0 0 transparent; } }
 
 .cm-reveal { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; padding: 18px 16px calc(24px + env(safe-area-inset-bottom, 0px)); background: rgba(18, 18, 18, .55); animation: fade-in .2s; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 /* margin auto centres the card when it fits and lets it scroll from the top when it doesn't */
