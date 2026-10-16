@@ -75,7 +75,8 @@ function machine(pane, ctx, count) {
     const it = g.byId[b.dataset.id];
     const on = found.has(it.id);
     b.classList.toggle('is-found', on);
-    b.innerHTML = on ? `<img src="${it.thumb}" alt="" loading="lazy" decoding="async">${it.video ? '<span class="slot__play" aria-hidden="true"></span>' : ''}` : `<span class="slot__q">${esc(it.id)}</span>`;
+    b.dataset.shape = it.w >= it.h ? 'wide' : 'tall';
+    b.innerHTML = on ? `<span class="slot__pic"><img src="${it.thumb}" alt="" loading="lazy" decoding="async">${it.video ? '<span class="slot__play" aria-hidden="true"></span>' : ''}</span>` : `<span class="slot__q">${esc(it.id)}</span>`;
     b.setAttribute('aria-label', on ? `${it.title}, ${it.cat}` : `Not found yet, ${it.cat}`);
     if (flash) { b.classList.remove('is-new'); void b.offsetWidth; b.classList.add('is-new'); }
   }

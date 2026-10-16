@@ -1,12 +1,12 @@
 ---
 import RegMark from './RegMark.astro';
 import { site } from '../data/site';
-interface Props { center: string; home?: boolean }
-const { center, home = false } = Astro.props;
+interface Props { center: string; home?: boolean; overlay?: boolean; current?: string }
+const { center, home = false, overlay = false, current } = Astro.props;
 // The normal website's home is /site; / is Angel OS
 const base = home ? '' : '/site';
 ---
-<header class="site-header">
+<header class:list={["site-header", overlay && "site-header--overlay"]}>
   <div class="hdr wrap">
     <a class="brand" href="/site" aria-label="Angel Guleran, home">
       <RegMark />
@@ -16,6 +16,7 @@ const base = home ? '' : '/site';
     <nav class="hdr-nav label" aria-label="Main">
       <a class="link c-grey-2" href={`${base}#work`}>Work</a>
       <a class="link c-grey-2" href={`${base}#services`}>Services</a>
+      <a class:list={["link", current === 'gallery' ? 'c-white' : 'c-grey-2']} href="/gallery" aria-current={current === 'gallery' ? 'page' : undefined}>Gallery</a>
       <a class="link c-grey-2" href="/?os">Angel OS</a>
       <a class="link c-accent" href={site.mailto}>Contact <span aria-hidden="true">↗</span></a>
     </nav>
@@ -26,6 +27,7 @@ const base = home ? '' : '/site';
   <nav class="mobile-menu" id="mobile-menu" aria-label="Main" hidden data-menu>
     <a href={`${base}#work`} data-menu-link>Work</a>
     <a href={`${base}#services`} data-menu-link>Services</a>
+    <a href="/gallery" aria-current={current === 'gallery' ? 'page' : undefined}>Gallery</a>
     <a href="/?os">Switch to Angel OS</a>
     <a class="c-accent" href={site.mailto}>Contact <span aria-hidden="true">↗</span></a>
     <p class="label c-grey-3">Brand identity designer · Romania</p>
@@ -34,6 +36,12 @@ const base = home ? '' : '/site';
 
 <style>
   .site-header { position: relative; z-index: 20; background: var(--black); border-bottom: 1px solid var(--rule); }
+  /* full-screen pages (the gallery): the header floats over the content */
+  .site-header--overlay { position: fixed; inset: 0 0 auto; background: linear-gradient(rgba(7,7,7,.88), rgba(7,7,7,.5) 62%, rgba(7,7,7,0)); border-bottom: 0; }
+  .site-header--overlay .hdr { padding-bottom: 34px; }
+  /* drags and scrolls pass through the strip; only the links and the menu catch the pointer */
+  .site-header--overlay { pointer-events: none; }
+  .site-header--overlay a, .site-header--overlay button, .site-header--overlay .mobile-menu { pointer-events: auto; }
   .hdr { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; }
   .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 500; font-size: 17px; line-height: 1.55; letter-spacing: -0.034px; color: var(--white); white-space: nowrap; }
   .hdr-center { color: var(--grey-3); white-space: nowrap; }
@@ -42,6 +50,7 @@ const base = home ? '' : '/site';
   .mobile-menu { border-top: 1px solid var(--rule); background: var(--black); padding: 8px var(--pad) 24px; }
   .mobile-menu a { display: block; padding: 14px 0; border-bottom: 1px solid var(--rule); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: -0.22px; }
   .mobile-menu p { margin-top: 20px; }
+  @media (max-width: 1099px) { .hdr-nav { gap: 24px; } }
   @media (max-width: 899px) { .hdr-center { display: none; } }
   @media (max-width: 767px) {
     .hdr { padding-block: 18px; }

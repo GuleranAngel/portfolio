@@ -4,6 +4,8 @@ import Divider from '../components/Divider.astro';
 import Picture from '../components/Picture.astro';
 import LoopVideo from '../components/LoopVideo.astro';
 import Contact from '../components/Contact.astro';
+import { versioned } from '../data/asset-version';
+import stills from '../../public/os/gallery/stills.json';
 
 const services = [
   ['Experience', '10 years'],
@@ -15,6 +17,10 @@ const services = [
   ['Billing', 'Hourly, in EUR'],
   ['Revisions', 'As many rounds as it takes.<br /> You pay for time, not rounds.'],
 ];
+// a strip from the gallery wall, linking to /gallery
+const PICKS = ['718', '105', '111', '352', '702', '146', '719', '804', '350', '713'];
+const strip = PICKS.map((id) => stills.find((s) => s.id === id)).filter(Boolean)
+  .map((s) => ({ src: versioned(`/os/gallery/${s.key}-t.webp`), w: s.w, h: s.h }));
 ---
 <Base
   title="Angel Guleran | Brand identity designer"
@@ -106,6 +112,19 @@ const services = [
             <p class="label c-grey-2 p-tags">Identity · Character · Social</p>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery-teaser" id="gallery" aria-labelledby="gallery-title">
+    <div class="wrap stack-40">
+      <Divider tag="Gallery" id="gallery-title" />
+      <a class="gt-strip" href="/gallery" tabindex="-1" aria-hidden="true">
+        {strip.map((t) => <span class="gt-pic" style={`aspect-ratio:${t.w}/${t.h}`}><img src={t.src} alt="" width={t.w} height={t.h} loading="lazy" decoding="async" /></span>)}
+      </a>
+      <div class="gt-foot">
+        <p class="gt-desc c-grey-2">The pieces outside the case studies: 3D renders and loops, motion, logos and brand visuals. All {stills.length} of them on one wall you can drag around.</p>
+        <a class="btn btn-secondary" href="/gallery"><span>Open the gallery</span><span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -211,6 +230,20 @@ const services = [
   }
 
   /* Services */
+  /* Gallery teaser */
+  .gallery-teaser { padding: 0 0 144px; }
+  .gt-strip { display: flex; gap: 20px; height: 240px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent); mask-image: linear-gradient(90deg, #000 70%, transparent); }
+  .gt-pic { flex: none; height: 100%; overflow: hidden; background: var(--surface); }
+  .gt-pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .gt-strip:hover .gt-pic img { transform: scale(1.04); }
+  .gt-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+  .gt-desc { max-width: 560px; }
+  @media (max-width: 767px) {
+    .gallery-teaser { padding-bottom: 96px; }
+    .gt-strip { gap: 12px; height: 150px; }
+    .gt-foot { flex-direction: column; align-items: flex-start; gap: 24px; }
+  }
+
   .services { background: var(--surface); padding: 96px 0 144px; }
   .services-body { display: flex; justify-content: space-between; gap: 48px; padding-top: 80px; }
   .statement-col { display: flex; flex-direction: column; gap: 28px; max-width: 700px; }

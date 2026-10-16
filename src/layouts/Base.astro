@@ -13,8 +13,12 @@ interface Props {
   extraFonts?: boolean;
   /** Angel OS: no site header, footer or site script; the page brings its own shell */
   bare?: boolean;
+  /** a full-screen page (the gallery): the header floats over it, no footer, the page doesn't scroll */
+  immersive?: boolean;
+  /** which nav link is the current page */
+  current?: string;
 }
-const { title, description, center, home = false, ogImage = '/og.jpg', extraFonts = false, bare = false } = Astro.props;
+const { title, description, center, home = false, ogImage = '/og.jpg', extraFonts = false, bare = false, immersive = false, current } = Astro.props;
 // Clean URLs: /work/pog, not /work/pog.html (Netlify serves both)
 const cleanPath = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/(.)\/$/, '$1') || '/';
 const canonical = new URL(cleanPath, site.url).href;
@@ -94,11 +98,11 @@ const EMBED = `(function () {
     {!bare && <script is:inline set:html={EMBED} />}
     <slot name="head" />
   </head>
-  <body id="top" class:list={[bare && 'aos']}>
+  <body id="top" class:list={[bare && 'aos', immersive && 'is-immersive']}>
     {!bare && <a class="skip-link" href="#main">Skip to content</a>}
-    {!bare && <Header center={center} home={home} />}
+    {!bare && <Header center={center} home={home} overlay={immersive} current={current} />}
     {bare ? <slot /> : <main id="main" tabindex="-1"><slot /></main>}
-    {!bare && <Footer />}
+    {!bare && !immersive && <Footer />}
     <script>
       import '../scripts/site.ts';
     </script>

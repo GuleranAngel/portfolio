@@ -532,8 +532,12 @@ html[data-mode="phone"] .term { font-size: 13px; }
 .album__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
 .slot { position: relative; width: 100%; aspect-ratio: 1; border-radius: 10px; border: 1.5px dashed #cdc7bb; display: grid; place-items: center; overflow: hidden; transition: transform .15s; }
 .slot:hover { transform: translateY(-2px); }
-.slot.is-found { border: 0; background: #e8e4db; }
-.slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+/* a found piece sits in its square at its own shape, no box behind it */
+.slot.is-found { border: 0; background: none; overflow: visible; }
+.slot__pic { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); aspect-ratio: var(--ar); border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px rgba(0, 0, 0, .1), 0 4px 12px rgba(0, 0, 0, .08); }
+.slot[data-shape="wide"] .slot__pic { width: 100%; }
+.slot[data-shape="tall"] .slot__pic { height: 100%; }
+.slot__pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .slot__q { font-family: var(--os-mono); font-size: 13px; color: #a39c90; }
 .slot__play { position: absolute; right: 6px; bottom: 6px; width: 18px; height: 18px; border-radius: 50%; background: rgba(10, 10, 10, .65); }
 .slot__play::after { content: ""; position: absolute; left: 7px; top: 5px; border-left: 6px solid #fff; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }

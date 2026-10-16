@@ -45,8 +45,8 @@ const IN_HOUSE = ['103', '105', '106', '107', '108', '111', '112', '140', '141',
 const WHERE = { '219': 'Wagmi Markets' };
 // pieces whose original has a soundtrack: the viewer plays a full-length cut with sound (<key>-sound.mp4)
 const SOUND = ['103', '213', '214', '219'];
-// stills rebuilt from the original files at up to 2400px, so the viewer stays sharp when you zoom in (<key>-hd.webp)
-const HD = ['105', '111', '112', '140', '141', '142', '144', '145', '146', '147', '310', '320', '328', '350', '351', '352', '354', '355', '377', '503', '504'];
+// stills rebuilt from the original files (or the Figma source frames) at up to 2400px, so the viewer stays sharp when you zoom in (<key>-hd.webp)
+const HD = ['105', '111', '112', '140', '141', '142', '144', '145', '146', '147', '310', '320', '328', '350', '351', '352', '354', '355', '377', '503', '504', '801', '803', '804', '805', '806', '807', '808', '809'];
 
 const catOf = (id) => {
   if (id.startsWith('X')) return 'Logos';
