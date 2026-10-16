@@ -126,6 +126,42 @@
   "h": 966
  },
  {
+  "id": "148",
+  "key": "148-xm-coins-together",
+  "name": "XM coins together",
+  "year": "2025",
+  "video": false,
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "id": "149",
+  "key": "149-xm-coin-ring",
+  "name": "XM coin ring",
+  "year": "2025",
+  "video": false,
+  "w": 1600,
+  "h": 1250
+ },
+ {
+  "id": "150",
+  "key": "150-xportal-eth-staking-hand",
+  "name": "xPortal ETH staking hand",
+  "year": "2025",
+  "video": false,
+  "w": 1280,
+  "h": 1600
+ },
+ {
+  "id": "151",
+  "key": "151-xmex-lightning",
+  "name": "xMEX lightning",
+  "year": "2024",
+  "video": true,
+  "w": 1000,
+  "h": 1000
+ },
+ {
   "id": "202",
   "key": "202-eurxm",
   "name": "EURXM",
@@ -214,6 +250,50 @@
   "video": true,
   "w": 1080,
   "h": 608
+ },
+ {
+  "id": "241",
+  "key": "241-februairy-is-here",
+  "name": "FebruAIry is here",
+  "year": "2025",
+  "video": true,
+  "w": 1080,
+  "h": 1080
+ },
+ {
+  "id": "242",
+  "key": "242-no-vibing-at-the-pool",
+  "name": "No vibing at the pool",
+  "year": "2025",
+  "video": true,
+  "w": 1080,
+  "h": 864
+ },
+ {
+  "id": "243",
+  "key": "243-full-shard-logo-puzzle",
+  "name": "Full Shard logo puzzle",
+  "year": "2024",
+  "video": true,
+  "w": 1080,
+  "h": 1080
+ },
+ {
+  "id": "244",
+  "key": "244-full-shard-fractal-intro",
+  "name": "Full Shard fractal intro",
+  "year": "2024",
+  "video": true,
+  "w": 1080,
+  "h": 606
+ },
+ {
+  "id": "245",
+  "key": "245-insert-ai-agent",
+  "name": "Insert AI agent",
+  "video": true,
+  "w": 864,
+  "h": 1080
  },
  {
   "id": "310",
@@ -513,6 +593,23 @@
   "h": 614
  },
  {
+  "id": "722",
+  "key": "722-growth-games-3d-tunnel",
+  "name": "Growth Games 3D tunnel",
+  "video": true,
+  "w": 1080,
+  "h": 606
+ },
+ {
+  "id": "723",
+  "key": "723-astronaut-helmet",
+  "name": "Astronaut helmet",
+  "year": "2025",
+  "video": false,
+  "w": 1080,
+  "h": 1529
+ },
+ {
   "id": "801",
   "key": "801-xmoney-exchange-ring",
   "name": "xMoney exchange ring",
@@ -592,6 +689,15 @@
   "video": false,
   "w": 1600,
   "h": 900
+ },
+ {
+  "id": "811",
+  "key": "811-spring-promo",
+  "name": "Spring promo",
+  "year": "2026",
+  "video": true,
+  "w": 864,
+  "h": 1080
  },
  {
   "id": "X1",
