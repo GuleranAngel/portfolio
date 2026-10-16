@@ -8,6 +8,9 @@ const view = $('[data-view]');
 const plane = $('[data-plane]');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(hover: hover) and (pointer: fine)');
+// motion pieces play on the wall by themselves, muted, while they're on screen
+// (not with reduced motion or data saver: then they play on hover, or big in the lightbox)
+const AUTO = !reduce && !(navigator.connection && navigator.connection.saveData);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
@@ -79,6 +82,26 @@ function tile(i, h) {
   img.src = L.big ? it.src : it.thumb;
   return el;
 }
+// the muted loop inside a motion tile, made the first time it's needed
+function motion(el) {
+  let v = el.querySelector('video');
+  if (v) return v;
+  const it = data[el.dataset.i];
+  if (!it.video) return null;
+  v = document.createElement('video');
+  v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+  v.addEventListener('playing', () => { v.classList.add('is-on'); el.classList.add('is-playing'); });
+  v.addEventListener('pause', () => el.classList.remove('is-playing'));
+  v.src = it.mp4;
+  el.querySelector('.t__m').appendChild(v);
+  return v;
+}
+function play(el) { const v = motion(el); if (v) v.play().catch(() => {}); }
+const pauseAll = () => { for (const el of live.values()) { const v = el.querySelector('video'); if (v) v.pause(); } };
+const playAll = () => { if (AUTO) for (const el of live.values()) play(el); };
+document.addEventListener('visibilitychange', () => (document.hidden ? pauseAll() : lb.hidden && playAll()));
+
 function recycle(el) {
   if (el === hov) setHover(null);
   const v = el.querySelector('video');
@@ -113,7 +136,7 @@ function render() {
         if (wy + t.h < y0 || wy > y1) continue;
         const key = `${k},${r},${t.n}`;
         let el = live.get(key);
-        if (!el) { el = tile(t.i, t.h); plane.appendChild(el); live.set(key, el); }
+        if (!el) { el = tile(t.i, t.h); plane.appendChild(el); live.set(key, el); if (AUTO && lb.hidden) play(el); }
         el._f = fid;
         let x = sx, y = wy - cy, s = 1;
         if (W > 0.0004) {
@@ -166,24 +189,13 @@ function setHover(el) {
   if (el === hov) return;
   if (hov) {
     hov.classList.remove('is-hover');
-    const v = hov.querySelector('video');
-    if (v) { v.pause(); v.classList.remove('is-on'); }
+    // without autoplay the hover is what plays a piece, so leaving it stops it
+    if (!AUTO) { const v = hov.querySelector('video'); if (v) v.pause(); }
   }
   hov = el && fine.matches ? el : null;
   if (!hov) return;
   hov.classList.add('is-hover');
-  const it = data[hov.dataset.i];
-  if (!it.video) return;
-  let v = hov.querySelector('video');
-  if (!v) {
-    v = document.createElement('video');
-    v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
-    v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-    v.addEventListener('playing', () => v.classList.add('is-on'));
-    v.src = it.mp4;
-    hov.querySelector('.t__m').appendChild(v);
-  }
-  v.play().catch(() => {});
+  play(hov);
 }
 function hoverAt(x, y) {
   const el = document.elementFromPoint(x, y);
@@ -323,6 +335,7 @@ function open(i, { push = true } = {}) {
     lastFocus = document.activeElement;
     setHover(null);
     lb.hidden = false;
+    pauseAll(); // the wall rests while a piece is open
     outside().forEach((el) => { el.inert = true; });
     $('[data-lb-close]').focus({ preventScroll: true });
     if (push) { history.pushState({ lb: 1 }, '', hash); pushed = true; return; }
@@ -334,6 +347,7 @@ function close({ fromHistory = false, key = false } = {}) {
   clearStage();
   lb.hidden = true;
   outside().forEach((el) => { el.inert = false; });
+  playAll();
   if (!fromHistory) {
     if (pushed && history.state && history.state.lb) history.back();
     else history.replaceState(null, '', location.pathname + location.search);

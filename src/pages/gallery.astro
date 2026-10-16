@@ -117,7 +117,7 @@ const count = items.length;
   .wall__plane :global(.t.is-hover .t__m img), .wall__plane :global(.t.is-hover .t__m video) { transform: scale(1.06); }
   .wall__plane :global(.t__play) { position: absolute; right: 10px; bottom: 10px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: opacity .2s ease; }
   .wall__plane :global(.t__play::before) { content: ''; position: absolute; left: 10px; top: 8px; border-style: solid; border-width: 5px 0 5px 8px; border-color: transparent transparent transparent #fff; }
-  .wall__plane :global(.t.is-hover .t__play) { opacity: 0; }
+  .wall__plane :global(.t.is-hover .t__play), .wall__plane :global(.t.is-playing .t__play) { opacity: 0; }
   .wall__plane :global(.t__chip) { position: absolute; left: 10px; bottom: 10px; max-width: calc(100% - 20px); display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; background: #fff; color: #070707; border-radius: 999px; opacity: 0; transform: translateY(6px); transition: opacity .2s ease, transform .25s ease; pointer-events: none; }
   .wall__plane :global(.t.is-hover .t__chip) { opacity: 1; transform: none; }
   .wall__plane :global(.t__chip i) { flex: none; display: grid; place-items: center; height: 22px; min-width: 22px; padding: 0 6px; border-radius: 999px; background: #070707; color: #fff; font: 400 10px/1 var(--mono); letter-spacing: .4px; font-style: normal; text-transform: uppercase; }
