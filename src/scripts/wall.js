@@ -38,7 +38,10 @@ const ORDER = (() => {
 // ---------- layout ----------
 let L = null;
 function layout() {
-  const vw = innerWidth, vh = innerHeight;
+  // a tab opened in the background can report a 0x0 window at first; lay out for a small screen
+  // until the real size comes in (the resize handler redoes it then)
+  const vw = Math.max(320, innerWidth || document.documentElement.clientWidth || 0);
+  const vh = Math.max(480, innerHeight || document.documentElement.clientHeight || 0);
   const phone = vw < 768;
   const gap = phone ? 12 : 20;
   const colW = phone ? Math.round(vw / 2.3 - gap) : Math.round(clamp(vw / 4.8, 240, 380));
@@ -445,6 +448,7 @@ addEventListener('resize', () => {
   clearTimeout(rz);
   rz = setTimeout(() => {
     const next = layout();
+    if (!L) { L = next; kick(); return; }
     if (next.colW === L.colW && next.n === L.n && next.big === L.big) { L.vw = next.vw; L.vh = next.vh; kick(); return; }
     const f = next.pitch / L.pitch;
     cx *= f; tx *= f; cy *= f; ty *= f;
