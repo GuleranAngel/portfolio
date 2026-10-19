@@ -34,15 +34,15 @@ const ld = {
 };
 // Content Security Policy for every page (frame-ancestors can't live in a meta tag, so netlify.toml sends that one).
 // Scripts and styles stay 'unsafe-inline' because Astro inlines small ones; everything else is this site only,
-// plus GIPHY for the GIFs in topped-out.txt.
+// plus GIPHY for the GIFs in topped-out.txt, and Cloudflare Web Analytics (its script, and where it sends visits).
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.giphy.com",
   "media-src 'self' blob: https://*.giphy.com",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://cloudflareinsights.com",
   "frame-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
@@ -96,6 +96,9 @@ const EMBED = `(function () {
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     {!bare && <script is:inline set:html={EMBED} />}
+    {/* Cloudflare Web Analytics: visits, countries, sources and top pages, no cookies. One count per page load
+        ("spa": false): Angel OS moves through its own history as windows open, which would otherwise count again. */}
+    <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "c55a5cb42975482fba12de039c60c852", "spa": false}'></script>
     <slot name="head" />
   </head>
   <body id="top" class:list={[bare && 'aos', immersive && 'is-immersive']}>
